@@ -843,10 +843,11 @@ a[data-toggle-lights]:hover {
 	}
 	
 	.card .player-items {
-		gap: 10px;
+		gap: 0;
+		padding: 0 10px;
 	}
 	
 	.card .player-items div {
-		flex-basis: calc(50% - 25px);
+		margin: 5px;
 	}
 }
