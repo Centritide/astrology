@@ -1,0 +1,82 @@
+[
+	{ 
+		"name": "Void",
+		"emoji": "0x2754"
+	},
+	{ 
+		"name": "Sun 2",
+		"emoji": "0x2600"
+	},
+	{ 
+		"name": "Overcast",
+		"emoji": "0x26C5"
+	},
+	{ 
+		"name": "Rainy",
+		"emoji": "0x1F327"
+	},
+	{ 
+		"name": "Sandstorm",
+		"emoji": "0x1F3D6"
+	},
+	{ 
+		"name": "Snowy",
+		"emoji": "0x2744"
+	},
+	{ 
+		"name": "Acidic",
+		"emoji": "0x2697"
+	},
+	{ 
+		"name": "Solar Eclipse",
+		"emoji": "0x1F311"
+	},
+	{ 
+		"name": "Glitter",
+		"emoji": "0x2728"
+	},
+	{ 
+		"name": "Blooddrain",
+		"emoji": "0x1FA78"
+	},
+	{ 
+		"name": "Peanuts",
+		"emoji": "0x1F95C"
+	},
+	{ 
+		"name": "Birds",
+		"emoji": "0x1F426"
+	},
+	{ 
+		"name": "Feedback",
+		"emoji": "0x1F3A4"
+	},
+	{ 
+		"name": "Reverb",
+		"emoji": "0x1F30A"
+	},
+	{ 
+		"name": "Black Hole",
+		"emoji": "0x26AB"
+	},
+	{ 
+		"name": "Coffee",
+		"emoji": "0x2615"
+	},
+	{ 
+		"name": "Coffee 2",
+		"emoji": "0x1F375"
+	},
+	{ 
+		"name": "Coffee 3s",
+		"emoji": "3️⃣"
+	},
+    {
+        "name": "Flooding",
+        "emoji": "0x1F93F"
+    },
+	{
+		"name": "Salmon",
+		"emoji": "0x1F41F"
+	}
+]

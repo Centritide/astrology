@@ -1,0 +1,1196 @@
+/**
+ * RequireJS configuration
+ * 
+ */
+requirejs.config({
+    waitSeconds : 0,
+	paths : {
+        text: "../libs/text",
+        json: "../libs/json",
+		jquery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min",
+		backbone: "https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min",
+		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.11.0/underscore-min",
+		twemoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/12.0.4/2/twemoji.min"
+	},
+	shim : {
+		jquery: {
+			exports : "$"
+		},
+		underscore: {
+			exports	: ["_"]
+		},
+		backbone: {
+			deps	: ["underscore", "jquery"],
+			exports : "Backbone"
+		},
+		twemoji: {
+			exports: "twemoji"
+		}
+	}
+});
+//Start the main app logic.
+requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, weather) {
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, season: null, history: false }, activeTeam, activeSeason, navView, teamView, seasonView, detailsView, lightMode = false;
+	
+	//-- BEGIN ROUTER --
+	App.Router = Backbone.Router.extend({
+		routes: {
+			"": "index",
+			":team": "team",
+			":team/history": "history",
+			":team/season/:season": "season"
+		},
+		index: loadPage,
+		team: loadPage,
+		history: loadHistory,
+		season: loadPage
+	});
+	//-- END ROUTER --
+	
+	//-- BEGIN MODELS --
+	App.Models.Nav = Backbone.Model.extend({
+		seasonExists: function(season, callback) {
+			var thisModel = this, SeasonModel = new App.Models.Season();
+			SeasonModel.fetch({
+				data: {
+					number: season
+				},
+				success: function() {
+					thisModel.get("seasons").add(SeasonModel);
+					thisModel.seasonExists(++season, callback);
+				},
+				error: function() {
+					if(callback) {
+						callback();
+					}
+				}
+			});
+		}
+	});
+	App.Models.Team = Backbone.Model.extend({
+		slug: function() {
+			return this.get("fullName").toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
+		},
+		type: function() {
+			switch(this.id) {
+				case "40b9ec2a-cb43-4dbb-b836-5accb62e7c20": // pods
+				case "c6c01051-cdd4-47d6-8a98-bb5b754f937f": // hall stars
+					return "special";
+				case "f29d6e60-8fce-4ac6-8bc2-b5e3cabc5696": // black
+				case "70eab4ab-6cb1-41e7-ac8b-1050ee12eecc": // light and sweet
+				case "9e42c12a-7561-42a2-b2d0-7cf81a817a5e": // macchiato
+				case "b3b9636a-f88a-47dc-a91d-86ecc79f9934": // cream and sugar
+				case "4d921519-410b-41e2-882e-9726a4e54a6a": // cold brew
+				case "e3f90fa1-0bbe-40df-88ce-578d0723a23b": // flat white
+				case "4e5d0063-73b4-440a-b2d1-214a7345cf16": // americano
+				case "d8f82163-2e74-496b-8e4b-2ab35b2d3ff1": // espresso
+				case "e8f7ffee-ec53-4fe0-8e87-ea8ff1d0b4a9": // heavy foam
+				case "49181b72-7f1c-4f1c-929f-928d763ad7fb": // latte
+				case "a3ea6358-ce03-4f23-85f9-deb38cb81b20": // decaf
+				case "a7592bd7-1d3c-4ffb-8b3a-0b1e4bc321fd": // milk substitute
+				case "9a5ab308-41f2-4889-a3c3-733b9aab806e": // plenty of sugar
+				case "3b0a289b-aebd-493c-bc11-96793e7216d5": // blasesonas
+				case "d2634113-b650-47b9-ad95-673f8e28e687": // sibr
+				case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
+					return "coffee";
+				default:
+					return "ilb";
+			}
+		},
+		players: function(position) {
+			var teamPlayers = this.get("players");
+			return _.template($("#template-players").html())({
+				emoji: parseEmoji,
+				position: position, 
+				players: teamPlayers ? _.map(this.get(position.toLowerCase()), function(id) {
+					return teamPlayers.findWhere({ id: id });
+				}) : []
+			});
+		},
+		inactiveSeasons: function() {
+			switch(this.id) {
+				case "d9f89a8a-c563-493e-9d64-78e4f9a55d4a": // atlantis georgias
+				case "bb4a9de5-c924-4923-a0cb-9d1445f1ee5d": // ohio worms
+				case "46358869-dce9-4a01-bfba-ac24fc56f57e": // core mechanics
+					return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+				case "8d87c468-699a-47a8-b40d-cfb73a5660ad": // baltimore crabs
+					return [10, 11];
+				default:
+					return [];
+			}
+		},
+		emoji: parseEmoji,
+		isLightMode: function() {
+			return lightMode;
+		}
+	});
+	App.Models.Season = Backbone.Model.extend({
+		url: "https://cors-proxy.blaseball-reference.com/database/season"
+	});
+	App.Models.Game = Backbone.Model.extend({
+		oddsAdjective: function() {
+			var adjectives = "";
+			if(this.get("team").odds > this.get("opponent").odds) {
+				if(this.get("team").odds - this.get("opponent").odds > .25) {
+					adjectives += "heavily ";
+				}
+				adjectives += this.get("team").id == "57ec08cc-0411-4643-b304-0e80dbc15ac7" ? "flavored " : "favored ";
+			} else {
+				if(this.get("opponent").odds - this.get("team").odds > .25) {
+					adjectives += "heavy ";
+				}
+				adjectives += "underdog ";
+			}
+			return adjectives;
+		},
+		resultVerb: function() {
+			if(this.get("team").isWinner && this.get("isShame")) {
+				return (this.get("team").isAway ? "un" : "") + "shamed";
+			} else if(this.get("team").isWinner && !this.get("isShame")) {
+				return "defeated";
+			} else if(!this.get("team").isWinner && this.get("isShame")) {
+				return "were " + (this.get("team").isAway ? "" : "un") + "shamed by";
+			} else {
+				return "lost to";
+			}
+		},
+		formatDuration: function() {
+			var duration = "", 
+				hours = Math.floor(this.get("duration") / 1000 / 60 / 60), 
+				minutes = Math.floor(this.get("duration") / 1000 / 60) % 60,
+				seconds = Math.floor(this.get("duration") / 1000) % 60;
+			if(hours > 0) {
+				if(hours < 10) {
+					duration += "0";
+				}
+				duration += hours + ":";
+			}
+			if(minutes < 10) {
+				duration += "0";
+			}
+			duration += minutes + ":";
+			if(seconds < 10) {
+				duration += "0";
+			}
+			duration += seconds;
+			return duration;
+		},
+		relevantOutcomes: function() {
+			var thisModel = this, outcomes = _.clone(this.get("outcomes"));
+			
+			if(this.get("duration") > 60 * 60 * 1000) {
+				if(this.get("season") == 2 && this.get("day") == 72) { // grand unslam
+					outcomes.unshift("BRIDGE WEAKENED");
+				} else if(this.get("season") == 3 && this.get("day") == 87) { // waveback event
+					outcomes.unshift("PLANAR WAVES DETECTED");
+				} else if(this.get("season") < 3) { // early games had tons of siestas
+					outcomes.unshift("SIESTA DETECTED");
+				} else {
+					outcomes.unshift("SPILLOVER DETECTED");
+				}
+			}
+			
+			return _.chain(outcomes).map(function(outcome) {
+				return thisModel.parseOutcome(outcome);
+			}).compact().filter(function(outcome) {
+				return outcome.teams == undefined || _.contains(outcome.teams, activeTeam.id);
+			}).value();
+		},
+		parseOutcome: function(outcome) {
+			var matcher = outcome.match(/^the birds pecked (.+) free!\s?$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F426,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				};
+			}
+			matcher = outcome.match(/^the blooddrain gurgled! (.+) siphoned some of (.+)'s (hitting|pitching|baserunning|defensive) ability!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1FA78,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					special: "<strong>" + matcher[1] + "</strong> gurgied <strong>" + matcher[2] + "</strong>'s " + matcher[3] + " ability! <em>Fresh blood, here we come!</em>",
+					special2: "<strong>" + matcher[1] + "</strong> hungers for blood! <strong>" + matcher[2] + "</strong>'s " + matcher[3] + " ability was siphoned!",
+					players: [
+						{ name: matcher[1], team: null },
+						{ name: matcher[2], team: null }
+					],
+					gurgie: matcher[3]
+				};
+			}
+			matcher = outcome.match(/^(.+) is partying!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F973,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				};
+			}
+			matcher = outcome.match(/^(a debt was collected. )?rogue umpire incinerated (.+) (hitter|pitcher) (.+)! replaced by (.+)$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[2]);
+				return {
+					emoji: matcher[1] ? 0x1F47F : 0x1F525,
+					formatted: outcome.replace(matcher[1], "<span style='color:red'>" + matcher[1] + "</span>").replace(matcher[2], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>").replace(matcher[4], "<strong>" + matcher[4] + "</strong>").replace(matcher[5], "<strong>" + matcher[5] + "</strong>"),
+					players: [
+						{ name: matcher[4], team: team.id },
+						{ name: matcher[5], team: team.id }
+					],
+					teams: [ team.id ],
+					position: matcher[3]
+				};
+			}
+			matcher = outcome.match(/^rogue umpire incinerated (.+)!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F525,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				};
+			}
+			matcher = outcome.match(/^rogue umpire tried to incinerate (.+) (hitter|pitcher) (.+), but they're fireproof! the umpire was incinerated instead!$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x1F9E5,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.get("nickname") + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
+					players: [{ name: matcher[3], team: team.id }],
+					teams: [ team.id ],
+					position: matcher[2]
+				};
+			}
+			matcher = outcome.match(/^(.+) (hitter|pitcher) (.+) swallowed a stray peanut and had an? (.+) reaction!$/i);
+			if(matcher) {
+				var emoji, team = getTeamByName(matcher[1]);
+				if(matcher[4] == "allergic") {
+					emoji = 0x1F922;
+				} else if(matcher[4] == "yummy") {
+					emoji = 0x1F60B;
+				} else {
+					emoji = 0x2753;
+				}
+				return {
+					emoji: emoji,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>").replace(matcher[4], "<em>" + matcher[4] + "</em>"),
+					players: [{ name: matcher[3], team: team.id }],
+					teams: [ team.id ],
+					position: matcher[2],
+					reaction: matcher[4]
+				}
+			}
+			matcher = outcome.match(/^(.+) swallowed a stray peanut and had an? (.+) reaction!$/i);
+			if(matcher) {
+				var emoji;
+				if(matcher[2] == "allergic") {
+					emoji = 0x1F922;
+				} else if(matcher[2] == "yummy") {
+					emoji = 0x1F60B;
+				} else {
+					emoji = 0x2753;
+				}
+				return {
+					emoji: emoji,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<em>" + matcher[2] + "</em>"),
+					players: [{ name: matcher[1], team: null }],
+					reaction: matcher[2]
+				}
+			}
+			matcher = outcome.match(/^the (.+) had (their (lineup|rotation)|several players) shuffled in the reverb!$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x1F30A,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>"),
+					teams: [ team.id ],
+					position: matcher[3] ? matcher[3] : matcher[2]
+				}
+			}
+			matcher = outcome.match(/^the (.+) were (completely )?shuffled in the reverb!$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x1F30A,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>"),
+					teams: [ team.id ],
+					position: "all"
+				}
+			}
+			matcher = outcome.match(/^(reverberations are at dangerous levels! )?(.+) is now reverberating wildly!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F30A,
+					formatted: outcome.replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [{ name: matcher[2], team: null }]
+				}
+			}
+			matcher = outcome.match(/^((.+) flickers! )?(.+) and (.+) switched teams in the feedback!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F399,
+					formatted: outcome.replace(matcher[1], "<span style='color:red'>" + matcher[1] + "</span>").replaceAll(matcher[3], "<strong>" + matcher[3] + "</strong>").replace(matcher[4], "<strong>" + matcher[4] + "</strong>"),
+					players: [
+						{ name: matcher[3], team: null },
+						{ name: matcher[4], team: null }
+					]
+				}
+			}
+			matcher = outcome.match(/^reality begins to flicker...but (.+) resists! (.+) is affect by the flicker...$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F3A7,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [
+						{ name: matcher[1], team: null },
+						{ name: matcher[2], team: null }
+					]
+				}
+			}
+			matcher = outcome.match(/^(.+) hits (.+) with a pitch! .+ is now (.+)!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F974,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replaceAll(matcher[2], "<strong>" + matcher[2] + "</strong>").replace(matcher[3], "<em>" + matcher[3] + "</em>"),
+					players: [
+						{ name: matcher[1], team: null },
+						{ name: matcher[2], team: null }
+					],
+					status: matcher[3]
+				}
+			}
+			matcher = outcome.match(/^(.+) is now being observed\.(?:\.\.)?$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F441,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [
+						{ name: matcher[1], team: null }
+					]
+				}
+			}
+			matcher = outcome.match(/^the instability (?:spreads|chains) to the (.+)'s (.+)!$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x1F517,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [{ name: matcher[2], team: team.id }],
+					teams: [ team.id ]
+				}
+			}
+			matcher = outcome.match(/^your season \d+ champions are the (.+)!$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x1F48D,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("fullName") + "</strong>"),
+					teams: [ team.id ]
+				}
+			}
+			matcher = outcome.match(/^a big peanut crashes into the field, encasing (.+)!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F95C,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/the (.+) accumulate 10\sthe sun collapses\sthe moon is swallowed\sthe black hole forms\ssun 2 rises\sthe black hole swallowed a win from the (.+)!/i);
+			if(matcher) {
+				var swallower = getTeamByName(matcher[1].substr(0, 1).toUpperCase() + matcher[1].substr(1).toLowerCase()), swallowee = getTeamByName(matcher[2]);
+				return {
+					emoji: 0x26AB,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + swallower.get("secondaryColor") + "'>" + swallower.get("nickname").toUpperCase() + "</strong>").replace(matcher[2], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + swallowee.get("secondaryColor") + "'>" + swallowee.get("nickname") + "</strong>").replace(/[\r\n]/gm, "<br>"),
+					teams: [ swallower.id, swallowee.id ]
+				}
+			}
+			matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x26AB,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>"),
+					teams: [ team.id ]
+				}
+			}
+			matcher = outcome.match(/^sun 2 set a win upon the ([^\.]+)\.?$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x2600,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>"),
+					teams: [ team.id ]
+				}
+			}
+			matcher = outcome.match(/^(.+) was percolated by the tractor bean!(?: (.+) was fired into outer space!)?$/i);
+			if(matcher) {
+				return {
+					emoji: 0x2615,
+					formatted: outcome.replaceAll(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+				};
+			}
+			matcher = outcome.match(/^(.+) tasted the infinite and shelled (.+)!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F95C,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [
+						{ name: matcher[1], team: null },
+						{ name: matcher[2], team: null }
+					]
+				}
+			}
+			matcher = outcome.match(/^(.+) was swept elsewhere!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F4A8,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^(.+) returned from elsewhere!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F9C7,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^salmon cannons expelled (.+) elsewhere\.$/i)
+			if(matcher) {
+				return {
+					emoji: 0x1F41F,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^(.+) became an echo!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F50A,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^(.+) and (.+) echoed into static\.$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F4AC,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [
+						{ name: matcher[1], team: null },
+						{ name: matcher[2], team: null }
+					]
+				}
+			}
+			matcher = outcome.match(/^consumers attack\s(.+)$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F988,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^(.+) catches some rays.$/i);
+			if(matcher) {
+				return {
+					emoji: 0x2600,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^the black hole burps!\s(.+) is compressed by gamma!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x26AB,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/BRIDGE WEAKENED/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F4A3,
+					formatted: outcome
+				};
+			}
+			matcher = outcome.match(/PLANAR WAVES DETECTED/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F30A,
+					formatted: outcome
+				};
+			}
+			matcher = outcome.match(/SPILLOVER DETECTED/i);
+			if(matcher) {
+				return {
+					emoji: 0x231B,
+					formatted: outcome
+				};
+			}
+			matcher = outcome.match(/(.+) gained (.+)(?: and (?:dropped|ditched) (.+))?\.?/i);
+			if(matcher) {
+				return null;
+			}
+			matcher = outcome.match(/(.+)'s? (.+) (?:broke!|was damaged|were damaged\.)/i);
+			if(matcher) {
+				return null;
+			}
+			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)!|\./i);
+			if(matcher) {
+				return null;
+			}
+			matcher = outcome.match(/salmon cannons fire\sconsumer expelled/i);
+			if(matcher) {
+				return null;
+			}
+			matcher = outcome.match(/consumers attack\s(?:scattered\s)?(.+) defends\s+(.+) (?:damaged|breaks)/i);
+			if(matcher) {
+				return null;
+			}
+			console.log(outcome);
+			return null;
+		}
+	});
+	App.Models.Detail = Backbone.Model.extend({});
+	//-- END MODELS --
+	
+	//-- BEGIN COLLECTIONS --
+	App.Collections.Teams = Backbone.Collection.extend({
+		url: "https://cors-proxy.blaseball-reference.com/database/allTeams",
+		model: App.Models.Team,
+		emoji: parseEmoji,
+		isLightMode: function() {
+			return lightMode;
+		}
+	});
+	App.Collections.Seasons = Backbone.Collection.extend({
+		model: App.Models.Season
+	});
+	App.Collections.Games = Backbone.Collection.extend({
+		url: "https://api.sibr.dev/chronicler/v1/games",
+		model: App.Models.Game,
+		parse: function(data) {
+			var parsedData = data.data, teamWins = {}, teamLosses = {}, seriesWins = {}, seriesLosses = {};
+			
+			parsedData = _.chain(parsedData).map(function(data) {
+				var awayTeam = navView.model.get("teams").get(data.data.awayTeam), 
+					homeTeam = navView.model.get("teams").get(data.data.homeTeam),
+					weatherIndex = data.data.weather < weather.length ? data.data.weather : 0,
+					game = {
+						away: {
+							emoji: awayTeam.get("emoji"),
+							fullName: awayTeam.get("fullName"),
+							id: awayTeam.id,
+							isAway: true,
+							location: awayTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : awayTeam.get("location"),
+							mainColor: awayTeam.get("mainColor"),
+							nickname: awayTeam.get("nickname"),
+							odds: data.data.awayOdds,
+							pitcher: data.data.awayPitcherName,
+							score: data.data.awayScore,
+							secondaryColor: awayTeam.get("secondaryColor")
+						},
+						day: data.data.day,
+						duration: new Date(data.endTime) - new Date(data.startTime),
+						home: {
+							emoji: homeTeam.get("emoji"),
+							fullName: homeTeam.get("fullName"),
+							id: homeTeam.id,
+							isAway: false,
+							location: homeTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : homeTeam.get("location"),
+							mainColor: homeTeam.get("mainColor"),
+							nickname: homeTeam.get("nickname"),
+							odds: data.data.homeOdds,
+							pitcher: data.data.homePitcherName,
+							score: data.data.homeScore,
+							secondaryColor: homeTeam.get("secondaryColor")
+						},
+						id: data.gameId,
+						innings: data.data.inning,
+						isPostseason: data.data.isPostseason,
+						isShame: data.data.shame,
+						outcomes: data.data.outcomes,
+						season: data.data.season,
+						seriesIndex: data.data.seriesIndex,
+						seriesLength: data.data.seriesLength,
+						tournament: data.data.tournament,
+						weather: weather[weatherIndex]
+					};
+					
+					if(!teamWins.hasOwnProperty(game.away.id)) {
+						teamWins[game.away.id] = 0;
+						teamLosses[game.away.id] = 0;
+					}
+					if(!teamWins.hasOwnProperty(game.home.id)) {
+						teamWins[game.home.id] = 0;
+						teamLosses[game.home.id] = 0;
+					}
+					
+					if(data.data.seriesIndex === 1) {
+						seriesWins[game.away.id] = 0;
+						seriesWins[game.home.id] = 0;
+						seriesLosses[game.away.id] = 0;
+						seriesLosses[game.home.id] = 0;
+					}
+					
+					_.each(game.outcomes, function(outcome) {
+						var matcher = outcome.match(/sun 2 set a win upon the (.+)/i);
+						if(matcher) {
+							if(matcher[1] == game.away.nickname) {
+								teamWins[game.away.id]++;
+								seriesWins[game.away.id]++;
+							}
+							if(matcher[1] == game.home.nickname) {
+								teamWins[game.home.id]++;
+								seriesWins[game.home.id]++;
+							}
+						}
+						matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
+						if(matcher) {
+							if(matcher[1] == game.away.nickname) {
+								teamWins[game.away.id]--;
+								seriesWins[game.away.id]--;
+							}
+							if(matcher[1] == game.home.nickname) {
+								teamWins[game.home.id]--;
+								seriesWins[game.home.id]--;
+							}
+						}
+					});
+					
+					game.away.isWinner = game.away.score > game.home.score;
+					game.home.isWinner = !game.away.isWinner;
+					if(game.away.isWinner) {
+						game.away.wins = ++teamWins[game.away.id];
+						game.away.losses = teamLosses[game.away.id];
+						game.away.seriesWins = ++seriesWins[game.away.id];
+						game.away.seriesLosses = seriesLosses[game.away.id];
+						game.home.wins = teamWins[game.home.id];
+						game.home.losses = ++teamLosses[game.home.id];
+						game.home.seriesWins = seriesWins[game.home.id];
+						game.home.seriesLosses = ++seriesLosses[game.home.id];
+					} else {
+						game.away.wins = teamWins[game.away.id];
+						game.away.losses = ++teamLosses[game.away.id];
+						game.away.seriesWins = seriesWins[game.away.id];
+						game.away.seriesLosses = ++seriesLosses[game.away.id];
+						game.home.wins = ++teamWins[game.home.id];
+						game.home.losses = teamLosses[game.home.id];
+						game.home.seriesWins = ++seriesWins[game.home.id];
+						game.home.seriesLosses = seriesLosses[game.home.id];
+					}
+					
+					game.away.diff = game.away.wins - game.away.losses;
+					game.home.diff = game.home.wins - game.home.losses;
+					return game;
+				}).sortBy("day").value();
+			
+			return parsedData;
+			/*if(season > -1 && game.isPostseason && game.id == _.last(data.data).gameId) {
+				var championTeam = _.findWhere(teamsGraphs, { id: game.winner });
+				game.outcomes.push("Your Season " + (parseInt(game.season) + 1) + " champions are the " +  championTeam.name + "!");
+			}*/
+		}
+	});
+	App.Collections.Details = Backbone.Collection.extend({
+		model: App.Models.Game
+	});
+	//-- END COLLECTIONS --
+	
+	//-- BEGIN VIEWS --
+	App.Views.Nav = Backbone.View.extend({
+		template: _.template($("#template-nav").html()),
+		el: "nav",
+		initialize: function() {
+			var thisView = this;
+			this.model.get("teams").fetch({
+				success: function() {
+					var groups = thisView.model.get("teams").groupBy(function(model) { return model.type(); });
+					_.each(groups, function(group, key) {
+						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
+					});
+					thisView.model.get("teams").reset(_.union(groups.ilb/*, groups.coffee*/));
+					thisView.render();
+					if(activePage.team) {
+						loadTeam(activePage.team);
+					}
+				},
+				error: console.log
+			});
+			this.model.seasonExists(0, function() {
+				if(teamView) {
+					teamView.render();
+				}
+				if(activePage.season) {
+					loadSeason(activePage.season);
+				}
+			});
+		},
+		render: function() {
+			this.$el.html(this.template(this.model.get("teams")));
+		},
+		events: {
+			"click a": "selectTeam"
+		},
+		selectTeam: function(e) {
+			e.preventDefault();
+			activeRouter.navigate(e.currentTarget.href.split("#")[1], { trigger: true });
+		}
+	});
+	App.Views.Team = Backbone.View.extend({
+		template: _.template($("#template-team").html()),
+		el: "main",
+		initialize: function() {
+			this.render();
+		},
+		render: function() {
+			this.$el.html(this.template({ 
+				team: this.model,
+				seasons: navView ? navView.model.get("seasons") : null
+			}));
+		},
+		events: {
+			"click .seasons-content a": "selectSeason",
+			"click a[data-toggle-lights]": "toggleLights"
+		},
+		selectSeason: function(e) {
+			e.preventDefault();
+			activeRouter.navigate(e.currentTarget.href.split("#")[1], { trigger: true });
+		},
+		toggleLights: function(e) {
+			e.preventDefault();
+			lightMode = !$(e.currentTarget).data("toggle-lights");
+			$(e.currentTarget).data("toggle-lights", lightMode);
+			$("#root").addClass("transition");
+			$("#root").toggleClass("dark", !lightMode);
+			$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
+			if(navView) {
+				navView.render();
+			}
+			if(detailsView) {
+				detailsView.render();
+			}
+			if(localStorageExists()) {
+				localStorage.setItem("lightModeState", lightMode);
+			}
+			gtag('event', 'toggle_lights');
+		}
+	});
+	App.Views.Season = Backbone.View.extend({
+		template: _.template($("#template-chart").html()),
+		el: "section.chart",
+		initialize: function() {
+			var thisView = this;
+			if(this.model.get("games")) {
+				this.getTeamGames();
+			} else {
+				this.model.set("games", new App.Collections.Games());
+				this.model.get("games").fetch({
+					data: {
+						season: this.model.get("seasonNumber"),
+						started: true
+					},
+					success: function() {
+						thisView.getTeamGames();
+					}
+				});
+			}
+		},
+		getTeamGames: function() {
+			if(!this.model.has("teams")) {
+				this.model.set("teams", {});
+			}
+			if(this.model.get("teams")[activeTeam.id]) {
+				this.render();
+			} else {
+				var models = this.model.get("games").chain().filter(function(game) { 
+					return _.contains([game.get("away").id, game.get("home").id], activeTeam.id); 
+				}).map(function(game) {
+					if(game.get("away").id == activeTeam.id) {
+						game.set("opponent", game.get("home"));
+						game.set("team", game.get("away"));
+					} else {
+						game.set("opponent", game.get("away"));
+						game.set("team", game.get("home"));
+					}
+					return game;
+				}).value();
+				this.model.get("teams")[activeTeam.id] = new App.Collections.Details(models);
+				this.render();
+			}
+		},
+		maxWinDiff: function() {
+			return 89 - 19; // season 6 crabs
+		},
+		maxLossDiff: function() {
+			return 77 - 11; // season 13 worms
+		},
+		render: function() {
+			$("section.details").remove();
+			if($(".team-season").length) {
+				$(".team-season").html("Season " + (activeSeason.get("seasonNumber") + 1));
+			} else {
+				$(".team-info").prepend("<div class='team-season'>Season " + (activeSeason.get("seasonNumber") + 1) + "</div>");
+			}
+			
+			var thisView = this, 
+				svg = { 
+					height: $("main").innerHeight(), 
+					width: $(window).width(), 
+					bars: [],
+					outlines: []
+				}, 
+				games = this.model.get("teams")[activeTeam.id],
+				barWidth = svg.width / Math.max(99, games.length),
+				barHeightUnit = svg.height / (this.maxWinDiff() + this.maxLossDiff());
+			
+			games.each(function(game, index) {
+				var prevDiff = index > 0 ? games.at(index - 1).get("team").diff: 0,
+					nextDiff = index < games.length - 1 ? games.at(index + 1).get("team").diff : -1, 
+					isAbove = game.get("team").diff >= 0,
+					nextPostseason = index < games.length - 1 && games.at(index + 1).get("isPostseason"),
+					xPos = barWidth * index,
+					yPos = thisView.maxWinDiff() * svg.height / (thisView.maxWinDiff() + thisView.maxLossDiff()),
+					xRadius = Math.min(barHeightUnit, barWidth / 2),
+					yRadius = (isAbove ? 1 : -1) * xRadius,
+					barHeight = barHeightUnit * game.get("team").diff,
+					bar = { above: isAbove, color: "transparent", id: game.id, outcomes: game.relevantOutcomes(), path: null, height: barHeight, radius: barWidth, x: xPos, y: yPos };
+					
+				if(!svg.outlines.length) {
+					svg.outlines.push({
+						above: isAbove,
+						path: ["M", xPos, yPos],
+						postseason: false
+					});
+				}
+				if(isAbove && prevDiff < 0) {
+					_.last(svg.outlines).path.push(
+						"L", xPos, yPos,
+						"z"
+					);
+				}
+				if(game.get("team").diff === 0) {
+					bar.path = [
+						"M", xPos, yPos - 1, 
+						"L", xPos, yPos + 1,
+						"L", xPos + barWidth, yPos + 1,
+						"L", xPos + barWidth, yPos - 1,
+						"z"
+					];
+					bar.color = "#999999";
+				} else {
+					bar.path = [
+						"M", xPos, yPos
+					];
+					if(game.get("team").diff > 0 && prevDiff > game.get("team").diff || game.get("team").diff < 0 && prevDiff < game.get("team").diff) {
+						bar.path.push(
+							"L", xPos, yPos - barHeight
+						);
+						_.last(svg.outlines).path.push(
+							"L", xPos, yPos - barHeight
+						);
+					} else if(game.get("team").diff > 0 && prevDiff < game.get("team").diff || game.get("team").diff < 0 && prevDiff > game.get("team").diff) {
+						bar.path.push(
+							"L", xPos, yPos - barHeight + yRadius,
+							"Q", xPos, yPos - barHeight, xPos + xRadius, yPos - barHeight
+						);
+						_.last(svg.outlines).path.push(
+							"L", xPos, yPos - barHeight + yRadius,
+							"Q", xPos, yPos - barHeight, xPos + xRadius, yPos - barHeight
+						);
+					} else {
+						bar.path.push(
+							"L", xPos, yPos - barHeight
+						);
+					}
+					if(game.get("team").diff > 0 && nextDiff > game.get("team").diff || game.get("team").diff < 0 && nextDiff < game.get("team").diff) {
+						bar.path.push(
+							"L", xPos + barWidth, yPos - barHeight
+						);
+						_.last(svg.outlines).path.push(
+							"L", xPos + barWidth, yPos - barHeight
+						);
+					} else if(game.get("team").diff > 0 && nextDiff < game.get("team").diff || game.get("team").diff < 0 && nextDiff > game.get("team").diff) {
+						bar.path.push(
+							"L", xPos + barWidth - xRadius, yPos - barHeight,
+							"Q", xPos + barWidth, yPos - barHeight, xPos + barWidth, yPos - barHeight + yRadius
+						);
+						_.last(svg.outlines).path.push(
+							"L", xPos + barWidth - xRadius, yPos - barHeight,
+							"Q", xPos + barWidth, yPos - barHeight, xPos + barWidth, yPos - barHeight + yRadius
+						);
+					} else {
+						bar.path.push(
+							"L", xPos + barWidth, yPos - barHeight
+						);
+					}
+					bar.path.push(
+						"L", xPos + barWidth, yPos,
+						"z"
+					);
+				}
+				svg.bars.push(bar);
+				if(nextDiff > 0 && game.get("team").diff <= 0 || nextDiff < 0 && game.get("team").diff >= 0  || !game.get("isPostseason") && nextPostseason) {
+					if(game.get("team").diff !== 0) {
+						_.last(svg.outlines).path.push(
+							"L", xPos + barWidth, yPos,
+							"z"
+						);
+					}
+					svg.outlines.push({
+						above: nextDiff >= 0,
+						path: ["M", xPos + barWidth, yPos],
+						postseason: nextPostseason
+					});
+				}
+			});
+			if(svg.outlines.length) {
+				_.last(svg.outlines).path.push(
+					"L", games.length * barWidth, this.maxWinDiff() * svg.height / (this.maxWinDiff() + this.maxLossDiff()),
+					"z"
+				);
+			}
+			
+			this.$el.html(this.template({
+				emojiSvg: function(emoji) {
+					return $(parseEmoji(emoji, { "folder": "svg", "ext": ".svg" })).attr("src");
+				},
+				games: games,
+				svg: svg
+			}));
+		},
+		events: {
+			"mouseenter circle.outcome, image.outcome, path.bar": "showDetails",
+			"mouseleave circle.outcome, image.outcome, path.bar": "hideDetails"
+		},
+		showDetails: function(e) {
+			var id = $(e.currentTarget).data("id"), 
+				game = this.model.get("teams")[activeTeam.id].get(id),
+				padding = isMobile() ? 10 : 20,
+				heightRatio = $("main").innerHeight() / (this.maxWinDiff() + this.maxLossDiff()),
+				style = {};
+			if(id) {				
+				if(e.clientX + $("section.details").outerWidth() / 2 + padding > $(window).width()) {
+					style.right = padding;
+				} else if(e.clientX - padding - $("section.details").outerWidth() / 2 > 0) {
+					style.left = Math.max(e.clientX, padding) - $("section.details").outerWidth() / 2;
+				} else {
+					style.left = padding;
+				}
+				if(game.get("team").diff < 0) {
+					style.bottom = padding + heightRatio * this.maxLossDiff();
+					style.maxHeight = $("main").innerHeight() - style.bottom - (isMobile() ? 3 : 2) * padding;
+				} else {
+					style.top = padding + heightRatio * this.maxWinDiff();
+					style.maxHeight = $("main").innerHeight() - style.top - (isMobile() ? 3 : 2) * padding;
+				}
+				detailsView = new App.Views.Details({ 
+					model: new App.Models.Detail({ game: game, style: style })
+				});
+			}
+		},
+		hideDetails: function(e) {
+			var id = $(e.currentTarget).data("id");
+			if(isMobile() && id) {
+				$("[data-id=" + id + "]").removeClass("active");
+				$("section.details").remove();
+			}
+		}
+	});
+	App.Views.Details = Backbone.View.extend({
+		template: _.template($("#template-details").html()),
+		initialize: function() {
+			this.render();
+		},
+		render: function() {
+			$("circle.outcome, image.outcome, path.bar").removeClass("active");
+			$("section.details").remove();
+			$("[data-id=" + this.model.get("game").id + "]").addClass("active");
+			$("main").append(this.template({
+				emoji: parseEmoji,
+				game: this.model.get("game"),
+				isLightMode: function() {
+					return lightMode;
+				}
+			}));
+			$("section.details").css(this.model.get("style"));
+		}
+	});
+	
+	//-- CHECK FOR SAVED DATA --
+	if(localStorageExists()) {
+		if(localStorage.getItem("lightModeState") != null) {
+			lightMode = localStorage.getItem("lightModeState") == "true";
+		}
+	}
+	//-- CHECKED FOR SAVED DATA --
+	
+	$("#root").toggleClass("dark", !lightMode);
+	
+	activeRouter = new App.Router;
+	Backbone.history.start();
+	
+	if(window.location.search) {
+		var team, season;
+		_.each(window.location.search.substring(1).split("&"), function(searchParam) {
+			var split = searchParam.split("=");
+			switch(split[0]) {
+				case "team":
+					team = split[1];
+					break;
+				case "season":
+					season = split[1];
+			}
+		});
+		if(team) {
+			if(typeof season != "undefined" && season > -1) {
+				var path = team + "/season/" + season;
+				history.replaceState(null, "", window.location.pathname + "#" + path);
+				activeRouter.navigate(path, { trigger: true, replace: true });
+			} else {
+				history.replaceState(null, "", window.location.pathname + "#" + team);
+				activeRouter.navigate(team, { trigger: true, replace: true });
+			}
+		}
+	}
+	
+	window.onresize = function() {
+		if(seasonView) {
+			seasonView.render();
+		}
+		if(detailsView) {
+			detailsView.render();
+		}
+	};
+	
+	function isMobile() {
+		return /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent) || $(window).width() < 700;
+	}
+
+	function loadHistory(team) {
+		if(!navView) {
+			navView = new App.Views.Nav({ 
+				model: new App.Models.Nav({
+					teams: new App.Collections.Teams(), 
+					seasons: new App.Collections.Seasons()
+				})
+			});
+		}
+		activePage.history = true;
+		activePage.season = null;
+		activeSeason = null;
+		if(team != activePage.team) {
+			loadTeam(team);
+		}
+		if(activeTeam && navView.model.get("seasons").length) {
+			activeSeason = navView.model.get("seasons").findWhere({ seasonNumber: parseInt(activePage.season - 1) });
+			if(seasonView) {
+				seasonView.undelegateEvents();
+			}
+			seasonView = new App.Views.Season({
+				model: activeSeason
+			});
+			loadPageView();
+		}
+	}
+	
+	function loadPage(team, season) {
+		if(!navView) {
+			navView = new App.Views.Nav({ 
+				model: new App.Models.Nav({
+					teams: new App.Collections.Teams(), 
+					seasons: new App.Collections.Seasons()
+				})
+			});
+		}
+		if(!season) {
+			activePage.season = null;
+			activeSeason = null;
+		}
+		if(team) {
+			if(team != activePage.team) {
+				loadTeam(team);
+			}
+			if(season) {
+				loadSeason(season);
+			}
+		} else {
+			$("main").html(_.template($("#template-index").html())({ isLightMode: function() { return lightMode; }, emoji: parseEmoji }));
+			$("section.index a:last-child").click(function(e) {
+				e.preventDefault();
+				lightMode = !lightMode;
+				$("#root").addClass("transition");
+				$("#root").toggleClass("dark", !lightMode);
+				$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
+				if(navView) {
+					navView.render();
+				}
+				if(localStorageExists()) {
+					localStorage.setItem("lightModeState", lightMode);
+				}
+				gtag('event', 'toggle_lights');
+			});				
+		}
+	}
+	
+	function loadTeam(id) {
+		activePage.team = id;
+		if(navView.model.get("teams").length) {
+			activeTeam = navView.model.get("teams").find(function(model) {
+				return model.id == id || model.slug() == id;
+			});
+			if(teamView) {
+				teamView.undelegateEvents();
+			}
+			teamView = new App.Views.Team({
+				model: activeTeam
+			});
+			loadPageView();
+		}
+	}
+	
+	function loadSeason(number) {
+		activePage.season = number;
+		if(activeTeam && navView.model.get("seasons").length) {
+			activeSeason = navView.model.get("seasons").findWhere({ seasonNumber: parseInt(activePage.season - 1) });
+			if(seasonView) {
+				seasonView.undelegateEvents();
+			}
+			seasonView = new App.Views.Season({
+				model: activeSeason
+			});
+			loadPageView();
+		}
+	}
+	
+	function loadPageView() {
+		var title = "Chart Party", path = "/";
+		if(activeTeam) {
+			title += " - " + activeTeam.get("fullName");
+			path += activeTeam.slug();
+		} 
+		document.title = title;
+		gtag('event', 'page_view', { page_title: title, page_location: window.location.href, page_path: path, send_to: GA_TRACKING_ID });
+	}
+	
+	function parseEmoji(emoji, options) {
+		return twemoji.parse(isNaN(Number(emoji)) ? emoji : twemoji.convert.fromCodePoint(emoji), options);
+	}
+	
+	function getTeamByName(name) {
+		return navView.model.get("teams").findWhere({ nickname: name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") });
+	}
+	
+	function localStorageExists() {
+		if(window.localStorage){
+			window.localStorage.setItem("test", "test");
+			if(window.localStorage.getItem("test")){
+				window.localStorage.removeItem("test");
+				return true;
+			}
+		}
+		return false;
+	}
+});

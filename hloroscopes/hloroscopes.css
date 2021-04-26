@@ -1,0 +1,860 @@
+html, 
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Roboto, "sans-serif";
+}
+
+a {
+	text-decoration: none;
+	transition: all 0.4s ease-out;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#root {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	color: #000000;
+}
+
+.transition {
+	transition: background 0.4s ease-in-out;
+}
+
+nav {
+	padding: 5px;
+}
+
+nav ul {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+}
+
+nav ul li a {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: .3em .6em;
+	font-weight: bold;
+	border-radius: 5px;
+}
+
+nav ul li a:hover {
+	background: #dddddd;
+}
+
+nav ul li a i {
+	margin-right: 5px;
+}
+
+nav ul li a span {
+	color: #000000;
+	padding: .3em .6em;
+	border-radius: 5px;
+}
+
+header {
+	background: #ffffff;
+	position: fixed;
+	left: 240px;
+	right: 20px;
+	top: 0;
+	padding: 5px;
+	z-index: 1;
+}
+
+img.emoji {
+	height:1em;
+	width:1em;
+	margin:.1em .05em .1em .1em;
+	vertical-align:-0.1em;
+}
+
+main {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	padding: 20px 0;
+}
+
+section.index h1 {
+	font-size: 6em;
+	margin: 0;
+}
+
+section.index h2 {
+	font-size: 1.5em;
+}
+
+section.index p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	font-size: 1em;
+}
+
+section.index p > * {
+	padding: .3em;
+	margin: 0 .3em;
+}
+
+section.index a {
+	color: #000000;
+	border-radius: 5px;
+}
+
+section.index a:hover {
+	background: #000000;
+	color: #ffffff;
+}
+
+section.team {
+	max-height: 100%;
+	display: flex;
+	flex-direction: column;
+	margin: 20px;
+	border: 1px solid #000000;
+}
+
+.team-stat-row { 
+	display: grid;
+	grid-template-columns: 50% 50%;
+	padding: 10px 20px;
+	align-items: center;
+}
+
+.team-stat-row:nth-child(odd) { 
+	background: #eeeeee;
+}
+
+.team-stat-row span {
+	display: flex;
+	flex-direction: row;
+}
+
+.team-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 1.8em;
+	min-width: 1.8em;
+	border-radius: 50%;
+}
+
+.team-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 20px;
+	border-bottom: 1px solid #000000;
+}
+
+.team-header .team-icon {
+	font-size: 2em;
+}
+
+.team-header .team-name {
+	font-size: 1.4em;
+}
+
+.team-header .team-name a {
+	color: #000000;
+}
+
+.team-slogan {
+	font-size: 0.9em;
+	font-style: italic;
+}
+
+.team-slogan::before {
+	content: open-quote;
+}
+
+.team-slogan::after {
+	content: close-quote;
+}
+
+a.team-history {
+	display: block;
+    background: #999999;
+    color: #000000;
+    border-radius: 5px;
+    padding: .3em .6em;
+	margin-top: 10px;
+	font-size: 0.75em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.team-card {
+    display: inline-block;
+    font-size: .8em;
+    padding: .3em .6em;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.team-modifiers {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background: #f7f7f7;
+	padding: 10px 20px;
+	border-bottom: 1px solid #000000;
+	font-size: 1.2em;
+	transition: all 0.4s ease-out;
+}
+
+.team-players {
+	overflow: auto;
+	padding: 20px 0;
+}
+
+.team-players a {
+	color: #000000;
+	padding: 5px;
+}
+
+.team-players a:not(.player-link) {
+	flex-grow: 1;
+	padding: 5px 20px;
+}
+
+.players-header {
+	display: block;
+	color: #666666;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.team-players ul {
+	margin-bottom: 20px;
+}
+
+.team-players ul li {
+	display: flex;
+	flex-direction: row;
+	transition: background 0.4s ease-in-out;
+}
+
+.team-players ul li:nth-child(odd) {
+	background: #dddddd;
+}
+
+.team-players ul li:hover {
+	background: #aaaaaa;
+}
+
+.team-toggles {
+	max-width: 300px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding: 20px;
+	border-top: 1px solid #000000;
+	gap: 5px;
+}
+
+.team-toggles a {
+	background: #999999;
+	color: #000000;
+	border-radius: 5px;
+	padding: .3em .6em;
+	font-weight: bold;
+	text-align: center;
+}
+
+a[data-toggle-knowledge] {
+	flex-basis: 100%;
+}
+
+a[data-toggle-spacing] {
+	flex-grow: 1;
+}
+
+.chart text:not(.legend) {
+	fill: #000000;
+}
+
+.chart text.title {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.chart text.legend, 
+.chart text.axis-title,
+.chart text.axis-star-label,
+.chart text.axis-num-players-label,
+.chart text.axis-stats-label {
+	font-size: 0.8em;
+}
+
+.chart text.axis-date-label {
+	font-size: 0.6em;
+}
+
+.chart text.axis-title {
+	font-weight: bold;
+}
+
+.chart line.axis-border,
+.chart line.axis-date-guide {
+	stroke: #000000;
+	stroke-width: 1;
+}
+
+.chart line.axis-star-guide,
+.chart line.axis-num-players-guide,
+.chart line.axis-stats-guide {
+	stroke: #aaaaaa;
+	stroke-width: 1;
+}
+
+.chart circle,
+.chart path {
+	stroke: rgba(255,255,255,0);
+	transition: all 0.4s ease-out;
+}
+
+.card .grandiosity {
+	background: #b77ce8;
+}
+
+.card .fortification {
+	background: #7c9fe8;
+}
+
+.card .obtuseness {
+	background: #7cb6e8;
+}
+
+.card .ominousness {
+	background: #33e28f;
+}
+
+.card .inconvenience {
+	background: #8be860;
+}
+
+.card .viscosity {
+	background: #ffc107;
+}
+
+.card .forwardness {
+	background: #ea9d1e;
+}
+
+.card .mysticism {
+	background: #dc2020;
+}
+
+.card .elongation {
+	background: #e43b79;
+}
+
+.chart .grandiosity {
+	fill: #b77ce8;
+}
+
+.chart .fortification {
+	fill: #7c9fe8;
+}
+
+.chart .batting,
+.chart .lineup,
+.chart .obtuseness {
+	fill: #7cb6e8;
+}
+
+.chart .baserunning,
+.chart .bench,
+.chart .ominousness {
+	fill: #33e28f;
+}
+
+.chart .inconvenience {
+	fill: #8be860;
+}
+
+.chart .pitching,
+.chart .rotation,
+.chart .viscosity {
+	fill: #ffc107;
+}
+
+.chart .forwardness {
+	fill: #ea9d1e;
+}
+
+.chart .mysticism {
+	fill: #dc2020;
+}
+
+.chart .defense,
+.chart .bullpen,
+.chart .elongation {
+	fill: #e43b79;
+}
+
+.dark .chart text:not(.legend) {
+	fill: #ffffff;
+}
+
+.dark .chart line.axis-border,
+.dark .chart line.axis-date-guide {
+	stroke: #ffffff;
+}
+
+.dark .chart line.axis-star-guide,
+.dark .chart line.axis-num-players-guide,
+.dark .chart line.axis-stats-guide {
+	stroke: #777777;
+}
+
+.chart circle.active, 
+.chart path.active { 
+	fill: #aaaaaa;
+	stroke: rgba(170,170,170,0.4);
+	cursor: pointer;
+}
+
+section.card {
+	position: absolute;
+	max-height: calc(100vh - 30px);
+	width: 400px;
+	background: #ffffff;
+	border: 1px solid #000000;
+	overflow: hidden;
+}
+
+.card .team-players ul li {
+	display: grid;
+	grid-template-columns: 60% 40%;
+	padding: 5px 20px;
+	align-items: center;
+}
+
+.card .team-players ul li span {
+    display: flex;
+    flex-direction: row;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.card .player-header,
+.card .stadium-header { 
+	border-bottom: 1px solid #000000;
+	padding: 20px;
+}
+
+.card .player-name strong,
+.card .stadium-name strong { 
+	font-size:1.2em;
+}
+
+.card .player-team { 
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	margin-top: 5px;
+}
+
+.card .player-team .team-icon {
+	margin-right: 5px;
+}
+
+.card .player-deceased,
+.card .player-modifiers,
+.card .stadium-modifiers {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background: #f7f7f7;
+	padding: 10px 20px;
+	border-bottom: 1px solid #000000;
+	font-size: 1.2em;
+}
+
+.card .stadium-details-header {
+	display: block;
+	color: #666666;
+	text-align: center;
+	margin: 10px 0;
+}
+
+.deceased-icon {
+	margin-right: 10px;
+}
+
+.player-vibes {
+	height: 1.5em;
+	line-height: 1.5em;
+    color: #000000;
+    justify-self: start;
+    padding: 0px 4px 0px 2px;
+	margin: 2px 0;
+    border-radius: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: break-all;
+}
+
+.player-vibe-freq {
+	margin: 2px 0;
+}
+
+.vibe-most-excellent {
+	background: #15d400;
+}
+
+.vibe-excellent {
+	background: #5de04f;
+}
+
+.vibe-quality {
+	background: #8fdb88;
+}
+
+.vibe-neutral {
+	background: #d1d1d1;
+}
+
+.vibe-less-than-ideal {
+	background: #d97373;
+}
+
+.vibe-far-less-than-ideal {
+	background: #de3c3c;
+}
+
+.vibe-honestly-terrible {
+	background: #e00000;
+}
+
+.card .player-stat-row,
+.card .stadium-stat-row { 
+	display: grid;
+	grid-template-columns: 50% 50%;
+	padding: 10px 20px;
+	align-items: center;
+}
+
+.card .player-stat-row:nth-child(odd),
+.card .stadium-stat-row:nth-child(odd) { 
+	background: #eeeeee;
+}
+
+.card .player-stat-row span,
+.card .stadium-stat-row span {
+	display: flex;
+	flex-direction: row;
+}
+
+.card .stadium-stat-progress {
+	width: 100%;
+	height: 100%;
+	background: #bbbbbb;
+	border-radius: 5px;
+}
+
+.card .stadium-stat-value {
+	height: 100%;
+}
+
+.card .player-items {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding: 0px 20px;
+	gap: 20px
+}
+
+.card .player-items div { 
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+    flex-basis: calc(50% - 30px);
+	background: #eeeeee;
+	border-radius: 5px;
+	padding: 10px;
+	text-align: center;
+	gap: 10px;
+}
+
+.card .player-items div > * { 
+	margin: 0;
+	word-break: break-word;
+}
+
+.soulscream, .soulsong { 
+	font-weight:bold;
+	font-style:italic;
+	word-break: break-all;
+}
+
+.soulscream { 
+	color:#ff0000;
+}
+
+.soulsong { 
+	color:#5988ff
+}
+
+i.half-star { 
+	display: flex;
+	width: .6em;
+	overflow: hidden;
+}
+
+.shadows,
+.player-stat-row.shadows,
+.players-column.shadows {
+	display: none;
+}
+
+.secrets .players-column.shadows,
+.secrets .team-players .shadows {
+	display: block;
+}
+
+.secrets .player-stat-row.shadows {
+	display: grid;
+}
+
+.secrets .card .team-players {
+    display: grid;
+    grid-template-columns: calc(50% - 5px) calc(50% - 5px);
+    gap: 10px;
+}
+
+.secrets .card .team-players ul li {
+	grid-template-columns: 80% 20%;
+}
+
+#root.dark,
+.dark .card {
+	background: #111111;
+	color: #ffffff;
+}
+
+.dark section.team,
+.dark .team-header,
+.dark .team-card,
+.dark .team-modifiers,
+.dark .team-toggles,
+.dark .card,
+.dark .card .player-header,
+.dark .card .player-deceased,
+.dark .card .player-modifiers,
+.dark .card .stadium-header,
+.dark .card .stadium-modifiers {
+	border-color: #ffffff;
+}
+
+.dark .team-modifiers, 
+.dark .player-deceased, 
+.dark .player-modifiers, 
+.dark .stadium-modifiers {
+	background: #222222;
+}
+
+.dark .players-header,
+.dark .stadium-details-header {
+	color: #999999;
+}
+
+
+.dark section.index a,
+.dark .team-header .team-name a,
+.dark .team-players a {
+	color: #ffffff;
+}
+
+.dark section.index a:hover {
+	background: #ffffff;
+	color: #111111;
+}
+
+.dark nav ul li a:hover,
+.dark .team-stat-row:nth-child(odd),
+.dark .team-players ul li:nth-child(odd),
+.dark .card .player-stat-row:nth-child(odd),
+.dark .card .stadium-stat-row:nth-child(odd),
+.dark .card .player-items div {
+	background: #333333;
+}
+
+.dark .card .stadium-stat-progress {
+	background: #555555;
+}
+
+.dark .team-players ul li:hover {
+	background: #666666;
+}
+
+.dark a.team-history,
+.dark .team-toggles a {
+	background: #222222;
+	color: #ffffff;
+}
+
+.dark a[data-toggle-lights]:hover {
+	background: #f5d641;
+}
+
+.dark .chart circle.active, 
+.dark .chart path.active {
+	fill: #ffffff;
+	stroke: rgba(255,255,255,0.4);
+}
+
+.dark .player-vibes,
+.dark .player-vibe-freq {
+	background: transparent;
+	padding: 0;
+	margin: 0;
+}
+
+.dark .vibe-most-excellent {
+	color: #15d400;
+}
+
+.dark .vibe-excellent {
+	color: #5de04f;
+}
+
+.dark .vibe-quality {
+	color: #8fdb88;
+}
+
+.dark .vibe-neutral {
+	color: #d1d1d1;
+}
+
+.dark .vibe-less-than-ideal {
+	color: #d97373;
+}
+
+.dark .vibe-far-less-than-ideal {
+	color: #de3c3c;
+}
+
+.dark .vibe-honestly-terrible {
+	color: #e00000;
+}
+
+a[data-toggle-knowledge]:hover {
+	background: #2b3a65;
+	color: #93c6da;
+}
+
+a.team-history:hover,
+a[data-toggle-spacing]:hover {
+	background: #585858;
+}
+
+a[data-toggle-lights]:hover {
+	background: #292746;
+}
+
+@media screen and (max-width: 700px) {	
+	nav ul {
+		flex-wrap: nowrap;
+		justify-content: normal;
+		overflow: auto;
+	}
+	
+	main {
+		position: relative;
+		flex-direction: column;
+		justify-content: normal;
+		padding: 0;
+		overflow: auto;
+	}
+	
+	section.index {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		justify-content: center;
+		text-align: center;
+	}
+	
+	section.index h1 {
+		font-size: 3em;
+	}
+	
+	section.index h2 {
+		font-size: 1em;
+	}
+	
+	section.index p {
+		font-size: 0.8em;
+	}
+	
+	section.chart {
+		width: 100%;
+		height: 100%;
+	}
+	
+	section.team {
+		display: block;
+		max-height: none;
+	}
+	
+	.team-toggles {
+		flex-direction: column;
+		flex-wrap: nowrap;
+		max-width: none;
+		padding: 0;
+		gap: 0;
+	}
+	
+	.team-toggles a {
+		flex-basis: auto;
+		margin: 5px 5px 0;
+	}
+	
+	.team-toggles a:last-child {
+		margin: 5px;
+	}
+	
+	section.card {
+		width: calc(100vw - 42px);
+		max-height: none;
+	}
+	
+	.card .player-items {
+		gap: 0;
+	}
+	
+	.card .player-items div {
+		margin: 0 10px;
+	}
+	
+	.card .player-items div:first-child {
+		margin-left: 0;
+	}
+	
+	.card .player-items div:last-child {
+		margin-right: 0;
+	}
+}

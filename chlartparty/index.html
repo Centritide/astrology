@@ -1,1130 +1,164 @@
 <html>
 	<head>
-		<title>Chart Party - Line Go Up</title>
+		<title>Chart Party</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-		<meta name="description" content="A visualization of Blaseball teams' wins over .500 (and the tragedies to get there).">
+		<meta name="description" content="A Blaseball visualization of a team's historical wins over .500 and the tragedies it took to get there.">
 		<meta property="og:type" content="website">
 		<meta property="og:url" content="http://yoori.space/chartparty/">
-		<meta property="og:title" content="Chart Party - Line Go Up">
-		<meta property="og:description" content="A visualization of Blaseball teams' wins over .500 (and the tragedies to get there).">
+		<meta property="og:title" content="Chart Party">
+		<meta property="og:description" content="A Blaseball visualization of a team's historical wins over .500 and the tragedies it took to get there.">
 		<meta property="og:image" content="http://yoori.space/favicon-128.png">
 		<meta property="twitter:card" content="summary">
-		<meta name="twitter:title" content="Chart Party - Line Go Up">
-		<meta name="twitter:description" content="A visualization of Blaseball teams' wins over .500 (and the tragedies to get there).">
+		<meta name="twitter:title" content="Chart Party">
+		<meta name="twitter:description" content="A Blaseball visualization of a team's historical wins over .500 and the tragedies it took to get there.">
 		<meta name="twitter:image" content="http://yoori.space/favicon-128.png">
 		<link rel="icon" href="/favicon-128.png" sizes="128x128">
-		<style>
-			html, body { padding:0;margin:0;background:#111;color:#fff;font-family:sans-serif }
-			a { color:#ffffff;font-size:1.8em;text-decoration:none }
-			footer { position:fixed;bottom:0;padding:5px;font-size:0.8em;text-align:center }
-			h1, h2 { margin:0;text-align:center }
-			header li { display:inline-block;margin-right:5px }
-			ul { list-style:none;padding:0;margin:0;text-align:center }
-			header ul::before { margin-right:5px;font-size:1.6em }
-			ul#teams::before { content:"Teams" }
-			ul#seasons::before { content:"Seasons" }
-			ul#tournaments::before { content:"Tournaments" }
-			main { display:flex;flex-direction:row;align-items:stretch;position:absolute;bottom:0;left:0;right:0;margin:auto }
-			section#chart { position:relative;flex:4;overflow:auto hidden }
-			img.emoji { height:1em;width:1em;margin:.1em .05em .1em .1em;vertical-align:-0.1em }
-			.season { display:block;position:absolute;border-right:1px solid #fff }
-			.season:last-child { border:0 }
-			.game { display:block;position:absolute }
-			.game:hover { cursor:pointer }
-			.game b { display:block;width:2px;height:.5em;position:absolute;left:.25em;background:#ffffff }
-			.game i { display:flex;position:absolute;left:-0.5em;font-style:normal;line-height:1em;z-index:1;background:#fff;height:1.5em;width:1.5em;border-radius:50% }
-			.game i span { font-size:0.8em;margin:auto }
-			summary#details { flex:1;border-left:1px dashed #666;padding:0px 10px 20px 10px ;overflow:hidden auto }
-			li.score { font-size:1.4em }
-			.redacted { display:inline-block;height:1em;background:#333;border-radius:4px }
-			
-			@media screen and (max-width: 500px) {
-				a { font-size:1.2em }
-				ul#teams::before, ul#seasons::before, ul#seasons::before { font-size:1.2em }
-				main { flex-direction:column }
-				section#chart { flex:2 }
-				summary#details { border-left:none;border-top:1px dashed #666;padding:10px 10px 50px 10px }
-			}
-		</style>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<link href="chartparty.css" rel="stylesheet">
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7S24X2FST"></script>
 		<script>
 			var GA_TRACKING_ID = 'G-T7S24X2FST';
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
 			gtag('js', new Date());
-			gtag('config', GA_TRACKING_ID, { send_page_view: false });
+			gtag('config', GA_TRACKING_ID);
 		</script>
 	</head>
 	<body>
-		<header>
-			<ul id="teams">Loading...</ul>
-			<ul id="seasons">Loading...</ul>
-			<ul id="tournaments">Loading...</ul>
-			<h1></h1>
-		</header>
-		<main>
-			<section id="chart"></section>
-			<summary id="details">
-				<h2>Details</h2>
-				<ul></ul>
-			</summary>
-		</main>
-		<footer>yoori#1569 made this</footer>
-		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/underscore@1.11.0/underscore-min.js"></script>
-		<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
-		<script>
-			$(function() {
-				var api_games = "https://api.sibr.dev/chronicler/v1/games",
-					api_seasons = "https://cors-proxy.blaseball-reference.com/database/season",
-					api_league = "https://cors-proxy.blaseball-reference.com/database/league",
-					api_subleague = "https://cors-proxy.blaseball-reference.com/database/subleague",
-					api_division = "https://cors-proxy.blaseball-reference.com/database/division",
-					api_tiebreakers = "https://cors-proxy.blaseball-reference.com/database/tiebreakers",
-					api_teams = "https://cors-proxy.blaseball-reference.com/database/allTeams",
-					maxWins = 99 + 9, // 99-0 regular season + playoffs sweep (we can ignore wildcards realistically)
-					maxLosses = 99 + 2, // 0-99 regular season + 0-2 wildcard
-					loadedSeasons = {},
-					seasonRecords = {},
-					seasonLeagues = {},
-					teamsGraphs,
-					activeTeam,
-					activeSeason;
-					
-				window.onresize = drawChart;
-				
-				loadTeams(function() {
-					var params = getParams(window.location.search);
-					if(params.team) {
-						activeTeam = params.team;
-					}
-					if(params.season) {
-						activeSeason = params.season;
-					}
-					teamsGraphs = _.sortBy(teamsGraphs, function(team) { return team.location });
-					drawNav();
-					drawChart();
-					checkIfSeasonExists(0, function() {
-						drawNav();
-						drawChart();
-					});
-					getPageView();
-				});
-				
-				function getParams(query) {
-					var params = query.substr(1).split("&"), team, season;
-					_.each(params, function(param) {
-						var pair = param.split("=");
-						switch(pair[0]) {
-							case "team":
-								team = pair[1];
-								break;
-							case "season":
-								season = pair[1];
-								break;
-						}
-					});
-					return {
-						team: team,
-						season: season
-					};
-				}
-				
-				function drawNav() {
-					$("#teams").empty();
-					$("#seasons").empty();
-					$("#tournaments").empty();
-					_.each(teamsGraphs, function(team) {
-						if(isTournamentTeam(team.id)) {
-							$("#tournaments").append("<li><a href='?team=" + team.id + "&season=-1'>" + team.emoji + "</a></li>");
-						} else if(isStandardTeam(team.id)) {
-							$("#teams").append("<li><a href='?team=" + team.id + (activeSeason != undefined ? "&season=" + activeSeason : "") + "'>" + team.emoji + "</a></li>");
-						}
-					});
-					if(typeof twemoji != "undefined") {
-						_.each($("#teams li, #tournaments li"), function(el) {
-							twemoji.parse(el);
-						});
-					}
-					$("#seasons").append("<li><a href='?season=all" + (activeTeam ? "&team=" + activeTeam : "") + "'>[All]</a></li>");
-					_.each(loadedSeasons, function(season, num) {
-						if(num > -1) {
-							$("#seasons").append("<li><a href='?season=" + num + (activeTeam ? "&team=" + activeTeam : "") + "'>[" + (parseInt(num) + 1) + "]</a></li>");
-						}
-					});
-					$("#teams a").click(function(e) {
-						e.preventDefault();
-						setActiveTeam(getParams($(this).attr("href")).team);
-					});
-					$("#seasons a").click(function(e) {
-						e.preventDefault();
-						setActiveSeason(getParams($(this).attr("href")).season);
-					});
-				}
-				
-				function setActiveTeam(team) {
-					var newPath = window.location.protocol + "//" + window.location.host + window.location.pathname + "?team=" + team + (activeSeason != undefined && activeSeason > -1 ? "&season=" + activeSeason : "");
-					window.history.pushState({path: newPath}, '', newPath);
-					activeTeam = team;
-					getPageView();
-					drawChart();
-				}
-				
-				function setActiveSeason(season) {
-					var newPath = window.location.protocol + "//" + window.location.host + window.location.pathname + "?season=" + season + (activeTeam ? "&team=" + activeTeam : "");
-					window.history.pushState({path: newPath}, '', newPath);
-					activeSeason = season;
-					getPageView();
-					drawChart();
-				}
-				
-				function getPageView() {
-					var path = "", title = "Chart Party", team;
-					if(activeTeam || activeSeason != undefined) {
-						if(activeTeam) {
-							team = _.findWhere(teamsGraphs, { id : activeTeam });
-							title += " - " + team.fullName;
-							path += "/" + team.fullName;
-						}
-						if(activeSeason != undefined) {
-							if(activeSeason == -1) {
-								title += " - Coffee Cup";
-								path += "/coffee";
-							} else if(activeSeason == "all") {
-								title += " - Full History";
-								path += "/history";
-							} else {
-								title += " - Season " + (parseInt(activeSeason) + 1);
-								path += "/season-" + activeSeason;
-							}
-						}
-					} else {
-						title += " - Line Go Up!";
-					}
-					path = path.toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
-					document.title = title;
-					gtag('event', 'page_view', { page_title: title, page_location: window.location.href, page_path: path, send_to: GA_TRACKING_ID });
-				}
-				
-				function drawChart() {
-					gtag('event', 'chart', { 'event_category': activeTeam, 'event_label': activeSeason });
-					$("header h1").empty();
-					$("#chart").empty();
-					if(activeTeam && activeSeason != undefined) {
-						var team = _.findWhere(teamsGraphs, { id : activeTeam });
-						$("header h1").text("Loading...");
-						if(activeSeason == "all") {
-							if(_.all(loadedSeasons)) {
-								drawChartForHistory(team);
-							}
-							else {
-								loadAllGames(team, function() {
-									drawChartForHistory(team);
-								})
-							}
-						} else if(loadedSeasons[activeSeason]) {
-							drawChartForSeason(team, activeSeason);
-						} else {
-							loadGamesForSeason(activeSeason, function() {
-								/*_.each(seasonRecords[activeSeason], function(records, day) {
-									console.log(day, _.chain(records).sortBy(function(record) { return record.wins; }).reverse().value());
-								});*/
-								drawChartForSeason(team, activeSeason);
-							});
-						}
-					} else if(activeTeam) {
-						var team = _.findWhere(teamsGraphs, { id : activeTeam });
-						$("header h1").append("Choose a season for the <span style='color:" + team.color + "'>" + team.emoji + " " + team.fullName + " " + team.emoji + "</span>");
-					} else if(activeSeason != undefined) {
-						$("header h1").text(activeSeason == "all" ? "Choose a team to see their full history" : ("Choose a team to see their season " + (parseInt(activeSeason) + 1)));
-					} else {
-						$("header h1").text("Choose a team and a season");
-					}
-				}
-					
-				function loadTeams(callback) {
-					$.ajax(api_teams, {
-						method: "GET",
-						datatype: "json",
-						success: function(data) {
-							teamsGraphs = _.map(data, function(team) {
-								return {
-									ascended: team.championships > 2,
-									emoji: isNaN(Number(team.emoji)) ? team.emoji : ("&#" + team.emoji.substr(1)),
-									fullName: team.fullName,
-									id: team.id,
-									location: team.location,
-									name: team.nickname,
-									color: team.secondaryColor,
-									seasons: {},
-									slogan: team.slogan
-								};
-							});
-							if(callback) {
-								callback();
-							}
-						}
-					});
-				}
-				
-				function checkIfSeasonExists(season, callback) {
-					$.ajax(api_seasons, {
-						method: "GET",
-						datatype: "json",
-						data: {
-							number: season
-						},
-						success: function(data) {
-							if(data) {
-								if(!loadedSeasons[season]) {
-									loadedSeasons[season] = false;
-								}
-								//loadLeagueData(data.seasonNumber, data.league);
-								checkIfSeasonExists(++season, callback);
-							} else if(callback) {
-								callback();
-							}
-							drawNav();
-						}
-					});
-				}
-				
-				function loadLeagueData(season, id) {
-					$.ajax(api_league, {
-						method: "GET",
-						datatype: "json",
-						data: {
-							id: id
-						},
-						success: function(data) {
-							seasonLeagues[season] = {
-								name: data.name,
-								subleagues: {}
-							};
-							_.each(data.subleagues, function(subleague) {
-								seasonLeagues[season].subleagues[subleague] = {};
-								loadSubleagueData(season, subleague);
-							});
-						}
-					});
-				}
-				
-				function loadSubleagueData(season, id) {
-					$.ajax(api_subleague, {
-						method: "GET",
-						datatype: "json",
-						data: {
-							id: id
-						},
-						success: function(data) {
-							seasonLeagues[season].subleagues[data.id] = {
-								name: data.name,
-								divisions: {}
-							};
-							_.each(data.divisions, function(division) {
-								seasonLeagues[season].subleagues[data.id].divisions[division] = {};
-								loadDivisionData(season, data.id, division);
-							});
-						}
-					});
-				}
-				
-				function loadDivisionData(season, subleague, id) {
-					$.ajax(api_division, {
-						method: "GET",
-						datatype: "json",
-						data: {
-							id: id
-						},
-						success: function(data) {
-							seasonLeagues[season].subleagues[subleague].divisions[data.id] = {
-								name: data.name,
-								teams: data.teams
-							};
-						}
-					});
-				}
-				
-				function loadAllGames(team, callback) {
-					_.each(loadedSeasons, function(season, num) {
-						if(!season) {
-							loadGamesForSeason(num, function() {
-								if(_.all(loadedSeasons) && callback) {
-									callback();
-								}
-							});
-						}
-					});
-				}
-				
-				function loadGamesForSeason(season, callback) {
-					$.ajax(api_games, {
-						method: "GET",
-						datatype: "json",
-						data: {
-							season: season,
-							started: true
-						},
-						success: function(data) {
-							_.each(data.data, function(game) {
-								if(game.data && game.startTime && game.endTime) {
-									var awayTeam = _.findWhere(teamsGraphs, { id: game.data.awayTeam }), homeTeam = _.findWhere(teamsGraphs, { id: game.data.homeTeam });
-									
-									game = parseGameData(game);
-									if(season > -1 && game.isPostseason && game.id == _.last(data.data).gameId) {
-										var championTeam = _.findWhere(teamsGraphs, { id: game.winner });
-										game.outcomes.push("Your Season " + (parseInt(game.season) + 1) + " champions are the " +  championTeam.name + "!");
-									}
-									
-									/*if(!seasonRecords.hasOwnProperty(game.season)) {
-										seasonRecords[game.season] = {};
-									}
-									if(!seasonRecords[game.season].hasOwnProperty(game.day)) {
-										seasonRecords[game.season][game.day] = [];
-									}
-									if(!_.findWhere(seasonRecords[game.season][game.day], { id: game.awayTeam.id })) {
-										seasonRecords[game.season][game.day].push({ id: game.awayTeam.id, wins: game.awayWins, losses: game.awayLosses });
-									}
-									if(!_.findWhere(seasonRecords[game.season][game.day], { id: game.homeTeam.id })) {
-										seasonRecords[game.season][game.day].push({ id: game.homeTeam.id, wins: game.homeWins, losses: game.homeLosses });
-									}*/
-									
-									if(!awayTeam.seasons.hasOwnProperty(game.season)) {
-										awayTeam.seasons[game.season] = {};
-									}
-									awayTeam.seasons[game.season][game.day] = game;
-									
-									if(!homeTeam.seasons.hasOwnProperty(game.season)) {
-										homeTeam.seasons[game.season] = {};
-									}
-									homeTeam.seasons[game.season][game.day] = game;
-								}
-							});
-							loadAscendedSeason(season);
-							loadedSeasons[season] = true;
-							if(callback) {
-								callback();
-							}
-						}
-					});
-				}
-				
-				function loadAscendedSeason(season) {
-					var gamesPlayedThisSeason = Math.min(99, _.chain(teamsGraphs).mapObject(function(team) {
-						return team.seasons.hasOwnProperty(season) ? _.size(team.seasons[season]) : 0;
-					}).max().value()), ascendedPitchers = { "8d87c468-699a-47a8-b40d-cfb73a5660ad": ["Brock Forbes", "Bevan Underbuck", "Adalberto Tosser", "Finn James"] };
-					_.each(_.filter(teamsGraphs, function(team) { return team.ascended; }), function(team) {
-						if(!team.seasons.hasOwnProperty(season)) {
-							team.seasons[season] = {};
-							for(var i = 0; i < gamesPlayedThisSeason; i++) {
-								team.seasons[season][i] = {
-									ascended: true,
-									day: i,
-									isWinner: i == 49,
-									losses: i > 48 ? i : (i + 1),
-									pitcher: ascendedPitchers[team.id][i % ascendedPitchers[team.id].length],
-									season: parseInt(season),
-									wins: i > 48 ? 1 : 0
-								};
-							}
-						}
-					});
-				}
-				
-				function parseGameData(data) {
-					var game, awayTeam = _.findWhere(teamsGraphs, { id: data.data.awayTeam }), homeTeam = _.findWhere(teamsGraphs, { id: data.data.homeTeam }), awayLosses = 0, awayWins = 0, homeLosses = 0, homeWins = 0;
-								
-					game = {
-						awayOdds: data.data.awayOdds,
-						awayPitcher: data.data.awayPitcherName,
-						awayScore: data.data.awayScore,
-						awayTeam: awayTeam,
-						day: data.data.day,
-						duration: new Date(data.endTime) - new Date(data.startTime),
-						homeOdds: data.data.homeOdds,
-						homePitcher: data.data.homePitcherName,
-						homeScore: data.data.homeScore,
-						homeTeam: homeTeam,
-						id: data.gameId,
-						inning: data.data.inning,
-						isPostseason: data.data.isPostseason,
-						isShame: data.data.shame,
-						outcomes: _.reject(data.data.outcomes, function(outcome) {
-							return outcome.match(/^(.+) is (?:no longer )?red hot[!.]$/i);
-						}),
-						season: data.data.season,
-						tournament: data.data.tournament,
-						weather: data.data.weather
-					};
-					
-					if(game.duration > 60 * 60 * 1000) {
-						if(game.season == 2 && game.day == 72) { // grand unslam
-							game.outcomes.unshift("&#x1F6A8; BRIDGE WEAKENED &#x1F6A8;");
-						} else if(game.season == 3 && game.day == 87) { // waveback event
-							game.outcomes.unshift("&#x1F6A8; PLANAR WAVES DETECTED &#x1F6A8;");
-						} else if(game.season < 3) { // early games had tons of siestas
-							game.outcomes.unshift("&#x1F6A8; SIESTA DETECTED &#x1F6A8;");
-						} else {
-							game.outcomes.unshift("&#x1F6A8; SPILLOVER DETECTED &#x1F6A8;");
-						}
-					}
-					
-					if(game.day > 0) {
-						var i, awayPrevGame, homePrevGame;
-						i = 1;
-						while(!awayPrevGame) {
-							awayPrevGame = awayTeam.seasons[game.season][game.day - i];
-							i++;
-						}
-						i = 1;
-						while(!homePrevGame) {
-							homePrevGame = homeTeam.seasons[game.season][game.day - i];
-							i++;
-						}
-						if(awayPrevGame.awayTeam.id == awayTeam.id) {
-							awayLosses = awayPrevGame.awayLosses;
-							awayWins = awayPrevGame.awayWins;
-						} else {
-							awayLosses = awayPrevGame.homeLosses;
-							awayWins = awayPrevGame.homeWins;
-						}
-						if(homePrevGame.awayTeam.id == homeTeam.id) {
-							homeLosses = homePrevGame.awayLosses;
-							homeWins = homePrevGame.awayWins;
-						} else {
-							homeLosses = homePrevGame.homeLosses;
-							homeWins = homePrevGame.homeWins;
-						}
-					}
-					
-					_.each(game.outcomes, function(outcome) {
-						var matcher = outcome.match(/sun 2 set a win upon the (.+)/i);
-						if(matcher) {
-							if(matcher[1] == awayTeam.name) {
-								awayWins++;
-							}
-							if(matcher[1] == homeTeam.name) {
-								homeWins++;
-							}
-						}
-						matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
-						if(matcher) {
-							if(matcher[1] == awayTeam.name) {
-								awayWins--;
-							}
-							if(matcher[1] == homeTeam.name) {
-								homeWins--;
-							}
-						}
-					});
-					if(game.awayScore > game.homeScore) {
-						game.winner = game.awayTeam.id;
-						awayWins++;
-						homeLosses++;
-					} else {
-						game.winner = game.homeTeam.id;
-						awayLosses++;
-						homeWins++;
-					}
-					game.awayLosses = awayLosses;
-					game.awayWins = awayWins;
-					game.homeLosses = homeLosses;
-					game.homeWins = homeWins;
-					
-					return game;
-				}
-				
-				function drawChartForHistory(team) {
-					var widthUnit = 5, heightUnit, barCount = 0;
-					$("#chart").empty();
-					$("#details").hide();
-					$("header h1").empty();
-					$("header h1").append("<span style='color:" + team.color + "'>" + team.emoji + " " + team.fullName + " " + team.emoji + "</span> <span style='color:" + team.color + "'>Full History</span>");
-					$("#chart").css({ "overflow": "hidden" });
-					$("main").height(window.innerHeight - $("header").outerHeight());
-					heightUnit = $("#chart").height() / (maxWins + maxLosses);
-					_.each(team.seasons, function(season) {
-						var seasonEl = $("<div class='season'/>");
-						_.each(season, function(game) {
-							if(!game.ascended) {
-								var gameDiff = team.id == game.awayTeam.id ? game.awayWins - game.awayLosses : game.homeWins - game.homeLosses, barEl = $("<div class='game'/>"), barHeight = gameDiff == 0 ? 2 : heightUnit * gameDiff, barColor, barHover;
-								if(gameDiff > 0) {
-									barColor = "#4ab94a";
-								} else if(gameDiff < 0) {
-									barColor = "#e23636";
-								} else {
-									barColor = "#ffffff";
-								}
-								if(game.isPostseason) {
-									barColor = team.color;
-								}
-								barEl.css({
-									"top": maxWins * $("#chart").height() / (maxWins + maxLosses) - (barHeight < 0 ? 1 : barHeight) + "px",
-									"left": (widthUnit * barCount) + "px",
-									"width": widthUnit + "px",
-									"height": Math.abs(barHeight) + "px",
-									"background": barColor
-								});
-								seasonEl.append(barEl);
-								barCount++;
-							}
-						});
-						seasonEl.css({
-							"width": barCount * widthUnit,
-							"height": window.innerHeight - $("header").height()
-						});
-						$("#chart").append(seasonEl);
-					});
-					$("#chart").css({ "overflow": "" }); // fun hack
-				}
-				
-				function drawChartForSeason(team, season) {
-					var games = team.seasons[season], numGames = Math.max(99, _.size(games)), numSeason = parseInt(season), widthUnit = $("#chart").width() / numGames, heightUnit, barCount = 0, numEmojis = 0;
-					$("#chart").empty();
-					$("#details").show();
-					$("header h1").empty();
-					$("header h1").append("<span style='color:" + team.color + "'>" + team.emoji + " " + team.fullName + " " + team.emoji + "</span> <span> Season " + (numSeason < 0 ? "&#x2615;" : (numSeason + 1)) + "</span>");
-					$("main").height(window.innerHeight - $("header").outerHeight());
-					heightUnit = $("#chart").height() / (maxWins + maxLosses);
-					_.each(games, function(game, day) {
-						if(game.ascended) {
-							var barEl = $("<div class='game'/>"), barHeight = heightUnit * (game.wins - game.losses);
-							barEl.css({
-								"top": maxWins * $("#chart").height() / (maxWins + maxLosses) - (barHeight < 0 ? 1 : barHeight) + "px",
-								"left": (widthUnit * barCount) + "px",
-								"width": widthUnit + "px",
-								"height": Math.abs(barHeight) + "px",
-								"background": "#e23636"
-							});
-							barEl.data({ "team": team.id, "season": game.season, "day": game.day });
-							barEl.hover(function() {
-								hoverAscendedGameData($(this));
-							}, function() {
-								$(this).css({ "background": "#e23636" });
-								$(this).find("i, b").css({ "background": "#ffffff" });
-							});
-							if(game.season == 10 && game.day == 33 && team.id == "8d87c468-699a-47a8-b40d-cfb73a5660ad") {
-								barEl.append("<i style='top:-2em'><span>&#x231B;</span></i>");
-								barEl.append("<b style='top:-.5em' />");
-							}
-							$("#chart").append(barEl);
-							barCount++;
-						} else {
-							var gameDiff = team.id == game.awayTeam.id ? game.awayWins - game.awayLosses : game.homeWins - game.homeLosses, barEl = $("<div class='game'/>"), barHeight = gameDiff == 0 ? 2 : heightUnit * gameDiff, barColor;
-							if(game.isPostseason && numSeason > 0) {
-								barColor = team.color;
-							} else if(gameDiff > 0) {
-								barColor = "#4ab94a";
-							} else if(gameDiff < 0) {
-								barColor = "#e23636";
-							} else {
-								barColor = "#ffffff";
-							}
-							barEl.css({
-								"top": maxWins * $("#chart").height() / (maxWins + maxLosses) - (barHeight < 0 ? 1 : barHeight) + "px",
-								"left": (widthUnit * barCount) + "px",
-								"width": widthUnit + "px",
-								"height": Math.abs(barHeight) + "px",
-								"background": barColor
-							});
-							var gameEmojis = getEmojisForOutcomes(team, game.outcomes);
-							if(gameEmojis.length) {
-								_.each(gameEmojis, function(emoji, index) {
-									var emojiEl = $("<i><span>" + emoji + "</span></i>"), lineEl = $("<b />");
-									if(numEmojis % 2) {
-										emojiEl.css({ "bottom": "-" + (index * 1.5 + 2) + "em" });
-										lineEl.css({ "bottom": "-.5em" });
-									} else {
-										emojiEl.css({ "top": "-" + (index * 1.5 + 2) + "em" });
-										lineEl.css({ "top": "-.5em" });
-									}
-									barEl.append(emojiEl);
-									barEl.append(lineEl);
-								});
-								numEmojis++;
-							}
-							barEl.data({ "team": team.id, "season": season, "game": game.id });
-							barEl.hover(function() {
-								hoverGameData($(this));
-							}, function() {
-								$(this).css({ "background": barColor });
-								$(this).find("i, b").css({ "background": "#ffffff" });
-							});
-							$("#chart").append(barEl);
-							barCount++;
-						}
-					});
-					if(typeof twemoji != "undefined") {
-						_.each($("header h1, .game i"), function(el) {
-							twemoji.parse(el);
-						});
-					}
-				}
-				
-				function hoverAscendedGameData(jqEl) {
-					var team = _.findWhere(teamsGraphs, { id: jqEl.data("team") }), game = team.seasons[jqEl.data("season")][jqEl.data("day")], leftTag = game.isWinner ? "strong" : "span", rightTag = game.isWinner ? "span" : "strong";
-					jqEl.find("i, b").css({ "background": team.color });
-					jqEl.css({ "background": team.color });
-					$("#details ul").empty();
-					$("#details ul").append("<li>Season " + (parseInt(jqEl.data("season")) + 1) + " &#x1F52D; Day " + (game.day + 1) + " &#x1F3E0 <span class='redacted' style='width:4em'></span></li>");
-					$("#details ul").append("<li class='score'><" + leftTag + (game.isWinner ? " style='color:" + team.color + "'" : "") + ">" + game.wins + "</" + leftTag + "> - <" + rightTag + (game.isWinner ? "" : " style='color:" + team.color + "'") + ">" + game.losses + "</" + leftTag + "></li>");
-					$("#details ul").append("<li>The heavy underdog <strong style='color:" + team.color + "'>" + team.name + "</strong> " + (game.isWinner ? "defeated" : "lost to") + " the <strong class='redacted' style='width:6em'></strong></li>");
-					$("#details ul").append("<li style='font-size:1.2em'><span style='color:" + team.color + "'>" + team.emoji + " ?</span> &mdash; <strong>? &#x2B1B;</strong></li>");
-					$("#details ul").append("<li><strong>1%</strong> &#x1F4C9; <strong>99%</strong></li>");
-					$("#details ul").append("<li><em style='color:" + team.color + "'>" + game.pitcher + "</em> &#x26BE; <em class='redacted' style='width:6em'></em></li>");
-					$("#details ul").append("<li>Game ended after <strong>00:00</strong></li>");
-					if(game.season == 10 && game.day == 33 && team.id == "8d87c468-699a-47a8-b40d-cfb73a5660ad") {
-						$("#details ul").append("<li>&#x231B; &#x1F6A8; SPILLOVER DETECTED &#x1F6A8;</li>");
-					}
-					if(!game.isWinner) {
-						$("#details ul").append("<li>The <strong style='color:" + team.color + "'>" + team.name + "</strong> were utterly crushed!</li>");
-					}
-					if(typeof twemoji != "undefined") {
-						_.each($("#details li"), function(el) {
-							twemoji.parse(el);
-						});
-					}
-				}
-				
-				function hoverGameData(jqEl) {
-					var team = _.findWhere(teamsGraphs, { id: jqEl.data("team") }), season = parseInt(jqEl.data("season")), game = _.findWhere(team.seasons[jqEl.data("season")], { id: jqEl.data("game") }), isAway = jqEl.data("team") == game.awayTeam.id, barColor, ourTeam, theirTeam, resultText, leftTag, rightTag;
-					gtag('event', 'view_game_details', { 'event_category': activeTeam, 'event_label': activeSeason, 'value': game.day });
-					jqEl.find("i, b").css({ "background": team.color });
-					jqEl.css({ "background": team.color });
-					$("#details ul").empty();
-						$("#details ul").append("<li>Season " + (season > 0 ? (season + 1) : "&#x2615;") + (game.isPostseason && season > 0 ? " Playoffs" : "") + " " + getEmojiForWeather(game.weather) +  " Day " + (game.day + 1) + " &#x1F3E0 <span style='color:" + game.homeTeam.color + "'>" + (game.homeTeam.location == "Unlimited" ? "Infinite Los Angeli" : game.homeTeam.location) + "</span></li>");
-					if(isAway) {
-						ourTeam = {
-							color: game.awayTeam.color,
-							emoji: game.awayTeam.emoji,
-							isWinner: game.winner == game.awayTeam.id,
-							losses: game.awayLosses,
-							name: game.awayTeam.name,
-							odds: game.awayOdds,
-							pitcher: game.awayPitcher,
-							score: game.awayScore,
-							wins: game.awayWins
-						};
-						theirTeam = {
-							color: game.homeTeam.color,
-							emoji: game.homeTeam.emoji,
-							isWinner: game.winner == game.homeTeam.id,
-							losses: game.homeLosses,
-							name: game.homeTeam.name,
-							odds: game.homeOdds,
-							pitcher: game.homePitcher,
-							score: game.homeScore,
-							wins: game.homeWins
-						};
-					} else {
-						ourTeam = {
-							color: game.homeTeam.color,
-							emoji: game.homeTeam.emoji,
-							isWinner: game.winner == game.homeTeam.id,
-							losses: game.homeLosses,
-							name: game.homeTeam.name,
-							odds: game.homeOdds,
-							pitcher: game.homePitcher,
-							score: game.homeScore,
-							wins: game.homeWins
-						};
-						theirTeam = {
-							color: game.awayTeam.color,
-							emoji: game.awayTeam.emoji,
-							isWinner: game.winner == game.awayTeam.id,
-							losses: game.awayLosses,
-							name: game.awayTeam.name,
-							odds: game.awayOdds,
-							pitcher: game.awayPitcher,
-							score: game.awayScore,
-							wins: game.awayWins
-						};
-					}
-					leftTag = ourTeam.isWinner ? "strong" : "span";
-					rightTag = theirTeam.isWinner ? "strong" : "span";
-					$("#details ul").append("<li class='score'><" + leftTag + (ourTeam.isWinner ? " style='color:" + ourTeam.color + "'" : "") + ">" + ourTeam.wins + "</" + leftTag + "> - <" + rightTag + (ourTeam.isWinner ? "" : " style='color:" + ourTeam.color + "'") + ">" + ourTeam.losses + "</" + rightTag + "></li>");
-					resultText = "The ";
-					if(ourTeam.odds > theirTeam.odds) {
-						if(ourTeam.odds - theirTeam.odds > .25) {
-							resultText += "heavily ";
-						}
-						resultText += ourTeam.name == "Wild Wings" ? "flavored" : "favored";
-					} else {
-						if(theirTeam.odds - ourTeam.odds > .25) {
-							resultText += "heavy ";
-						}
-						resultText += "underdog";
-					}
-					resultText += " <strong style='color:" + ourTeam.color + "'>" + ourTeam.name + "</strong> ";
-					if(ourTeam.isWinner && game.isShame) {
-						resultText += (isAway ? "un" : "") + "shamed the";
-					} else if(ourTeam.isWinner && !game.isShame) {
-						resultText += "defeated the";
-					} else if(!ourTeam.isWinner && game.isShame) {
-						resultText += "were " + (!isAway ? "un" : "") + "shamed by the";
-					} else {
-						resultText += "lost to the";
-					}
-					resultText += " <strong style='color:" + theirTeam.color + "'>" + theirTeam.name + "</strong>";
-					if(game.inning >= 9) {
-						resultText += " in extra innings (" + (game.inning + 1) + ")";
-					}
-					$("#details ul").append("<li>" + resultText + "</li>");
-					$("#details ul").append("<li style='font-size:1.2em'><" + leftTag + " style='color:" + ourTeam.color + "'>" + ourTeam.emoji + " " + ourTeam.score + "</" + leftTag + "> &mdash; <" + rightTag + " style='color:" + theirTeam.color + "'>" + theirTeam.score + " " + theirTeam.emoji + "</" + rightTag + "></li>");
-					$("#details ul").append("<li><strong>" + Math.round(ourTeam.odds * 1000) / 10 + "%</strong> " + (ourTeam.odds > theirTeam.odds ? "&#x1F4C8;" : "&#x1F4C9;") + " <strong>" + Math.round(theirTeam.odds * 1000) / 10 + "%</strong></li>");
-					$("#details ul").append("<li><em style='color:" + ourTeam.color + "'>" + ourTeam.pitcher + "</em> &#x26BE; <em style='color:" + theirTeam.color + "'>" + theirTeam.pitcher + "</em></li>");
-					if(game.duration > 0) {
-						$("#details ul").append("<li>Game ended after <strong>" + getFormattedDuration(game.duration) + "</strong></li>");
-					}
-					_.each(game.outcomes, function(outcome) {
-						var outcomeData = getFormattedOutcome(outcome);
-						if(outcomeData) {
-							if(outcomeData.formatted) {
-								outcome = outcomeData.formatted;
-							}
-							if((ourTeam.name == "Breath Mints" || theirTeam.name == "Breath Mints") && outcomeData.special) {
-								outcome = outcomeData.special;
-							} else if(outcomeData.special2 && outcomeData.players[0].name == "Pitching Machine") {
-								outcome = outcomeData.special2;
-							}
-							$("#details ul").append("<li>" + outcomeData.emoji + " " + outcome + "</li>");
-						} else {
-							$("#details ul").append("<li>" + outcome + "</li>");
-						}
-					});
-					if(typeof twemoji != "undefined") {
-						_.each($("#details li"), function(el) {
-							twemoji.parse(el);
-						});
-					}
-				};
-				
-				function isStandardTeam(id) {
-					return !_.contains([
-						"40b9ec2a-cb43-4dbb-b836-5accb62e7c20", // pods
-						"c6c01051-cdd4-47d6-8a98-bb5b754f937f", // hall stars
-					], id);
-				}
-				
-				function isTournamentTeam(id) {
-					return _.contains([
-						"f29d6e60-8fce-4ac6-8bc2-b5e3cabc5696", // black
-						"70eab4ab-6cb1-41e7-ac8b-1050ee12eecc", // light and sweet
-						"9e42c12a-7561-42a2-b2d0-7cf81a817a5e", // macchiato
-						"b3b9636a-f88a-47dc-a91d-86ecc79f9934", // cream and sugar
-						"4d921519-410b-41e2-882e-9726a4e54a6a", // cold brew
-						"e3f90fa1-0bbe-40df-88ce-578d0723a23b", // flat white
-						"4e5d0063-73b4-440a-b2d1-214a7345cf16", // americano
-						"d8f82163-2e74-496b-8e4b-2ab35b2d3ff1", // espresso
-						"e8f7ffee-ec53-4fe0-8e87-ea8ff1d0b4a9", // heavy foam
-						"49181b72-7f1c-4f1c-929f-928d763ad7fb", // latte
-						"a3ea6358-ce03-4f23-85f9-deb38cb81b20", // decaf
-						"a7592bd7-1d3c-4ffb-8b3a-0b1e4bc321fd", // milk substitute
-						"9a5ab308-41f2-4889-a3c3-733b9aab806e", // plenty of sugar
-						"3b0a289b-aebd-493c-bc11-96793e7216d5", // blasesonas
-						"d2634113-b650-47b9-ad95-673f8e28e687", // sibr
-						"7fcb63bc-11f2-40b9-b465-f1d458692a63" // real game band
-					], id);
-				}
-				
-				function getEmojisForOutcomes(team, outcomes) {
-					var emojis = [];
-					_.each(outcomes, function(outcome) {
-						var outcomeData = getFormattedOutcome(outcome);
-						if(outcomeData && outcomeData.emoji && (outcomeData.teams == undefined || _.indexOf(outcomeData.teams, team.id) > -1)) {
-							emojis.push(outcomeData.emoji);
-						}
-					});
-					return _.uniq(emojis);
-				}
-				
-				function getFormattedOutcome(outcome) {
-					var matcher = outcome.match(/^the birds pecked (.+) free!$/i);
-					if(matcher) {
-						return {
-							emoji: "&#x1F426;",
-							formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
-							players: [{ name: matcher[1], team: null }]
-						};
-					}
-					matcher = outcome.match(/^the blooddrain gurgled! (.+) siphoned some of (.+)'s (hitting|pitching|baserunning|defensive) ability!$/i);
-					if(matcher) {
-						return {
-							emoji: "&#x1FA78;",
-							formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
-							special: "<strong>" + matcher[1] + "</strong> gurgied <strong>" + matcher[2] + "</strong>'s " + matcher[3] + " ability! <em>Fresh blood, here we come!</em>",
-							special2: "<strong>" + matcher[1] + "</strong> hungers for blood! <strong>" + matcher[2] + "</strong>'s " + matcher[3] + " ability was siphoned!",
-							players: [
-								{ name: matcher[1], team: null },
-								{ name: matcher[2], team: null }
-							],
-							gurgie: matcher[3]
-						};
-					}
-					matcher = outcome.match(/^(.+) is partying!$/i);
-					if(matcher) {
-						return {
-							emoji: typeof twemoji == "undefined" ? "&#x1F389;" : "&#x1F973;",
-							formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
-							players: [{ name: matcher[1], team: null }]
-						};
-					}
-					matcher = outcome.match(/^(a debt was collected. )?rogue umpire incinerated (.+) (hitter|pitcher) (.+)! replaced by (.+)$/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[2]);
-						return {
-							emoji: matcher[1] ? "&#x1F47F;" : "&#x1F525;",
-							formatted: outcome.replace(matcher[1], "<span style='color:red'>" + matcher[1] + "</span>").replace(matcher[2], "<strong style='color:" + team.color + "'>" + team.name + "</strong>").replace(matcher[4], "<strong>" + matcher[4] + "</strong>").replace(matcher[5], "<strong>" + matcher[5] + "</strong>"),
-							players: [
-								{ name: matcher[4], team: team.id },
-								{ name: matcher[5], team: team.id }
-							],
-							teams: [ team.id ],
-							position: matcher[3]
-						};
-					}
-					matcher = outcome.match(/^rogue umpire tried to incinerate (.+) (hitter|pitcher) (.+), but they're fireproof! the umpire was incinerated instead!$/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[1]);
-						return {
-							emoji: "&#x1F9E5;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.name + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
-							players: [{ name: matcher[3], team: team.id }],
-							teams: [ team.id ],
-							position: matcher[2]
-						};
-					}
-					matcher = outcome.match(/^(.+) (hitter|pitcher) (.+) swallowed a stray peanut and had (.+) reaction!$/i);
-					if(matcher) {
-						var emoji, team = getTeamByName(matcher[1]);
-						if(matcher[4] == "an allergic") {
-							emoji = "&#x1F922;";
-						} else if(matcher[4] == "a yummy") {
-							emoji = "&#x1F60B;";
-						} else {
-							emoji = "&#x2753;";
-						}
-						return {
-							emoji: emoji,
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.name + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>").replace(matcher[4], "<em>" + matcher[4] + "</em>"),
-							players: [{ name: matcher[3], team: team.id }],
-							teams: [ team.id ],
-							position: matcher[2],
-							reaction: matcher[4]
-						}
-					}
-					matcher = outcome.match(/^the (.+) had (their (lineup|rotation)|several players) shuffled in the reverb!$/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[1]);
-						return {
-							emoji: "&#x1F30A;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.name + "</strong>"),
-							teams: [ team.id ],
-							position: matcher[3] ? matcher[3] : matcher[2]
-						}
-					}
-					matcher = outcome.match(/^the (.+) were completely shuffled in the reverb!$/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[1]);
-						return {
-							emoji: "&#x1F30A;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.name + "</strong>"),
-							teams: [ team.id ],
-							position: "all"
-						}
-					}
-					matcher = outcome.match(/^reverberations are at dangerous levels! (.+) is now reverberating wildly!$/i);
-					if(matcher) {
-						return {
-							emoji: "&#x1F30A;",
-							formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
-							players: [{ name: matcher[1], team: null }]
-						}
-					}
-					matcher = outcome.match(/^((.+) flickers! )?(.+) and (.+) switched teams in the feedback!$/i);
-					if(matcher) {
-						return {
-							emoji: typeof twemoji == "undefined" ? "&#x1F3A4;" : "&#x1F399;",
-							formatted: outcome.replace(matcher[1], "<span style='color:red'>" + matcher[1] + "</span>").replaceAll(matcher[3], "<strong>" + matcher[3] + "</strong>").replace(matcher[4], "<strong>" + matcher[4] + "</strong>"),
-							players: [
-								{ name: matcher[3], team: null },
-								{ name: matcher[4], team: null }
-							]
-						}
-					}
-					matcher = outcome.match(/^reality begins to flicker...but (.+) resists! (.+) is affect by the flicker...$/i);
-					if(matcher) {
-						return {
-							emoji: "&#x1F3A7;",
-							formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
-							players: [
-								{ name: matcher[1], team: null },
-								{ name: matcher[2], team: null }
-							]
-						}
-					}
-					matcher = outcome.match(/^(.+) hits (.+) with a pitch! .+ is now (.+)!$/i);
-					if(matcher) {
-						return {
-							emoji: typeof twemoji == "undefined" ? "&#x1F635;" : "&#x1F974;",
-							formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replaceAll(matcher[2], "<strong>" + matcher[2] + "</strong>").replace(matcher[3], "<em>" + matcher[3] + "</em>"),
-							players: [
-								{ name: matcher[1], team: null },
-								{ name: matcher[2], team: null }
-							],
-							status: matcher[3]
-						}
-					}
-					matcher = outcome.match(/^the instability (?:spreads|chains) to the (.+)'s (.+)!$/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[1]);
-						return {
-							emoji: "&#x1F517;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.name + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
-							players: [{ name: matcher[2], team: team.id }],
-							teams: [ team.id ]
-						}
-					}
-					matcher = outcome.match(/^your season \d+ champions are the (.+)!$/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[1]);
-						return {
-							emoji: "&#x1F48D;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.fullName + "</strong>"),
-							teams: [ team.id ]
-						}
-					}
-					matcher = outcome.match(/^a big peanut crashes into the field, encasing (.+)!$/i);
-					if(matcher) {
-						return {
-							emoji: "&#x1F95C;",
-							formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
-							players: [{ name: matcher[1], team: null }]
-						}
-					}
-					matcher = outcome.match(/the (.+) accumulate 10\sthe sun collapses\sthe moon is swallowed\sthe black hole forms\ssun 2 rises\sthe black hole swallowed a win from the (.+)!/i);
-					if(matcher) {
-						var swallower = getTeamByName(matcher[1].substr(0, 1).toUpperCase() + matcher[1].substr(1).toLowerCase()), swallowee = getTeamByName(matcher[2]);
-						return {
-							emoji: typeof twemoji == "undefined" ? "&#x1F30C;" : "&#x26AB;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + swallower.color + "'>" + swallower.name.toUpperCase() + "</strong>").replace(matcher[2], "<strong style='color:" + swallowee.color + "'>" + swallowee.name + "</strong>").replace(/[\r\n]/gm, "<br>"),
-							teams: [ swallower.id, swallowee.id ]
-						}
-					}
-					matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[1]);
-						return {
-							emoji: typeof twemoji == "undefined" ? "&#x1F30C;" : "&#x26AB;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.name + "</strong>"),
-							teams: [ team.id ]
-						}
-					}
-					matcher = outcome.match(/^sun 2 set a win upon the (.+)$/i);
-					if(matcher) {
-						var team = getTeamByName(matcher[1]);
-						return {
-							emoji: "&#x2600;",
-							formatted: outcome.replace(matcher[1], "<strong style='color:" + team.color + "'>" + team.name + "</strong>"),
-							teams: [ team.id ]
-						}
-					}
-					matcher = outcome.match(/^(.+) was percolated by the tractor bean!(?: (.+) was fired into outer space!)?$/i);
-					if(matcher) {
-						return {
-							emoji: "&#x2615;",
-							formatted: outcome.replaceAll(matcher[1], "<strong>" + matcher[1] + "</strong>"),
-							players: [{ name: matcher[1], team: null }],
-						};
-					}
-					matcher = outcome.match(/BRIDGE WEAKENED/i);
-					if(matcher) {
-						return {
-							emoji: "&#x1F4A3;"
-						};
-					}
-					matcher = outcome.match(/PLANAR WAVES DETECTED/i);
-					if(matcher) {
-						return {
-							emoji: "&#x1F30A;"
-						};
-					}
-					matcher = outcome.match(/SPILLOVER DETECTED/i);
-					if(matcher) {
-						return {
-							emoji: "&#x231B;"
-						};
-					}
-					return null;
-				}
-				
-				function getTeamByName(name) {
-					// the devs changing Dale the way they did causes problems, weirdly
-					return _.findWhere(teamsGraphs, { name: name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") });
-				}
-				
-				function getFormattedDuration(ms) {
-					var duration = "", hours = Math.floor(ms / 1000 / 60 / 60), minutes = Math.floor(ms / 1000 / 60) % 60, seconds = Math.floor(ms / 1000) % 60;
-					if(hours > 0) {
-						if(hours < 10) {
-							duration += "0";
-						}
-						duration += hours + ":";
-					}
-					if(minutes < 10) {
-						duration += "0";
-					}
-					duration += minutes + ":";
-					if(seconds < 10) {
-						duration += "0";
-					}
-					duration += seconds;
-					return duration;
-				}
-				
-				function getEmojiForWeather(weather) {
-					switch(weather) {
-						default:
-						case 0: // void
-							return "&#x2754;";
-						case 1: // sun 2
-							return "&#x2600;";
-						case 2: // overcast
-							return "&#x26C5;";
-						case 3: // rainy
-							return "&#x1F327;";
-						case 4: // sandstorm
-							return "&#x1F3D6;";
-						case 5: // snowy
-							return "&#x2744;";
-						case 6: // acidic
-							return "&#x2697;";
-						case 7: // solar eclipse
-							return "&#x1F311;";
-						case 8: // glitter
-							return "&#x2728;";
-						case 9: // blooddrain
-							return "&#x1FA78;";
-						case 10: // peanuts
-							return "&#x1F95C;";
-						case 11: // birds
-							return "&#x1F426;";
-						case 12: // feedback
-							return "&#x1F3A4;";
-						case 13: // reverb
-							return "&#x1F30A;";
-						case 14: // black hole
-							return typeof twemoji == "undefined" ? "&#x1F30C;" : "&#x26AB;";
-						case 15: // coffee
-							return "&#x2615;";
-						case 16: // coffee 2
-							return "&#x1F375;";
-						case 17: // coffee 3s
-							return "&#x33;&#xFE0F;&#x20E3;";
-					}
-				}
-			});
+		<div id="root">
+			<nav></nav>
+			<main></main>
+		</div>
+		
+		<script type="text/template" id="template-index">
+			<section class="index">
+				<h1>Chart Party</h1>
+				<h2>A Blaseball visualization of a team's historical wins over .500 (and the tragedies it took to get there). Choose a team above to begin.</h2>
+				<p><span>@yooori#1569</span> &#x2022; <a href="https://twitter.com/yoorilikeglass">twitter</a> &#x2022; <a href="https://www.blaseball.com/team/d2634113-b650-47b9-ad95-673f8e28e687"><%= emoji(0x1F52E) %></a> &#x2022; <a href="https://sibr.dev/">SIBR</a> &#x2022; <a href="javascript:;"><%= emoji(isLightMode() ? 0x1F506 : 0x1F311) %></a></p>
+			</section>
 		</script>
+		
+		<script type="text/template" id="template-nav">
+			<ul>
+				<% _.each(models, function(model) { %>
+					<li><a href="#<%= model.slug() %>"><i class="team-icon" style="background:<%= model.get("mainColor") %>"><%= emoji(model.get("emoji")) %></i><span style="<%= (isLightMode() ? "background:" : "color:") + model.get("secondaryColor") %>"><%= model.get("shorthand") %></span></a></li>
+				<% }); %>
+			</ul>
+		</script>
+		
+		<script type="text/template" id="template-team">
+			<header>
+				<div class="team-icon" style="background:<%= team.get("mainColor") %>"><%= team.emoji(team.get("emoji")) %></div>
+				<div class="team-info">
+					<div class="team-name"><%= team.get("fullName") %></div>
+					<div class="team-slogan"><%= team.get("slogan") %></div>
+				</div>
+			</header>
+			<section class="chart"></section>
+			<footer>
+				<% if(seasons.length) { %>
+					<div class="seasons-header">Choose a season</div>
+					<a style="background:<%= team.get("secondaryColor") %>" href="#<%= team.slug() %>/season/all">All</a>
+					<% seasons.each(function(season) { %>
+						<% if(!_.contains(team.inactiveSeasons(), season.get("seasonNumber"))) { %>
+							<a style="background:<%= team.get("secondaryColor") %>" href="#<%= team.slug() %>/season/<%= season.get("seasonNumber") + 1 %>"><%= season.get("seasonNumber") + 1%></a>
+						<% } %>
+					<% }) %>
+				<% } else { %>
+					<div class="seasons-header">Loading...</div>
+				<% } %>
+				<a data-toggle-lights="<%= team.isLightMode() ? "true" : "false" %>" href="javascript:;"><%= team.emoji(team.isLightMode() ? 0x1F506 : 0x1F311) %></a>
+			</footer>
+		</script>
+		
+		<script type="text/template" id="template-chart">
+			<svg viewBox="0 0 <%= svg.width %> <%= svg.height %>" width="<%= svg.width %>" height="<%= svg.height %>">
+				<% _.each(svg.outlines, function(outline) { %>
+					<path class="outline" fill="<%= outline.postseason && outline.above ? "#48c3a5" : outline.postseason ? "#b1264a" : outline.above ? "#4ab94a" : "#e23636" %>" d="<%= outline.path.join(" ") %>"/>
+				<% }) %>
+				<% yPos = -1 %>
+				<% lastIndex = -1 %>
+				<% _.each(svg.bars, function(bar, num) { %>
+					<% emojis = _.uniq(_.pluck(bar.outcomes, "emoji")) %>
+					<% if(emojis.length) { %>
+						<% _.each(emojis, function(emoji, index) { %>
+							<% prevY = yPos %>
+							<% yPos = bar.y - bar.height - (bar.above ? 2 : -1) * bar.radius * (((bar.above ? 1 : 2) * index) + 1) %>
+							<% /*if(prevY > 0 && num - lastIndex <= 1 && yPos >= prevY - bar.radius) { yPos = prevY - (bar.above ? 2 : -2) * bar.radius }*/ %>
+							<circle class="outcome" data-id="<%= bar.id %>" cx="<%= bar.x + bar.radius / 2 %>" cy="<%= yPos + 0.5 * bar.radius %>" r="<%= bar.radius %>" fill="#ffffff" />
+							<image class="outcome" data-id="<%= bar.id %>" href="<%= emojiSvg(emoji) %>" x="<%= bar.x %>" y="<%= yPos %>" height="<%= bar.radius %>" width="<%= bar.radius %>" />
+						<% }) %>
+						<line class="outcome" x1="<%= bar.x + bar.radius / 2 %>" y1="<%= bar.y - bar.height %>" x2="<%= bar.x + bar.radius / 2 %>" y2="<%= yPos + bar.radius * (bar.above ? 1.5 + 2 * (emojis.length - 1) : -0.5 - 2 * (emojis.length - 1)) %>" />
+						<% lastIndex = num %>
+					<% } %>
+					<path class="bar" data-id="<%= bar.id %>" fill="<%= bar.color %>" d="<%= bar.path.join(" ") %>"/>
+				<% }) %>
+			</svg>
+		</script>
+		
+		<script type="text/template" id="template-details">
+			<section class="details">
+				<div class="details-header">
+					<div class="details-day">Season <span class="number-box"><%= game.get("season") + 1 %></span><%= game.get("isPostseason") ? " Postseason" : "" %> Day <span class="number-box"><%= game.get("day") + 1 %></span></div>
+					<div class="details-game">
+						<div class="details-location">
+							<div class="details-weather"><span title="<%= game.get("weather").name %>"><%= emoji(game.get("weather").emoji) %></span></div>
+							<div class="details-city" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("home").secondaryColor %>"><%= game.get("home").location %></div>
+						</div>
+						<div class="details-series">
+							<% if(game.get("isPostseason") && game.get("season") > 9) { %>
+								Game <%= game.get("seriesIndex") %> (First to <%= game.get("seriesLength") %> Wins)
+							<% } else { %>
+								Game <%= game.get("seriesIndex") %> of <%= game.get("seriesLength") %>
+							<% } %>
+						</div>
+					</div>
+				</div>
+				<div class="details-score">
+					<div class="team-icon" style="background:<%= game.get("team").mainColor %>"><%= emoji(game.get("team").emoji) %></div>
+					<div class="team-info">
+						<div class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("team").secondaryColor %>"><%= game.get("team").fullName %></div>
+						<div class="team-details">
+							<div class="team-record" style="<%= isLightMode() ? "background" : "color" %>: <%= game.get("team").secondaryColor %>">
+								<<%= game.get("team").isWinner ? "strong" : "span" %>><%= game.get("isPostseason") ? game.get("team").seriesWins : game.get("team").wins %></<%= game.get("team").isWinner ? "strong" : "span" %>> - <<%= game.get("team").isWinner ? "span" : "strong" %>><%= game.get("isPostseason") ? game.get("team").seriesLosses : game.get("team").losses %></<%= game.get("team").isWinner ? "span" : "strong" %>>
+							</div>
+							<span class="team-odds"><%= Math.round(game.get("team").odds * 1000) / 10 %>%</span>
+							<%= emoji(0x26be) %> 
+							<span class="team-pitcher" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("team").secondaryColor %>"><%= game.get("team").pitcher %></span></div>
+					</div>
+					<div class="team-score <%= game.get("team").isWinner ? "is-winner" : "" %>"><%= game.get("team").score %></div>
+				</div>
+				<div class="details-score">
+					<div class="team-icon" style="background:<%= game.get("opponent").mainColor %>"><%= emoji(game.get("opponent").emoji) %></div>
+					<div class="team-info">
+						<div class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("opponent").secondaryColor %>"><%= game.get("opponent").fullName %></div>
+						<div class="team-details">
+							<div class="team-record" style="<%= isLightMode() ? "background" : "color" %>: <%= game.get("opponent").secondaryColor %>">
+								<<%= game.get("opponent").isWinner ? "strong" : "span" %>><%= game.get("isPostseason") ? game.get("opponent").seriesWins : game.get("opponent").wins %></<%= game.get("opponent").isWinner ? "strong" : "span" %>> - <<%= game.get("opponent").isWinner ? "span" : "strong" %>><%= game.get("isPostseason") ? game.get("opponent").seriesLosses : game.get("opponent").losses %></<%= game.get("opponent").isWinner ? "span" : "strong" %>>
+							</div>
+							<span class="team-odds"><%= Math.round(game.get("opponent").odds * 1000) / 10 %>%</span>
+							<%= emoji(0x26be) %>
+							<span class="team-pitcher" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("opponent").secondaryColor %>"><%= game.get("opponent").pitcher %></span></div>
+					</div>
+					<div class="team-score <%= game.get("opponent").isWinner ? "is-winner" : "" %>"><%= game.get("opponent").score %></div>
+				</div>
+				<div class="details-result">The <%= game.oddsAdjective() %><strong class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("team").secondaryColor %>"><%= game.get("team").nickname %></strong> <%= game.resultVerb() %> the <strong class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("opponent").secondaryColor %>"><%= game.get("opponent").nickname %></strong><%= game.get("innings") > 8 ? " in extra innings (" + (game.get("innings") + 1) + ")" : "" %></div>
+				<% if(game.get("duration") > 0) { %>
+					<div class="details-duration">Game ended after <strong><%= game.formatDuration() %></strong></div>
+				<% } %>
+				<div class="details-outcomes">
+					<% if(game.relevantOutcomes().length) { %>
+						<ul>
+							<% _.each(game.relevantOutcomes(), function(outcome) { %>
+								<li><%= emoji(outcome.emoji) %> <%= (outcome.special && _.contains([game.get("team").id, game.get("opponent").id], "adc5b394-8f76-416d-9ce9-813706877b84")) ? outcome.special : (outcome.special2 && outcome.players[0].name == "Pitching Machine") ? outcome.special2 : outcome.formatted %></li>
+							<% }) %>
+						</ul>
+					<% } %>
+				</div>
+			</section>
+		</script>
+		
+		<script data-main="chartparty.js" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 	</body>
 </html>
