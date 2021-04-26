@@ -1,1007 +1,1226 @@
 [
 	{
-		"id": "AFFINITY_FOR_CROWS",
-		"emoji": "0x1F426",
-		"title": "Affinity for Crows"
-	},
-	{
-		"id": "ALTERNATE",
-		"emoji": "0x1F465",
-		"title": "Alternate"
-	},
-	{
-		"id": "BASE_INSTINCTS",
-		"emoji": "0x1F3C3",
-		"title": "Base Instincts"
-	},
-	{
-		"id": "BIRD_SEED",
-		"emoji": "0x1F35E",
-		"title": "Bird Seed"
-	},
-	{
-		"id": "BLASERUNNING",
-		"emoji": "0x1F3C3",
-		"title": "Blaserunning"
-	},
-	{
-		"id": "COFFEE_EXIT",
-		"emoji": "0x2615",
-		"title": "Percolated"
-	},
-	{
-		"id": "COFFEE_PERIL",
-		"emoji": "0x1F441",
-		"title": "Observed"
-	},
-	{
-		"id": "COFFEE_RALLY",
-		"emoji": "0x1F375",
-		"title": "Free Refill"
-	},
-	{
-		"id": "COFFEE_SHADOWS",
-		"emoji": "0x1F971",
-		"title": "Well Rested"
-	},
-	{
-		"id": "CONTAINMENT",
-		"emoji": "0x1F512",
-		"title": "Containment"
-	},
-	{
-		"id": "CREDIT_TO_THE_TEAM",
-		"emoji": "0x1F4B0",
-		"title": "Credit to the Team"
-	},
-	{
-		"id": "CRUNCHY",
-		"emoji": "0x1F36F",
-		"title": "Crunchy"
-	},
-	{
-		"id": "CURSE_OF_CROWS",
-		"emoji": "0x1F426",
-		"title": "Curse for Crows"
-	},
-	{
-		"id": "DEBT",
-		"emoji": "0x1F4B3",
-		"title": "Refinanced Debt"
-	},
-	{
-		"id": "DEBT_TWO",
-		"emoji": "0x1F4B3",
-		"title": "Consolidated Debt"
-	},
-	{
-		"id": "DEBT_ZERO",
-		"emoji": "0x1F4B3",
-		"title": "Debt"
-	},
-	{
-		"id": "DESTRUCTION",
-		"emoji": "0x1F30B",
-		"title": "Destruction"
-	},
-	{
-		"id": "DOUBLE_PAYOUTS",
-		"emoji": "0x1F4B0",
-		"title": "Super Idol"
-	},
-	{
-		"id": "ELECTRIC",
-		"emoji": "0x26A1",
-		"title": "Electric"
-	},
-	{
-		"id": "ESCAPE",
-		"emoji": "0x23F2",
-		"title": "Pending"
-	},
-	{
-		"id": "EXTRA_BASE",
-		"emoji": "0x1F590",
-		"title": "Fifth Base"
-	},
-	{
 		"id": "EXTRA_STRIKE",
 		"emoji": "4️⃣",
-		"title": "The Fourth Strike"
-	},
-	{
-		"id": "FAIRNESS",
-		"emoji": "0x2696",
-		"title": "Total Fairness"
-	},
-	{
-		"id": "FIRE_EATER",
-		"emoji": "0x1F525",
-		"title": "Fire Eater"
-	},
-	{
-		"id": "FIRE_PROTECTOR",
-		"emoji": "0x1F6E1",
-		"title": "Fire Protector"
-	},
-	{
-		"id": "FIREPROOF",
-		"emoji": "0x1F9EF",
-		"title": "Fireproof"
-	},
-	{
-		"id": "FIRST_BORN",
-		"emoji": "0x1F95A",
-		"title": "First Born"
-	},
-	{
-		"id": "FLICKERING",
-		"emoji": "0x1F399",
-		"title": "Flickering"
-	},
-	{
-		"id": "FLIICKERRRIIING",
-		"emoji": "0x1F399",
-		"title": "Fliickerrriiing"
-	},
-	{
-		"id": "FLINCH",
-		"emoji": "0x1F628",
-		"title": "Flinch"
-	},
-	{
-		"id": "FRIEND_OF_CROWS",
-		"emoji": "0x1F426",
-		"title": "Friend of Crows"
-	},
-	{
-		"id": "GOD",
-		"emoji": "0x1F329",
-		"title": "God"
-	},
-	{
-		"id": "GRAVITY",
-		"emoji": "0x1F462",
-		"title": "Gravity"
-	},
-	{
-		"id": "GROWTH",
-		"emoji": "0x1F331",
-		"title": "Growth"
-	},
-	{
-		"id": "HARD_BOILED",
-		"emoji": "0x1F95A",
-		"title": "Hard Boiled"
-	},
-	{
-		"id": "HAUNTED",
-		"emoji": "0x1F47B",
-		"title": "Haunted"
-	},
-	{
-		"id": "HEATING_UP",
-		"emoji": null,
-		"title": "Heating Up..."
-	},
-	{
-		"id": "HOME_FIELD",
-		"emoji": "0x1F3E0",
-		"title": "Home Field Advantage"
-	},
-	{
-		"id": "HONEY_ROASTED",
-		"emoji": "0x1F36F",
-		"title": "Honey Roasted"
-	},
-	{
-		"id": "INHABITING",
-		"emoji": "0x1F47B",
-		"title": "Inhabiting"
-	},
-	{
-		"id": "LIBERATED",
-		"emoji": "",
-		"title": "Liberated"
-	},
-	{
-		"id": "LIFE_OF_PARTY",
-		"emoji": "0x1F973",
-		"title": "Life of the Party"
-	},
-	{
-		"id": "LOVE",
-		"emoji": "0x2764",
-		"title": "Charm"
-	},
-	{
-		"id": "LOYALTY",
-		"emoji": "0x1F91D",
-		"title": "Loyalty"
-	},
-	{
-		"id": "MAGMATIC",
-		"emoji": null,
-		"title": "Magmatic"
-	},
-	{
-		"id": "MARKED",
-		"emoji": "0x274C",
-		"title": "Unstable"
-	},
-	{
-		"id": "NON_IDOLIZED",
-		"emoji": "0x1F512",
-		"title": "Idol Immune"
-	},
-	{
-		"id": "O_NO",
-		"emoji": "0x1F631",
-		"title": "0 No"
-	},
-	{
-		"id": "ON_FIRE",
-		"emoji": null,
-		"title": "Red Hot!"
-	},
-	{
-		"id": "PARTY_TIME",
-		"emoji": "0x1F389",
-		"title": "Party Time"
-	},
-	{
-		"id": "PEANUT_RAIN",
-		"emoji": "0x1F95C",
-		"title": "Peanut Rain"
-	},
-	{
-		"id": "PERK",
-		"emoji": "0x2697",
-		"title": "Perk"
-	},
-	{
-		"id": "PITY",
-		"emoji": "0x1F90F",
-		"title": "Pity"
-	},
-	{
-		"id": "RECEIVER",
-		"emoji": "0x1F4DE",
-		"title": "Receiver"
-	},
-	{
-		"id": "RETIRED",
-		"emoji": "0x1F6CF",
-		"title": "Released"
-	},
-	{
-		"id": "RETURNED",
-		"emoji": "0x1F9DB",
-		"title": "Returned"
-	},
-	{
-		"id": "REPEATING",
-		"emoji": "0x1F504",
-		"title": "Repeating"
-	},
-	{
-		"id": "REVERBERATING",
-		"emoji": "0x1F30A",
-		"title": "Reverberating"
-	},
-	{
-		"id": "SEALANT",
-		"emoji": "0x1FA79",
-		"title": "Sealant"
+		"title": "The Fourth Strike",
+        "description": "Those with the Fourth Strike will get an extra strike in each at bat."
 	},
 	{
 		"id": "SHAME_PIT",
 		"emoji": "0x1F3AF",
-		"title": "Targeted Shame"
+		"title": "Targeted Shame",
+        "description": "Teams with Targeted Shame will start with negative runs the game after being shamed."
 	},
 	{
-		"id": "SHELLED",
-		"emoji": "0x1F95C",
-		"title": "Shelled"
+		"id": "HOME_FIELD",
+		"emoji": "0x1F3E0",
+		"title": "Home Field Advantage",
+        "description": "Teams with Home Field Advantage will start each home game with one run."
 	},
 	{
-		"id": "SIPHON",
-		"emoji": "0x1FA78",
-		"title": "Siphon"
+		"id": "FIREPROOF",
+		"emoji": "0x1F9EF",
+		"title": "Fireproof",
+        "description": "A Fireproof player can not be incinerated."
+	},
+	{
+		"id": "ALTERNATE",
+		"emoji": "0x1F465",
+		"title": "Alternate",
+        "description": "This player is an Alternate..."
 	},
 	{
 		"id": "SOUNDPROOF",
 		"emoji": "0x1F442",
-		"title": "Soundproof"
+		"title": "Soundproof",
+        "description": "A Soundproof player can not be caught in Feedback's reality flickers."
 	},
 	{
-		"id": "SPICY",
-		"emoji": "0x1F975",
-		"title": "Spicy"
+		"id": "SHELLED",
+		"emoji": "0x1F95C",
+		"title": "Shelled",
+        "description": "A Shelled player is trapped in a big Peanut is unable to bat or pitch."
 	},
 	{
-		"id": "SQUIDDEST",
-		"emoji": "0x1F991",
-		"title": "Squiddest"
-	},
-	{
-		"id": "SQUIDDISH",
-		"emoji": "0x1F991",
-		"title": "Squiddish"
-	},
-	{
-		"id": "SUBJECTION",
-		"emoji": "",
-		"title": "Subjection"
-	},
-	{
-		"id": "STABLE",
-		"emoji": "0x1F9F1",
-		"title": "Stable"
-	},
-	{
-		"id": "SUPERALLERGIC",
-		"emoji": "0x1F922",
-		"title": "Superallergic"
-	},
-	{
-		"id": "SUPERYUMMY",
-		"emoji": "0x1F60B",
-		"title": "Superyummy"
-	},
-	{
-		"id": "TIRED",
-		"emoji": "0x2615",
-		"title": "Tired"
-	},
-	{
-		"id": "TRAVELING",
-		"emoji": "0x1F9F3",
-		"title": "Traveling"
-	},
-	{
-		"id": "TRIBUTE",
-		"emoji": "0x1F381",
-		"title": "Tribute"
-	},
-	{
-		"id": "TRIPLE_THREAT",
-		"emoji": "0x2615",
-		"title": "Triple Threat"
-	},
-	{
-		"id": "UNFLAMED",
-		"emoji": "0x1F0CF",
-		"title": "Chaotic"
-	},
-	{
-		"id": "WALK_IN_THE_PARK",
-		"emoji": "0x1F6B6",
-		"title": "Walk in the Park"
-	},
-	{
-		"id": "WILD",
-		"emoji": "0x1F611",
-		"title": "Mild"
-	},
-	{
-		"id": "WIRED",
-		"emoji": "0x2615",
-		"title": "Wired"
-	},
-	{
-		"id": "OVERPERFORMING",
-		"emoji": "0x2B06",
-		"title": "Overperforming"
-	},
-	{
-		"id": "SHAME_GIVER",
-		"emoji": "",
-		"title": "Shame Donor"
-	},
-	{
-		"id": "UNDERPERFORMING",
-		"emoji": "0x2B07",
-		"title": "Underperforming"
-	},
-	{
-		"id": "EGO1",
-		"emoji": "0x1F3C5",
-		"title": "Ego+"
-	},
-	{
-		"id": "EGO2",
-		"emoji": "0x1F949",
-		"title": "Ego++"
-	},
-	{
-		"id": "EGO3",
-		"emoji": "0x1F948",
-		"title": "Ego+++"
-	},
-	{
-		"id": "EGO4",
-		"emoji": "0x1F947",
-		"title": "Ego++++"
-	},
-	{
-		"id": "LEGENDARY",
-		"emoji": "0x1F3C6",
-		"title": "Legendary"
-	},
-	{
-		"id": "ELSEWHERE",
-		"emoji": "0x1F3D5",
-		"title": "Elsewhere"
-	},
-	{
-		"id": "BOTTOM_DWELLER",
-		"emoji": "0x1F40C",
-		"title": "Bottom Dweller"
-	},
-	{
-		"id": "CARCINIZATION",
-		"emoji": "0x1F980",
-		"title": "Carcinization"
-	},
-	{
-		"id": "MAINTENANCE_MODE",
-		"emoji": "0x1F6A7",
-		"title": "Maintenance Mode"
-	},
-	{
-		"id": "AMBUSH",
-		"emoji": "0x1F405",
-		"title": "Ambush"
-	},
-	{
-		"id": "UNDERSEA",
-		"emoji": "0x1F42C",
-		"title": "Undersea"
-	},
-	{
-		"id": "PENANCE",
-		"emoji": "0x1F64F",
-		"title": "Penance"
-	},
-	{
-		"id": "EXTRA_OUT",
-		"emoji": "4️⃣",
-		"title": "Fourth Out"
+		"id": "REVERBERATING",
+		"emoji": "0x1F30A",
+		"title": "Reverberating",
+        "description": "A Reverberating player has a small chance of batting again after each of their At-Bats end."
 	},
     {
         "id": "BLOOD_DONOR",
         "emoji": "0x1F6C1",
-        "title": "Blood Donor"
+        "title": "Blood Donor",
+        "description": "In the Blood Bath, this team will donate Stars to a division opponent that finished behind them in the standings."
     },
     {
         "id": "BLOOD_THIEF",
         "emoji": "0x1F6C1",
-        "title": "Blood Thief"
+        "title": "Blood Thief",
+        "description": "In the Blood Bath, this team will steal Stars from a division opponent that finished ahead of them in the standings."
     },
     {
         "id": "BLOOD_PITY",
         "emoji": "0x1F6C1",
-        "title": "Blood Pity"
+        "title": "Blood Pity",
+        "description": "In the Blood Bath, this team must give Stars to the team that finished last in their division."
     },
     {
         "id": "BLOOD_WINNER",
         "emoji": "0x1F6C1",
-        "title": "Blood Winner"
+        "title": "Blood Winner",
+        "description": "In the Blood Bath, this team must give Stars to the team that finished first in their division."
     },
     {
         "id": "BLOOD_FAITH",
         "emoji": "0x1F6C1",
-        "title": "Blood Faith"
+        "title": "Blood Faith",
+        "description": "In the Blood Bath, this player will receive a small boost to a random stat."
     },
     {
         "id": "BLOOD_LAW",
         "emoji": "0x1F6C1",
-        "title": "Blood Law"
+        "title": "Blood Law",
+        "description": "In the Blood Bath, this team will gain or lose Stars depending on how low or high they finish in their division."
     },
     {
         "id": "BLOOD_CHAOS",
         "emoji": "0x1F6C1",
-        "title": "Blood Chaos"
+        "title": "Blood Chaos",
+        "description": "In the Blood Bath, each player on this team will gain or lose a random amount of Stars."
     },
+	{
+		"id": "RETURNED",
+		"emoji": "0x1F9DB",
+		"title": "Returned",
+        "description": "This player has Returned from the void. At the end of each season, this player has a chance of being called back to the Void."
+	},
+	{
+		"id": "INVERTED",
+		"emoji": "0x1F643",
+		"title": "Inverted",
+        "description": "This player has Inverted."
+	},
+	{
+		"id": "MARKED",
+		"emoji": "0x274C",
+		"title": "Unstable",
+        "description": "Unstable players have a much higher chance of being incinerated in a Solar Eclipse."
+	},
+	{
+		"id": "PARTY_TIME",
+		"emoji": "0x1F389",
+		"title": "Party Time",
+        "description": "This team is mathematically eliminated from the Postseason, and will occasionally receive permanent stats boost in their games."
+	},
+	{
+		"id": "LIFE_OF_PARTY",
+		"emoji": "0x1F973",
+		"title": "Life of the Party",
+        "description": "This team gets 10% more from their Party Time stat boosts."
+	},
+	{
+		"id": "DEBT_ZERO",
+		"emoji": "0x1F4B3",
+		"title": "Debt",
+        "description": "This player must fulfill a debt."
+	},
+	{
+		"id": "DEBT",
+		"emoji": "0x1F4B3",
+		"title": "Refinanced Debt",
+        "description": "This player must fulfill a debt."
+	},
+	{
+		"id": "DEBT_TWO",
+		"emoji": "0x1F4B3",
+		"title": "Consolidated Debt",
+        "description": "This player must fulfill a debt."
+	},
+	{
+		"id": "SPICY",
+		"emoji": "0x1F975",
+		"title": "Spicy",
+        "description": "Spicy batters will be Red Hot when they get three consecutive hits."
+	},
+	{
+		"id": "HEATING_UP",
+		"emoji": null,
+		"title": "Heating Up...",
+        "description": "This batter needs one more consecutive hit to enter Fire mode. This mod will disappear if the batter gets out."
+	},
+	{
+		"id": "ON_FIRE",
+		"emoji": null,
+		"title": "Red Hot!",
+        "description": "Red Hot! This player's batting is greatly boosted. This mod will disappear if the batter gets out."
+	},
+	{
+		"id": "HONEY_ROASTED",
+		"emoji": "0x1F36F",
+		"title": "Honey Roasted",
+        "description": "This player has been Honey-Roasted."
+	},
+	{
+		"id": "FIRST_BORN",
+		"emoji": "0x1F95A",
+		"title": "First Born",
+        "description": "This player was the first born from the New Field of Eggs."
+	},
+	{
+		"id": "SUPERALLERGIC",
+		"emoji": "0x1F922",
+		"title": "Superallergic",
+        "description": "This player is Superallergic"
+	},
+	{
+		"id": "SUPERYUMMY",
+		"emoji": "0x1F60B",
+		"title": "Superyummy",
+        "description": "This player seriously loves peanuts"
+	},
+	{
+		"id": "EXTRA_BASE",
+		"emoji": "0x1F590",
+		"title": "Fifth Base",
+        "description": "This team must run five bases instead of four in order to score."
+	},
+	{
+		"id": "BLESS_OFF",
+		"emoji": "0x26D4",
+		"title": "Bless Off",
+        "description": "This team cannot win any Blessings in the upcoming Election."
+	},
+	{
+		"id": "NON_IDOLIZED",
+		"emoji": "0x1F512",
+		"title": "Idol Immune",
+        "description": "Idol Immune players cannot be Idolized by Fans."
+	},
+	{
+		"id": "GRAVITY",
+		"emoji": "0x1F462",
+		"title": "Gravity",
+        "description": "This player cannot be affected by Reverb."
+	},
+	{
+		"id": "ELECTRIC",
+		"emoji": "0x26A1",
+		"title": "Electric",
+        "description": "Electric teams have a chance of zapping away Strikes."
+	},
+	{
+		"id": "DOUBLE_PAYOUTS",
+		"emoji": "0x1F4B0",
+		"title": "Super Idol",
+        "description": "This player will earn Fans double the rewards from all Idol Snacks."
+	},
+	{
+		"id": "FIRE_PROTECTOR",
+		"emoji": "0x1F6E1",
+		"title": "Fire Protector",
+        "description": "This player will protect their team from incinerations."
+	},
+	{
+		"id": "RECEIVER",
+		"emoji": "0x1F4DE",
+		"title": "Receiver",
+        "description": "This player is a Receiver."
+	},
+	{
+		"id": "FLICKERING",
+		"emoji": "0x1F399",
+		"title": "Flickering",
+        "description": "Flickering players have a much higher chance of being Feedbacked to their opponent."
+	},
+	{
+		"id": "GROWTH",
+		"emoji": "0x1F331",
+		"title": "Growth",
+        "description": "Growth teams will play better as the season goes on, up to a 5% global boost by season's end."
+	},
+	{
+		"id": "BASE_INSTINCTS",
+		"emoji": "0x1F3C3",
+		"title": "Base Instincts",
+        "description": "Batters with Base Instincts will have a chance of heading past first base when getting walked."
+	},
+	{
+		"id": "STABLE",
+		"emoji": "0x1F9F1",
+		"title": "Stable",
+        "description": "Stable players cannot be made Unstable."
+	},
+	{
+		"id": "AFFINITY_FOR_CROWS",
+		"emoji": "0x1F426",
+		"title": "Affinity for Crows",
+        "description": "Players with Affinity for Crows will hit and pitch 50% better during Birds weather."
+	},
+	{
+		"id": "CURSE_OF_CROWS",
+		"emoji": "0x1F426",
+		"title": "Curse for Crows",
+        "description": "This team or player will be occasionally attacked by Birds."
+	},
+	{
+		"id": "SQUIDDISH",
+		"emoji": "0x1F991",
+		"title": "Squiddish",
+        "description": "When a Squiddish player is incinerated, they'll be replaced by a random Hall of Flame player."
+	},
+	{
+		"id": "CRUNCHY",
+		"emoji": "0x1F36F",
+		"title": "Crunchy",
+        "description": "The Honey-Roasted players on a Crunchy team will hit 100% better and with +200% Power."
+	},
+	{
+		"id": "PITY",
+		"emoji": "0x1F90F",
+		"title": "Pity",
+        "description": "This team is holding back, out of Pity."
+	},
+	{
+		"id": "GOD",
+		"emoji": "0x1F329",
+		"title": "God",
+        "description": "This team will start with 1,000x the amount of Team Spirit"
+	},
+	{
+		"id": "REPEATING",
+		"emoji": "0x1F504",
+		"title": "Repeating",
+        "description": "In Reverb Weather, this player will Repeat."
+	},
+	{
+		"id": "SUBJECTION",
+		"emoji": "0x1F6AA",
+		"title": "Subjection",
+        "description": "Players leaving a team with Subjection will gain the Liberated modification."
+	},
+	{
+		"id": "LIBERATED",
+		"emoji": "0x1F574",
+		"title": "Liberated",
+        "description": "Liberated players will be guaranteed extra bases when they get a hit."
+	},
+	{
+		"id": "FIRE_EATER",
+		"emoji": "0x2668",
+		"title": "Fire Eater",
+        "description": "Fire Eaters swallow fire instead of being incinerated."
+	},
+	{
+		"id": "MAGMATIC",
+		"emoji": null,
+		"title": "Magmatic",
+        "description": "Magmatic players are guaranteed to hit a home run in their next At Bat."
+	},
+	{
+		"id": "LOYALTY",
+		"emoji": "0x1F91D",
+		"title": "Loyalty",
+        "description": "Players leaving a team with Loyalty will gain the Saboteur modification."
+	},
+	{
+		"id": "SABOTEUR",
+		"emoji": "0x1F494",
+		"title": "Saboteur",
+        "description": "A Saboteur has a chance of intentionally failing."
+	},
+	{
+		"id": "CREDIT_TO_THE_TEAM",
+		"emoji": "0x1F4B0",
+		"title": "Credit to the Team",
+        "description": "This player will earn Fans 5x the rewards from all Idol Snacks."
+	},
+	{
+		"id": "LOVE",
+		"emoji": "0x2764",
+		"title": "Charm",
+        "description": "Players with Charm have a chance of convincing their opponents to fail."
+	},
+	{
+		"id": "PEANUT_RAIN",
+		"emoji": "0x1F95C",
+		"title": "Peanut Rain",
+        "description": "This Team weaponizes Peanut weather against their enemies."
+	},
+	{
+		"id": "FLINCH",
+		"emoji": "0x1F628",
+		"title": "Flinch",
+        "description": "Hitters with Flinch cannot swing until a strike has been thrown in the At Bat."
+	},
+	{
+		"id": "WILD",
+		"emoji": "0x1F611",
+		"title": "Mild",
+        "description": "Pitchers with Mild have a chance of throwing a Mild Pitch."
+	},
+	{
+		"id": "DESTRUCTION",
+		"emoji": "0x1F30B",
+		"title": "Destruction",
+        "description": "Teams with Destruction will add a bunch of Curses to their Opponent when defeating them in battle."
+	},
+	{
+		"id": "SIPHON",
+		"emoji": "0x1FA78",
+		"title": "Siphon",
+        "description": "Siphons will steal blood more often in Blooddrain and use it in more ways."
+	},
+	{
+		"id": "FLIICKERRRIIING",
+		"emoji": "0x1F399",
+		"title": "Fliickerrriiing",
+        "description": "Fliickerrriiing players are Flickering a lot."
+	},
+	{
+		"id": "FRIEND_OF_CROWS",
+		"emoji": "0x1F426",
+		"title": "Friend of Crows",
+        "description": "In Birds weather, pitchers with Friend of Crows will encourage the Birds to attack hitters."
+	},
+	{
+		"id": "BLASERUNNING",
+		"emoji": "0x1F3C3",
+		"title": "Blaserunning",
+        "description": "Blaserunners will score .2 Runs for their Team whenever they steal a base."
+	},
+	{
+		"id": "WALK_IN_THE_PARK",
+		"emoji": "0x1F6B6",
+		"title": "Walk in the Park",
+        "description": "Those with Walk in the Park will walk to first base on one less Ball."
+	},
+	{
+		"id": "BIRD_SEED",
+		"emoji": "0x1F35E",
+		"title": "Bird Seed",
+        "description": "Birds like to eat Bird Seed. They'll peck those with Bird Seed out of peanut shells more often. Because they like to eat Bird Seed."
+	},
+	{
+		"id": "HAUNTED",
+		"emoji": "0x1F47B",
+		"title": "Haunted",
+        "description": "Haunted players will occasionally be Inhabited."
+	},
+	{
+		"id": "TRAVELING",
+		"emoji": "0x1F9F3",
+		"title": "Traveling",
+        "description": "Traveling teams will play 5% better in Away games."
+	},
+	{
+		"id": "SEALANT",
+		"emoji": "0x1FA79",
+		"title": "Sealant",
+        "description": "Players with Sealant cannot have blood drained in Blooddrain."
+	},
+	{
+		"id": "O_NO",
+		"emoji": "0x1F631",
+		"title": "0 No",
+        "description": "Players with 0 No cannot be struck out when there are 0 Balls in the Count."
+	},
+	{
+		"id": "FAIRNESS",
+		"emoji": "0x2696",
+		"title": "Total Fairness",
+        "description": "This Season, each team will win only one Blessing, and will be Happy with what they get."
+	},
+	{
+		"id": "ESCAPE",
+		"emoji": "0x23F2",
+		"title": "Pending",
+        "description": "The players on this Team are Pending..."
+	},
+	{
+		"id": "UNFLAMED",
+		"emoji": "0x1F0CF",
+		"title": "Chaotic",
+        "description": "The Unstable players on a Chaotic team will hit 100% better."
+	},
+	{
+		"id": "TRIBUTE",
+		"emoji": "0x1F381",
+		"title": "Tribute",
+        "description": "When Hall of Flame players join this team, they'll add their Tribute as Team Spirit."
+	},
+	{
+		"id": "SQUIDDEST",
+		"emoji": "0x1F991",
+		"title": "Squiddest",
+        "description": "This Team is the Squiddest. When a player joins the Team, they'll become Squiddish."
+	},
+	{
+		"id": "CONTAINMENT",
+		"emoji": "0x1F512",
+		"title": "Containment",
+        "description": "When an Unstable player on this team is incinerated, the Instability cannot chain to their opponent."
+	},
+	{
+		"id": "RETIRED",
+		"emoji": "0x1F6CF",
+		"title": "Released",
+        "description": "This player is Released."
+	},
+	{
+		"id": "RESTING",
+		"emoji": "0x1F6CF",
+		"title": "Resting",
+        "description": "This player is Resting."
+	},
+	{
+		"id": "INHABITING",
+		"emoji": "0x1F47B",
+		"title": "Inhabiting",
+        "description": "This player is temporarily Inhabiting a Haunted player."
+	},
+	{
+		"id": "TIRED",
+		"emoji": "0x2615",
+		"title": "Tired",
+        "description": "When a Run scores, each Wired player involved in the play (the Scoring Baserunner, Current Batter, or Current Pitcher) will make the Run worth 0.5 more."
+	},
+	{
+		"id": "WIRED",
+		"emoji": "0x2615",
+		"title": "Wired",
+        "description": "When a Run scores, each Tired player involved in the play (the Scoring Baserunner, Current Batter, or Current Pitcher) with make the Run worth 0.5 less."
+	},
+	{
+		"id": "COFFEE_EXIT",
+		"emoji": "0x2615",
+		"title": "Percolated",
+        "description": "This player has been fully and completely Percolated."
+	},
+	{
+		"id": "COFFEE_SHADOWS",
+		"emoji": "0x1F971",
+		"title": "Well Rested",
+        "description": "Whenever a player on this team loses the Tired modification, they'll swap with a player in the Shadows."
+	},
+	{
+		"id": "HARD_BOILED",
+		"emoji": "0x1F95A",
+		"title": "Hard Boiled",
+        "description": "This player was boiled a little bit before hatching."
+	},
+	{
+		"id": "COFFEE_PERIL",
+		"emoji": "0x1F441",
+		"title": "Observed",
+        "description": "This player is being Observed carefully..."
+	},
+	{
+		"id": "COFFEE_RALLY",
+		"emoji": "0x1F375",
+		"title": "Free Refill",
+        "description": "Good for one Free Refill."
+	},
+	{
+		"id": "TRIPLE_THREAT",
+		"emoji": "0x2615",
+		"title": "Triple Threat",
+        "description": "This pitcher's strikeouts score Unruns when there are 3 runners on base, a runner on 3rd, or 3 Balls in the count. Each condition met is worth .3 Unruns. At the end of the 3rd Inning, there's a 33.33% chance that this mod will disappear."
+    },
+	{
+		"id": "PERK",
+		"emoji": "0x2697",
+		"title": "Perk",
+        "description": "This player has been rewarded Percolated energy. They will Overperform in all Coffee weathers."
+	},
+	{
+		"id": "OVERPERFORMING",
+		"emoji": "0x2B06",
+		"title": "Overperforming",
+        "description": "This team or player will play 20% better than usual."
+	},
+	{
+		"id": "SHAME_GIVER",
+		"emoji": "0x1F3AF",
+		"title": "Shame Donor",
+        "description": "When this team shames their opponent, that opponent will begin their next game with Unruns."
+	},
+	{
+		"id": "UNDERPERFORMING",
+		"emoji": "0x2B07",
+		"title": "Underperforming",
+        "description": "This team or player will play 20% worse than usual."
+	},
+	{
+		"id": "EGO1",
+		"emoji": "0x1F3C5",
+		"title": "Ego+",
+        "description": "This player has a boosted Ego."
+	},
+	{
+		"id": "EGO2",
+		"emoji": "0x1F949",
+		"title": "Ego++",
+        "description": "This player has a boosted boosted Ego."
+	},
+	{
+		"id": "EGO3",
+		"emoji": "0x1F948",
+		"title": "Ego+++",
+        "description": "This player has a boosted boosted boosted Ego."
+	},
+	{
+		"id": "EGO4",
+		"emoji": "0x1F947",
+		"title": "Ego++++",
+        "description": "This player has a boosted boosted boosted boosted Ego."
+	},
+	{
+		"id": "LEGENDARY",
+		"emoji": "0x1F3C6",
+		"title": "Legendary",
+        "description": "This player is Legendary."
+	},
+	{
+		"id": "ELSEWHERE",
+		"emoji": "0x1F3D5",
+		"title": "Elsewhere",
+        "description": "This player is Elsewhere. They'll find their own way back."
+	},
+	{
+		"id": "BOTTOM_DWELLER",
+		"emoji": "0x1F40C",
+		"title": "Bottom Dweller",
+        "description": "If this team finishes last in their division, they'll be boosted up to 5%."
+	},
+	{
+		"id": "CARCINIZATION",
+		"emoji": "0x1F980",
+		"title": "Carcinization",
+        "description": "When the Crabs activate the Black Hole, they will steal the other team's best hitter for the remainder of the game."
+	},
+	{
+		"id": "MAINTENANCE_MODE",
+		"emoji": "0x1F6A7",
+		"title": "Maintenance Mode",
+        "description": "Whenever a player on this team is Impaired, they'll receive the Fourth Out for the remainder of the game."
+	},
+	{
+		"id": "AMBUSH",
+		"emoji": "0x1F405",
+		"title": "Ambush",
+        "description": "When a player is incinerated in a game this team is playing, a Hall of Flame player will join their Shadows."
+	},
+	{
+		"id": "UNDERSEA",
+		"emoji": "0x1F42C",
+		"title": "Undersea",
+        "description": "If this team ever has negative Runs, they'll Overperform for the rest of the game."
+	},
+	{
+		"id": "PENANCE",
+		"emoji": "0x1F64F",
+		"title": "Penance",
+        "description": "This team will start each game by accepting 3 Unruns of penance."
+	},
+	{
+		"id": "EXTRA_OUT",
+		"emoji": "4️⃣",
+		"title": "Fourth Out",
+        "description": "This team plays with a Fourth Out."
+	},
 	{
 		"id": "STUCK",
 		"emoji": "0x1F578",
-		"title": "Stuck"
+		"title": "Stuck",
+        "description": "This player cannot swing."
 	},
 	{
 		"id": "SWIM_BLADDER",
 		"emoji": "0x1F93F",
-		"title": "Flippers"
+		"title": "Flippers",
+        "description": "When immateria floods, this Runner will score instead of being cleared from the Bases."
 	},
 	{
 		"id": "DEBT_THREE",
 		"emoji": "0x1F4B3",
-		"title": "Debt"
+		"title": "Debt",
+        "description": "This player must fulfill a Debt."
 	},
 	{
 		"id": "ECHO",
 		"emoji": "0x1F50A",
-		"title": "Echo"
+		"title": "Echo",
+        "description": "Echo Echo Echo Echo Echo Echo Echo Echo Echo Echo Echo Echo"
 	},
 	{
 		"id": "STATIC",
 		"emoji": "0x1F4AC",
-		"title": "Static"
+		"title": "Static",
+        "description": "....."
 	},
 	{
 		"id": "EARLBIRDS",
 		"emoji": "0x1F424",
-		"title": "Earlbirds"
+		"title": "Earlbirds",
+        "description": "This Team or Player will Overperform in the Earlseason."
 	},
 	{
 		"id": "LATE_TO_PARTY",
 		"emoji": "0x1F38A",
-		"title": "Late to the Party"
+		"title": "Late to the Party",
+        "description": "This Team or Player will Overperform in the Lateseason."
 	},
 	{
 		"id": "OVERUNDER",
 		"emoji": "0x2935",
-		"title": "Over Under"
+		"title": "Over Under",
+        "description": "Whenever this pitcher's team has Over 5 Runs, they'll Underperform."
 	},
 	{
 		"id": "UNDEROVER",
 		"emoji": "0x2934",
-		"title": "Under Over"
+		"title": "Under Over",
+        "description": "Whenever this player's team has Under 5 Runs, they'll Overperform."
 	},
 	{
 		"id": "WANDERER",
 		"emoji": "0x1F697",
-		"title": "Roamin'"
+		"title": "Roamin'",
+        "description": "This player has a chance of Roamin' to a new team at the end of each season."
 	},
 	{
 		"id": "SUPERWANDERER",
 		"emoji": "0x1F69A",
-		"title": "Super Roamin'"
+		"title": "Super Roamin'",
+        "description": "This player has a high chance of Roamin' to a new team at the end of each season."
 	},
 	{
 		"id": "NEWADVENTURE",
 		"emoji": "0x1F9F3",
-		"title": "On an Odyssey"
+		"title": "On an Odyssey",
+        "description": "This player is boosted 5% every team they join a team."
 	},
 	{
 		"id": "SINKING_SHIP",
 		"emoji": "0x1F6A2",
-		"title": "Sinking Ship"
+		"title": "Sinking Ship",
+        "description": "This team plays 1% worse for every player above 14 players on their roster, and 1% better for every player below 14 on their roster."
 	},
 	{
 		"id": "PARASITE",
 		"emoji": "0x1FA78",
-		"title": "Parasite"
+		"title": "Parasite",
+        "description": "When this pitcher strikes out a batter in Blooddrain, they'll drain some blood from them."
 	},
 	{
 		"id": "DEFECTOR",
 		"emoji": "0x1F47E",
-		"title": "Defector"
+		"title": "Defector",
+        "description": ""
 	},
 	{
 		"id": "HOMEBODY",
 		"emoji": "0x1F3E0",
-		"title": "Homebody"
+		"title": "Homebody",
+        "description": "This player will Overperform when playing in their home Ballpark and Underperform otherwise."
 	},
 	{
 		"id": "KILLER_PIES",
 		"emoji": "0x1F967",
-		"title": "Flying Pies"
+		"title": "Flying Pie",
+        "description": "Whenever this team has lost 3 games in a Row, their pitchers will start throwing Pies."
 	},
 	{
 		"id": "FRESH",
 		"emoji": "0x2728",
-		"title": "Fresh"
+		"title": "Fresh",
+        "description": "When a player joins this Team, they'll be boosted by 2%."
 	},
 	{
 		"id": "PARTING_GIFT",
 		"emoji": "0x1F381",
-		"title": "Parting Gift"
+		"title": "Parting Gift",
+        "description": "When a player leaves this Team, they'll be boosted by 2%"
 	},
 	{
 		"id": "BLOCKED_BOOST",
 		"emoji": "0x1F6AB",
-		"title": "Blocked Boost"
+		"title": "Blocked Boost",
+        "description": "If this player is protected from a Steal or Swap Will, they'll be boosted by 2%."
 	},
 	{
 		"id": "HALL_EXIT_BOOST",
 		"emoji": "0x1F991",
-		"title": "Phoenix"
+		"title": "Phoenix",
+        "description": "When this player exits the Hall of Flame, they'll be boosted 10% to 20%."
 	},
 	{
 		"id": "FLOOD_PUMPS",
 		"emoji": "0x1F4A7",
-		"title": "Flood Pumps"
+		"title": "Flood Pumps",
+        "description": "Flood Pumps will prevent Flooding weather from making your Ballpark filthier."
 	},
 	{
 		"id": "POLAR_VORTEX",
 		"emoji": "0x1F976",
-		"title": "Polar Vortex"
+		"title": "Polar Vortex",
+        "description": ""
 	},
 	{
 		"id": "SALMON_CANNONS",
 		"emoji": "0x1F41F",
-		"title": "Salmon Cannons"
+		"title": "Salmon Cannons",
+        "description": "Salmon Cannons have a chance of expelling pests from your Ballpark."
 	},
 	{
 		"id": "EVENT_HORIZON",
 		"emoji": "0x1F30C",
-		"title": "Event Horizon"
+		"title": "Event Horizon",
+        "description": "The Event Horizon will prevent the first Black Hole activation in each game, converting the Overflow to Unruns for your opponent's next game."
 	},
 	{
 		"id": "SOUNDSYSTEM",
 		"emoji": "0x1F50A",
-		"title": "LCD Soundsystem"
+		"title": "LCD Soundsystem",
+        "description": "The LCD Soundsystem will boost both players involved in a Feedback swap by 5%."
 	},
 	{
 		"id": "ECHO_CHAMBER",
 		"emoji": "0x1F4E3",
-		"title": "Echo Chamber"
+		"title": "Echo Chamber",
+        "description": "In Reverb, Echo Chambers will occasionally provide Reverberating and Repeating modifications to players for game-long use."
 	},
 	{
 		"id": "FIRE_INSURANCE",
 		"emoji": "0x1F9F2",
-		"title": "Heat Magnet"
+		"title": "Heat Magnet",
+        "description": "The Heat Magnet will absorb heat from an incineration and pass it on to the Thermal Converter."
 	},
 	{
 		"id": "PEANUT_MISTER",
 		"emoji": "0x1F95C",
-		"title": "Peanut Mister"
+		"title": "Peanut Mister",
+        "description": "A Peanut Mister will occasionally cure a player of their peanut allergy."
 	},
 	{
 		"id": "BLOOD_LUSTER",
 		"emoji": "0x1FA78",
-		"title": "Blood Luster"
+		"title": "Blood Luster",
+        "description": ""
 	},
 	{
 		"id": "BIRDHOUSES",
 		"emoji": "0x1F3D8",
-		"title": "Birdhouses"
+		"title": "Birdhouses",
+        "description": "Birdhouses invite Birds to come live in your Ballpark."
 	},
 	{
 		"id": "SWEETENER",
 		"emoji": "0x1F36D",
-		"title": "Sweetener"
+		"title": "Sweetener",
+		"description": "Sweetener makes Beanings & Free Refills more likely in Coffee & Coffee Two weathers, and lowers the chance of losing Triple Threat."
 	},
 	{
 		"id": "SECRET_BASE",
 		"emoji": "0x2660",
-		"title": "Secret Base"
+		"title": "Secret Base",
+        "description": "The Secret Base is a hidden base beyond 2nd that allows a baserunner to hide between innings."
 	},
 	{
 		"id": "HOOPS",
 		"emoji": "0x1F3C0",
-		"title": "Hoops"
+		"title": "Hoops",
+        "description": ""
 	},
 	{
 		"id": "GRIND_RAIL",
 		"emoji": "0x1F6F9",
-		"title": "Grind Rail"
+		"title": "Grind Rail",
+        "description": "The Grind Rail allows a chance to steal directly from first base to third base, as long as they have the skills."
 	},
 	{
 		"id": "CASINO_ZONE",
 		"emoji": "0x1F3B0",
-		"title": "Casino Zone"
+		"title": "Casino Zone",
+        "description": "777"
 	},
 	{
 		"id": "CATAPULTS",
 		"emoji": "0x1F320",
-		"title": "Catapults"
+		"title": "Catapults",
+        "description": ""
 	},
 	{
         "id": "BIG_BUCKET",
 		"emoji": "0x1FAA3",
-        "title": "Big Buckets"
+        "title": "Big Buckets",
+        "description": "If a home run lands in a Big Bucket, it scores an extra Run."
     },
     {
         "id": "SMALL_BUCKET",
 		"emoji": "0x1F5D1",
-        "title": "Small Bucket"
+        "title": "Small Bucket",
+        "description": "If a home run lands in a Small Bucket, it score 5 extra Runs."
     },
     {
         "id": "BUMPERS",
-		"emoji": "",
-        "title": "Bumpers"
+		"emoji": "0x1F3B1",
+        "title": "Bumpers",
+        "description": ""
     },
     {
         "id": "BULLPEN",
 		"emoji": "0x1F402",
-        "title": "Bull Pen"
+        "title": "Bull Pen",
+        "description": ""
     },
     {
         "id": "SEARCHLIGHTS",
 		"emoji": "0x1F526",
-        "title": "Searchlights"
+        "title": "Searchlights",
+        "description": ""
     },
     {
         "id": "SECRET_TUNNELS",
-		"emoji": "",
-        "title": "Secret Tunnels"
+		"emoji": "0x1F687",
+        "title": "Secret Tunnels",
+        "description": ""
     },
     {
         "id": "SOLAR_PANELS",
-		"emoji": "0x1F526",
-        "title": "Solar Panels"
+		"emoji": "0x2600",
+        "title": "Solar Panels",
+        "description": "Solar Panels will prevent the first Sun 2 activation in each game, converting the Overflow to Runs for your Team's next game."
     },
     {
         "id": "TEMP_STOLEN",
-		"emoji": "",
-        "title": "Temp Stolen"
+		"emoji": "0x1F90F",
+        "title": "Temp Stolen",
+        "description": "This player has been temporarily stolen."
     },
     {
         "id": "REDACTED",
 		"emoji": "0x1F4C1",
-        "title": "Redacted"
+        "title": "Redacted",
+        "description": "This player is Redacted."
     },
     {
         "id": "FUGITIVE",
 		"emoji": "0x1F463",
-        "title": "Fugitive"
+        "title": "Fugitive",
+        "description": ""
     },
     {
         "id": "BIG_RED_BUTTON",
-		"emoji": "0x1F50B",
-        "title": "Supercharged"
+		"emoji": "0x1F386",
+        "title": "Supercharged",
+        "description": "When this Team hits a Grand Slam, reset the number of Outs to zero."
     },
     {
         "id": "BASE_DEALING",
-		"emoji": "0x2660",
-        "title": "Base Dealing"
+		"emoji": "0x1F0CF",
+        "title": "Base Dealing",
+        "description": "This Team's lineup will advance in reverse order."
     },
     {
         "id": "SMOOTH",
 		"emoji": "0x1F95C",
-        "title": "Smooth"
+        "title": "Smooth",
+        "description": "This player will have 100% more Speed in Peanut weather."
     },
     {
         "id": "CHUNKY",
 		"emoji": "0x1F95C",
-        "title": "Chunky"
+        "title": "Chunky",
+        "description": "This player will have 100% more Power in Peanut weather."
     },
     {
         "id": "SUN_KISSED",
 		"emoji": "0x2600",
-        "title": "Sun Dialed"
+        "title": "Sun Dialed",
+        "description": "When this Team activates Sun 2, a random player on their Team will be boosted by 1%."
     },
     {
         "id": "UNHOLEY",
 		"emoji": "0x26AB",
-        "title": "Unholey"
+        "title": "Unholey",
+        "description": "When this Team activates the Black Hole, a random player on their opponent's Team will be impaired by 1%."
     },
     {
         "id": "SUPERCHARGED",
-		"emoji": "0x1F50B",
-        "title": "Supercharged"
+		"emoji": "0x1F329",
+        "title": "Supercharged",
+        "description": "This Team will play 10% better after scoring 10+ Runs the Day before."
     },
     {
         "id": "HIGH_PRESSURE",
 		"emoji": "0x26F2",
-        "title": "High Pressure"
+        "title": "High Pressure",
+        "description": "This Team or Player will play 25% better in Flooding weather when runners are on base."
     },
     {
         "id": "SCATTERED",
 		"emoji": "0x1F32B",
-        "title": "Scattered"
+        "title": "Scattered",
+        "description": "This Player returned from Elsewhere a bit Scattered."
     },
     {
         "id": "PATIENT",
 		"emoji": "0x1F440",
-        "title": "Patient"
+        "title": "Patient",
+        "description": "This batter will never swing when there are 0 Strikes and are 1 Ball away from a Walk."
     },
     {
         "id": "HUNCH",
 		"emoji": "0x1F50D",
-        "title": "Hunch"
+        "title": "Hunch",
+        "description": "This player has a Hunch."
     },
     {
         "id": "UNCERTAIN",
-		"emoji": "0x1F4AB",
-        "title": "Uncertain"
+		"emoji": "0x1F3B2",
+        "title": "Uncertain",
+        "description": "When this Player returns from Elsewhere, they'll be adjusted by -15% to +20%."
     },
     {
         "id": "MUNCHIES",
 		"emoji": "0x1F36A",
-        "title": "Munchies"
+        "title": "Munchies",
+        "description": ""
     },
     {
         "id": "DOUBLE_DOG",
 		"emoji": "0x1F436",
-        "title": "Double-Dog"
+        "title": "Double-Dog",
+        "description": ""
     },
     {
         "id": "BLACKHOLE_PAYOUTS",
 		"emoji": "0x1F36E",
-        "title": "Jam-Packed"
+        "title": "Jam-Packed",
+        "description": "When this Team triggers the Black Hole, they'll earn double payouts for all Wet Pretzel holders."
     },
     {
         "id": "SUN2_PAYOUTS",
 		"emoji": "0x1F369",
-        "title": "Glazed"
+        "title": "Glazed",
+        "description": "When this Team activates Sun 2, they'll earn double payouts for all Doughnut holders."
     },
     {
         "id": "POPCORN_PAYOUTS",
 		"emoji": "0x1F37F",
-        "title": "Buttered Up"
+        "title": "Buttered Up",
+        "description": "This Team earns double payouts on Popcorn."
     },
     {
         "id": "STALEPOPCORN_PAYOUTS",
 		"emoji": "0x1F9C2",
-        "title": "Over Salted"
+        "title": "Over Salted",
+        "description": "This Team earns double payouts on Stale Popcorn."
     },
     {
         "id": "MAXIMALIST",
 		"emoji": "0x2B06",
-        "title": "Maximalist"
+        "title": "Maximalist",
+        "description": "This Player plays 250% better at Maximum Blaseball."
     },
     {
         "id": "MINIMALIST",
 		"emoji": "0x2B07",
-        "title": "Minimalist"
+        "title": "Minimalist",
+        "description": "This Player plays 75% worse at Maximum Blaseball."
     },
     {
         "id": "FREE_WILL",
 		"emoji": "0x1F4DC",
-        "title": "Free Will"
+        "title": "Free Will",
+        "description": "This Team will receive an Extra Will in the upcoming Election."
     },
     {
         "id": "CUSTOM_HATCHED",
 		"emoji": "0x1F423",
-        "title": "Custom Hatched"
+        "title": "Custom Hatched",
+        "description": "This Player was hatched via Bird Rights."
     },
     {
         "id": "FORCE",
 		"emoji": "0x1FAA2",
-        "title": "Force"
+        "title": "Force",
+        "description": "This Player is Forced into position. They cannot leave or move within this Team's roster."
     },
     {
         "id": "PSYCHOACOUSTICS",
 		"emoji": "0x1F4E1",
-        "title": "PsychoAcoustics"
+        "title": "PsychoAcoustics",
+        "description": "In Feedback or Reverb, PsychoAcoustics will occasionally Echo one of the Away Team's mods to the Home Team, for game-long use."
     },
 	{
         "id": "CRIME_SCENE",
 		"emoji": "0x1F50D",
-        "title": "Crime Scene"
+        "title": "Crime Scene",
+        "description": "When a Hard-Boiled Player plays at a Crime Scene, they'll Investigate."
     },
 	{
         "id": "AFTER_PARTY",
 		"emoji": "0x1F973",
-        "title": "Afterparty"
+        "title": "Afterparty",
+        "description": "This Team will occasionally receive permanent stats boost in their games (outside of Party Time), but only while they're losing."
     },
     {
         "id": "MIDDLING",
 		"emoji": "0x3030",
-        "title": "Middling"
+        "title": "Middling",
+        "description": "This Team or Player will Overperform in the Midseason."
     },
     {
         "id": "0",
 		"emoji": "0️⃣",
-        "title": "0"
+        "title": "0",
+        "description": "Players with 0 will always swing at strikes while there are 0 Balls and 0 Strikes in the At Bat."
     },
     {
         "id": "H20",
 		"emoji": "0x1F4A7",
-        "title": "H20"
+        "title": "H20",
+        "description": "Players with H20 will always swing at strikes while there are 2 Outs."
     },
-	{
-		"id": "INVERTED",
-		"emoji": "0x1F643",
-		"title": "Inverted"
-	},
     {
         "id": "ATTRACTOR",
 		"emoji": "0x1F9F2",
-        "title": "Attractor"
+        "title": "Attractor",
+        "description": "When this player scores a Run, they'll join the Shadows of the Team that scored them, if they're not already on their roster."
     },
     {
         "id": "SCRAMBLED",
 		"emoji": "0x1F373",
-        "title": "Scrambled"
+        "title": "Scrambled",
+        "description": "This player is Scrambled."
     },
     {
         "id": "CAREFUL",
 		"emoji": "0x26A0",
-        "title": "Careful"
+        "title": "Careful",
+        "description": "This player's Items will not be damaged by standard game actions."
     },
     {
         "id": "AMBITIOUS",
 		"emoji": "0x1F44D",
-        "title": "Ambitious"
+        "title": "Ambitious",
+        "description": "This Team or Player will Overperform in the Postseason."
     },
     {
         "id": "PRO_SKATER",
         "emoji": "0x1F6F9",
-        "title": "Pro Skater"
+        "title": "Pro Skater",
+        "description": "This player cannot bail when using the Grind Rail."
     },
     {
         "id": "PSYCHIC",
 		"emoji": "0x1F944",
-        "title": "Psychic"
+        "title": "Psychic",
+        "description": "Psychic players have a chance of reversing a bad outcome with a Mind Trick."
     },
     {
         "id": "FIERY",
-		"emoji": "0x1F4A5",
-        "title": "Fiery"
+		"emoji": "0x1F525",
+        "title": "Fiery",
+        "description": "Players with Fiery have a small chance of throwing Double Strikes."
     },
     {
         "id": "AAA",
 		"emoji": "0x1F50B",
-        "title": "Power Chaaarge"
+        "title": "Power Chaaarge",
+        "description": "When this Player hits a Triple, they'll have a chance of Overperforming for the rest of the game."
     },
     {
         "id": "UNAMBITIOUS",
 		"emoji": "0x1F9F1",
-        "title": "Unambitious"
+        "title": "Unambitious",
+        "description": "This Team or player will Underperform in the Postseason."
     },
     {
         "id": "COASTING",
 		"emoji": "0x1F9F1",
-        "title": "Coasting"
+        "title": "Coasting",
+        "description": "This Team or player will Underperform in the Midseason."
     },
     {
         "id": "FLOOD_BATH",
 		"emoji": "0x1F6C1",
-        "title": "Flood Bath"
+        "title": "Flood Bath",
+        "description": "When Runners on this Team are cleared via Flooding, they'll become Slippery for the remainder of the game."
     },
     {
         "id": "SLIPPERY",
 		"emoji": "0x1F4A6",
-        "title": "Slippery"
+        "title": "Slippery",
+        "description": "When a Slippery baserunner scores, and first base is available, they'll slide to first after scoring."
     },
     {
         "id": "HOTEL_MOTEL",
         "emoji": "0x1F3E8",
-        "title": "Hotel Motel"
+        "title": "Hotel Motel",
+        "description": "The Hotel Motel will occasionally create Holiday Innings during the Earlseason, where you Party instead of Score."
     },
     {
         "id": "FAX_MACHINE",
         "emoji": "0x1F4E0",
-        "title": "Fax Machine"
+        "title": "Fax Machine",
+        "description": "The Fax Machine will swap the Home Team's pitcher for their best Shadows Pitcher whenever they've allowed 10+ Runs in a game."
     },
 	{
         "id": "ENTANGLED",
 		"emoji": "0x1F9F6",
-        "title": "Entangled"
+        "title": "Entangled",
+        "description": "Whenever this Player would return from Elsewhere, their Alternate will return instead."
     },
     {
         "id": "OFFWORLD",
 		"emoji": "0x1F6F8",
-        "title": "Offworld"
+        "title": "Offworld",
+        "description": "When this Player hits a foul ball, it will fly Offworld."
     },
     {
         "id": "ACIDIC",
 		"emoji": "0x1F9EA",
-        "title": "Acidic"
+        "title": "Acidic",
+        "description": "Acidic pitchers occasionally throw Acidic pitches, which cause any Runs scored on the play to be worth .1 less."
     },
     {
         "id": "AA",
 		"emoji": "0x1F50C",
-        "title": "Power Chaarge"
+        "title": "Power Chaarge",
+        "description": "When this Player hits a Double, they'll have a chance of Overperforming for the rest of the game."
     },
     {
         "id": "SMITHY",
 		"emoji": "0x1F528",
-        "title": "Smithy"
+        "title": "Smithy",
+        "description": "The Smithy will occasionally repair Items for Players playing in this Ballpark."
     },
     {
         "id": "COVERUP",
 		"emoji": "0x1F910",
-        "title": "Cover Up"
+        "title": "Cover Up",
+        "description": "This Player is covering something up."
     },
     {
         "id": "REPLICA",
-		"emoji": "0x1F490",
-        "title": "Replica"
+		"emoji": "0x1F916",
+        "title": "Replica",
+        "description": "This Player will fade to Dust at the end of the Season."
     },
     {
         "id": "DUST",
 		"emoji": "0x26B1",
-        "title": "Dust"
+        "title": "Dust",
+        "description": "This Player is waiting to be Dusted off."
     },
     {
         "id": "RALLY",
 		"emoji": "0x1F3C1",
-        "title": "Rally"
+        "title": "Rally",
+        "description": "This Team or Player will play 5% better when losing in the 7th inning or later."
     }
 ]
