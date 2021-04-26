@@ -1,0 +1,208 @@
+<html>
+	<head>
+		<title>Live. Laugh. Leach.</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<meta name="description" content="How many days since Breath Mints star pitcher Leach Ingram threw a walk?">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://yoori.space/livelaughleach/">
+		<meta property="og:title" content="Live. Laugh. Leach.">
+		<meta property="og:description" content="How many days since Breath Mints star pitcher Leach Ingram threw a walk?">
+		<meta property="og:image" content="http://yoori.space/favicon-128.png">
+		<meta property="twitter:card" content="summary">
+		<meta name="twitter:title" content="Live. Laugh. Leach.">
+		<meta name="twitter:description" content="How many days since Breath Mints star pitcher Leach Ingram threw a walk?">
+		<meta name="twitter:image" content="http://yoori.space/favicon-128.png">
+		<link rel="icon" href="/favicon-128.png" sizes="128x128">
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<style>
+			html, body { padding:0;margin:0;background:#111;color:#fff;font-family:'Roboto',sans-serif }
+			main {  height:100%;width:80%;max-width:980px;margin:auto;display:flex;flex-direction:column;row-gap:2em;align-items:center;justify-content:center }
+			h1 { font-size:4em;margin:0 }
+			p { font-size:2em;text-align:justify;margin:0 }
+			footer { position:absolute;bottom:0;background:#178f55;width:100%;padding:10px 0;text-align:center }
+			a { color:#fff;text-decoration:none;transition: all 0.4s ease-out }
+			a:hover { color:#00ff84 }
+			em { background:#fff;color:#111;padding:.2em;font-style:normal;font-weight:bold;transition:all 0.4s ease-out }
+			a:hover em { background:#00ff84 }
+			.loading { display:flex;width:60%;justify-content:center;animation:loading 8s infinite linear }
+			.loading span { flex:1;vertical-align:middle;text-align:center;overflow:hidden;transition:all 0.4s ease-out }
+			.push0, .push1, .push2 { flex:0!important }
+			
+			@keyframes loading {
+				0% { color: #ffffff; }
+				33% { color: #08f182; }
+				66% { color: #4ad032; }
+				100% { color: #ffffff; }
+			}
+			
+			@media screen and (max-width: 700px) {
+				.loading { height:6em;width:inherit;flex-direction:column }
+				.loading span { vertical-align:inherit;text-align:inherit }
+			}
+		</style>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7S24X2FST"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-T7S24X2FST');
+		</script>
+	</head>
+	<body>
+		<main>
+			<h1>&#x1F331; &#x1F606; &#x1F480;</h1>
+			<p class="loading"><span>Loading...</span><span class="push0">Live.</span><span class="push1">Laugh.</span><span class="push2">Leach.</span></p>
+		</main>
+		<footer>yoori#1569 made this</footer>
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/underscore@1.11.0/underscore-min.js"></script>
+		<script>
+			$(function() {
+				var lastGame, lastWalk, animationStep = 0, animationTimeout;
+				animateLoadingStep();
+				loadLatest();
+				loadWalkies();
+				
+				function animateLoadingStep(fast) {
+					animationTimeout = setTimeout(function() {
+						var loadingClass = "push" + animationStep;
+						if($("." + loadingClass).length) {
+							$("." + loadingClass).removeClass(loadingClass);
+							animationStep++;
+							animateLoadingStep(fast);
+						} else {
+							displayLastWalk();
+						}
+					}, fast ? (animationStep > 2 ? 900 : 400) : 2000);
+				}
+				
+				function loadLatest() {
+					$.ajax("https://api.sibr.dev/chronicler/v1/games", {
+						method: "GET",
+						datatype: "json",
+						data: {
+							count: 1,
+							order: "desc",
+							started: true,
+							team: "adc5b394-8f76-416d-9ce9-813706877b84"
+						},
+						success: function(data) {
+							var latest = _.first(data.data);
+							if(latest) {
+								lastGame = {
+									day: latest.data.day, 
+									inning: latest.data.inning, 
+									outs: latest.data.halfInningOuts,
+									season: latest.data.season
+								};
+								displayLastWalk();
+							} else {
+								handleApiFailure();
+							}
+						},
+						error: function() {
+							handleApiFailure();
+						}
+					});
+				}
+				
+				function loadLatest() {
+					$.ajax("https://api.sibr.dev/chronicler/v1/games", {
+						method: "GET",
+						datatype: "json",
+						data: {
+							count: 1,
+							order: "desc",
+							started: true
+						},
+						success: function(data) {
+							var latest = _.first(data.data);
+							if(latest) {
+								lastGame = {
+									count: latest.data.playCount,
+									day: latest.data.day, 
+									inning: latest.data.inning,
+									season: latest.data.season
+								};
+								displayLastWalk();
+							} else {
+								handleApiFailure();
+							}
+						},
+						error: function() {
+							handleApiFailure();
+						}
+					});
+				}
+				
+				function loadWalkies(nextPage) {
+					$.ajax("https://api.sibr.dev/chronicler/v1/games/updates", {
+						method: "GET",
+						datatype: "json",
+						data: {
+							order: "desc",
+							page: nextPage,
+							search: "walk"
+						},
+						success: function(data) {
+							var updates = _.chain(data.data).map(function(update) {
+								return getRelevantUpdate(update);
+							}).reject(function(update) { return !update; }).value();
+							if(updates.length) {
+								lastWalk = _.first(updates);
+								displayLastWalk();
+							} else {
+								loadWalkies(data.nextPage);
+							}
+						},
+						error: function() {
+							handleApiFailure();
+						}
+					});
+				}
+				
+				function getRelevantUpdate(update) {
+					if((update.data.awayPitcher == "a199a681-decf-4433-b6ab-5454450bbe5e" && !update.data.topOfInning) || (update.data.homePitcher == "a199a681-decf-4433-b6ab-5454450bbe5e" && update.data.topOfInning)) {
+						return {
+							count: update.data.playCount,
+							day: update.data.day,
+							game: update.gameId,
+							hash: update.hash,
+							inning: update.data.inning,
+							season: update.data.season
+						};
+					}
+					return null;
+				}
+				
+				function displayLastWalk() {
+					if(lastGame && lastWalk) {
+						if($(".push2").length) {
+							clearTimeout(animationTimeout);
+							animateLoadingStep(true);
+						} else {
+							var days = lastGame.day - lastWalk.day, innings = lastGame.inning - lastWalk.inning, duration = "";
+							if(lastGame.season != lastWalk.season) {
+								duration = "at least <em>" + (lastWalk.day + 1) + "</em> day" + (lastWalk.day == 0 ? "" : "s");
+							} else if(days > 0) {
+								duration = "<em>" + days + "</em> day" + (days == 1 ? "" : "s");
+							} else {
+								duration = "<em>" + innings + "</em> inning" + (innings == 1 ? "" : "s");
+							}
+							$("main p").removeClass("loading");
+							$("main p").html("<a href='https://reblase.sibr.dev/game/" + lastWalk.game + "#" + lastWalk.hash + "' target='_blank'>It has been <span class='duration'>" + duration + "</span> since Leach Ingram got her walkies.</a>");
+							//console.log(lastGame, lastWalk);
+						}
+					}
+				}
+				
+				function handleApiFailure() {
+					$("main p").empty();
+					$("main p").removeClass("loading");
+					$("main p").text("Live. Laugh. API FAILURE.");
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,1007 @@
+[
+	{
+		"id": "AFFINITY_FOR_CROWS",
+		"emoji": "0x1F426",
+		"title": "Affinity for Crows"
+	},
+	{
+		"id": "ALTERNATE",
+		"emoji": "0x1F465",
+		"title": "Alternate"
+	},
+	{
+		"id": "BASE_INSTINCTS",
+		"emoji": "0x1F3C3",
+		"title": "Base Instincts"
+	},
+	{
+		"id": "BIRD_SEED",
+		"emoji": "0x1F35E",
+		"title": "Bird Seed"
+	},
+	{
+		"id": "BLASERUNNING",
+		"emoji": "0x1F3C3",
+		"title": "Blaserunning"
+	},
+	{
+		"id": "COFFEE_EXIT",
+		"emoji": "0x2615",
+		"title": "Percolated"
+	},
+	{
+		"id": "COFFEE_PERIL",
+		"emoji": "0x1F441",
+		"title": "Observed"
+	},
+	{
+		"id": "COFFEE_RALLY",
+		"emoji": "0x1F375",
+		"title": "Free Refill"
+	},
+	{
+		"id": "COFFEE_SHADOWS",
+		"emoji": "0x1F971",
+		"title": "Well Rested"
+	},
+	{
+		"id": "CONTAINMENT",
+		"emoji": "0x1F512",
+		"title": "Containment"
+	},
+	{
+		"id": "CREDIT_TO_THE_TEAM",
+		"emoji": "0x1F4B0",
+		"title": "Credit to the Team"
+	},
+	{
+		"id": "CRUNCHY",
+		"emoji": "0x1F36F",
+		"title": "Crunchy"
+	},
+	{
+		"id": "CURSE_OF_CROWS",
+		"emoji": "0x1F426",
+		"title": "Curse for Crows"
+	},
+	{
+		"id": "DEBT",
+		"emoji": "0x1F4B3",
+		"title": "Refinanced Debt"
+	},
+	{
+		"id": "DEBT_TWO",
+		"emoji": "0x1F4B3",
+		"title": "Consolidated Debt"
+	},
+	{
+		"id": "DEBT_ZERO",
+		"emoji": "0x1F4B3",
+		"title": "Debt"
+	},
+	{
+		"id": "DESTRUCTION",
+		"emoji": "0x1F30B",
+		"title": "Destruction"
+	},
+	{
+		"id": "DOUBLE_PAYOUTS",
+		"emoji": "0x1F4B0",
+		"title": "Super Idol"
+	},
+	{
+		"id": "ELECTRIC",
+		"emoji": "0x26A1",
+		"title": "Electric"
+	},
+	{
+		"id": "ESCAPE",
+		"emoji": "0x23F2",
+		"title": "Pending"
+	},
+	{
+		"id": "EXTRA_BASE",
+		"emoji": "0x1F590",
+		"title": "Fifth Base"
+	},
+	{
+		"id": "EXTRA_STRIKE",
+		"emoji": "4️⃣",
+		"title": "The Fourth Strike"
+	},
+	{
+		"id": "FAIRNESS",
+		"emoji": "0x2696",
+		"title": "Total Fairness"
+	},
+	{
+		"id": "FIRE_EATER",
+		"emoji": "0x1F525",
+		"title": "Fire Eater"
+	},
+	{
+		"id": "FIRE_PROTECTOR",
+		"emoji": "0x1F6E1",
+		"title": "Fire Protector"
+	},
+	{
+		"id": "FIREPROOF",
+		"emoji": "0x1F9EF",
+		"title": "Fireproof"
+	},
+	{
+		"id": "FIRST_BORN",
+		"emoji": "0x1F95A",
+		"title": "First Born"
+	},
+	{
+		"id": "FLICKERING",
+		"emoji": "0x1F399",
+		"title": "Flickering"
+	},
+	{
+		"id": "FLIICKERRRIIING",
+		"emoji": "0x1F399",
+		"title": "Fliickerrriiing"
+	},
+	{
+		"id": "FLINCH",
+		"emoji": "0x1F628",
+		"title": "Flinch"
+	},
+	{
+		"id": "FRIEND_OF_CROWS",
+		"emoji": "0x1F426",
+		"title": "Friend of Crows"
+	},
+	{
+		"id": "GOD",
+		"emoji": "0x1F329",
+		"title": "God"
+	},
+	{
+		"id": "GRAVITY",
+		"emoji": "0x1F462",
+		"title": "Gravity"
+	},
+	{
+		"id": "GROWTH",
+		"emoji": "0x1F331",
+		"title": "Growth"
+	},
+	{
+		"id": "HARD_BOILED",
+		"emoji": "0x1F95A",
+		"title": "Hard Boiled"
+	},
+	{
+		"id": "HAUNTED",
+		"emoji": "0x1F47B",
+		"title": "Haunted"
+	},
+	{
+		"id": "HEATING_UP",
+		"emoji": null,
+		"title": "Heating Up..."
+	},
+	{
+		"id": "HOME_FIELD",
+		"emoji": "0x1F3E0",
+		"title": "Home Field Advantage"
+	},
+	{
+		"id": "HONEY_ROASTED",
+		"emoji": "0x1F36F",
+		"title": "Honey Roasted"
+	},
+	{
+		"id": "INHABITING",
+		"emoji": "0x1F47B",
+		"title": "Inhabiting"
+	},
+	{
+		"id": "LIBERATED",
+		"emoji": "",
+		"title": "Liberated"
+	},
+	{
+		"id": "LIFE_OF_PARTY",
+		"emoji": "0x1F973",
+		"title": "Life of the Party"
+	},
+	{
+		"id": "LOVE",
+		"emoji": "0x2764",
+		"title": "Charm"
+	},
+	{
+		"id": "LOYALTY",
+		"emoji": "0x1F91D",
+		"title": "Loyalty"
+	},
+	{
+		"id": "MAGMATIC",
+		"emoji": null,
+		"title": "Magmatic"
+	},
+	{
+		"id": "MARKED",
+		"emoji": "0x274C",
+		"title": "Unstable"
+	},
+	{
+		"id": "NON_IDOLIZED",
+		"emoji": "0x1F512",
+		"title": "Idol Immune"
+	},
+	{
+		"id": "O_NO",
+		"emoji": "0x1F631",
+		"title": "0 No"
+	},
+	{
+		"id": "ON_FIRE",
+		"emoji": null,
+		"title": "Red Hot!"
+	},
+	{
+		"id": "PARTY_TIME",
+		"emoji": "0x1F389",
+		"title": "Party Time"
+	},
+	{
+		"id": "PEANUT_RAIN",
+		"emoji": "0x1F95C",
+		"title": "Peanut Rain"
+	},
+	{
+		"id": "PERK",
+		"emoji": "0x2697",
+		"title": "Perk"
+	},
+	{
+		"id": "PITY",
+		"emoji": "0x1F90F",
+		"title": "Pity"
+	},
+	{
+		"id": "RECEIVER",
+		"emoji": "0x1F4DE",
+		"title": "Receiver"
+	},
+	{
+		"id": "RETIRED",
+		"emoji": "0x1F6CF",
+		"title": "Released"
+	},
+	{
+		"id": "RETURNED",
+		"emoji": "0x1F9DB",
+		"title": "Returned"
+	},
+	{
+		"id": "REPEATING",
+		"emoji": "0x1F504",
+		"title": "Repeating"
+	},
+	{
+		"id": "REVERBERATING",
+		"emoji": "0x1F30A",
+		"title": "Reverberating"
+	},
+	{
+		"id": "SEALANT",
+		"emoji": "0x1FA79",
+		"title": "Sealant"
+	},
+	{
+		"id": "SHAME_PIT",
+		"emoji": "0x1F3AF",
+		"title": "Targeted Shame"
+	},
+	{
+		"id": "SHELLED",
+		"emoji": "0x1F95C",
+		"title": "Shelled"
+	},
+	{
+		"id": "SIPHON",
+		"emoji": "0x1FA78",
+		"title": "Siphon"
+	},
+	{
+		"id": "SOUNDPROOF",
+		"emoji": "0x1F442",
+		"title": "Soundproof"
+	},
+	{
+		"id": "SPICY",
+		"emoji": "0x1F975",
+		"title": "Spicy"
+	},
+	{
+		"id": "SQUIDDEST",
+		"emoji": "0x1F991",
+		"title": "Squiddest"
+	},
+	{
+		"id": "SQUIDDISH",
+		"emoji": "0x1F991",
+		"title": "Squiddish"
+	},
+	{
+		"id": "SUBJECTION",
+		"emoji": "",
+		"title": "Subjection"
+	},
+	{
+		"id": "STABLE",
+		"emoji": "0x1F9F1",
+		"title": "Stable"
+	},
+	{
+		"id": "SUPERALLERGIC",
+		"emoji": "0x1F922",
+		"title": "Superallergic"
+	},
+	{
+		"id": "SUPERYUMMY",
+		"emoji": "0x1F60B",
+		"title": "Superyummy"
+	},
+	{
+		"id": "TIRED",
+		"emoji": "0x2615",
+		"title": "Tired"
+	},
+	{
+		"id": "TRAVELING",
+		"emoji": "0x1F9F3",
+		"title": "Traveling"
+	},
+	{
+		"id": "TRIBUTE",
+		"emoji": "0x1F381",
+		"title": "Tribute"
+	},
+	{
+		"id": "TRIPLE_THREAT",
+		"emoji": "0x2615",
+		"title": "Triple Threat"
+	},
+	{
+		"id": "UNFLAMED",
+		"emoji": "0x1F0CF",
+		"title": "Chaotic"
+	},
+	{
+		"id": "WALK_IN_THE_PARK",
+		"emoji": "0x1F6B6",
+		"title": "Walk in the Park"
+	},
+	{
+		"id": "WILD",
+		"emoji": "0x1F611",
+		"title": "Mild"
+	},
+	{
+		"id": "WIRED",
+		"emoji": "0x2615",
+		"title": "Wired"
+	},
+	{
+		"id": "OVERPERFORMING",
+		"emoji": "0x2B06",
+		"title": "Overperforming"
+	},
+	{
+		"id": "SHAME_GIVER",
+		"emoji": "",
+		"title": "Shame Donor"
+	},
+	{
+		"id": "UNDERPERFORMING",
+		"emoji": "0x2B07",
+		"title": "Underperforming"
+	},
+	{
+		"id": "EGO1",
+		"emoji": "0x1F3C5",
+		"title": "Ego+"
+	},
+	{
+		"id": "EGO2",
+		"emoji": "0x1F949",
+		"title": "Ego++"
+	},
+	{
+		"id": "EGO3",
+		"emoji": "0x1F948",
+		"title": "Ego+++"
+	},
+	{
+		"id": "EGO4",
+		"emoji": "0x1F947",
+		"title": "Ego++++"
+	},
+	{
+		"id": "LEGENDARY",
+		"emoji": "0x1F3C6",
+		"title": "Legendary"
+	},
+	{
+		"id": "ELSEWHERE",
+		"emoji": "0x1F3D5",
+		"title": "Elsewhere"
+	},
+	{
+		"id": "BOTTOM_DWELLER",
+		"emoji": "0x1F40C",
+		"title": "Bottom Dweller"
+	},
+	{
+		"id": "CARCINIZATION",
+		"emoji": "0x1F980",
+		"title": "Carcinization"
+	},
+	{
+		"id": "MAINTENANCE_MODE",
+		"emoji": "0x1F6A7",
+		"title": "Maintenance Mode"
+	},
+	{
+		"id": "AMBUSH",
+		"emoji": "0x1F405",
+		"title": "Ambush"
+	},
+	{
+		"id": "UNDERSEA",
+		"emoji": "0x1F42C",
+		"title": "Undersea"
+	},
+	{
+		"id": "PENANCE",
+		"emoji": "0x1F64F",
+		"title": "Penance"
+	},
+	{
+		"id": "EXTRA_OUT",
+		"emoji": "4️⃣",
+		"title": "Fourth Out"
+	},
+    {
+        "id": "BLOOD_DONOR",
+        "emoji": "0x1F6C1",
+        "title": "Blood Donor"
+    },
+    {
+        "id": "BLOOD_THIEF",
+        "emoji": "0x1F6C1",
+        "title": "Blood Thief"
+    },
+    {
+        "id": "BLOOD_PITY",
+        "emoji": "0x1F6C1",
+        "title": "Blood Pity"
+    },
+    {
+        "id": "BLOOD_WINNER",
+        "emoji": "0x1F6C1",
+        "title": "Blood Winner"
+    },
+    {
+        "id": "BLOOD_FAITH",
+        "emoji": "0x1F6C1",
+        "title": "Blood Faith"
+    },
+    {
+        "id": "BLOOD_LAW",
+        "emoji": "0x1F6C1",
+        "title": "Blood Law"
+    },
+    {
+        "id": "BLOOD_CHAOS",
+        "emoji": "0x1F6C1",
+        "title": "Blood Chaos"
+    },
+	{
+		"id": "STUCK",
+		"emoji": "0x1F578",
+		"title": "Stuck"
+	},
+	{
+		"id": "SWIM_BLADDER",
+		"emoji": "0x1F93F",
+		"title": "Flippers"
+	},
+	{
+		"id": "DEBT_THREE",
+		"emoji": "0x1F4B3",
+		"title": "Debt"
+	},
+	{
+		"id": "ECHO",
+		"emoji": "0x1F50A",
+		"title": "Echo"
+	},
+	{
+		"id": "STATIC",
+		"emoji": "0x1F4AC",
+		"title": "Static"
+	},
+	{
+		"id": "EARLBIRDS",
+		"emoji": "0x1F424",
+		"title": "Earlbirds"
+	},
+	{
+		"id": "LATE_TO_PARTY",
+		"emoji": "0x1F38A",
+		"title": "Late to the Party"
+	},
+	{
+		"id": "OVERUNDER",
+		"emoji": "0x2935",
+		"title": "Over Under"
+	},
+	{
+		"id": "UNDEROVER",
+		"emoji": "0x2934",
+		"title": "Under Over"
+	},
+	{
+		"id": "WANDERER",
+		"emoji": "0x1F697",
+		"title": "Roamin'"
+	},
+	{
+		"id": "SUPERWANDERER",
+		"emoji": "0x1F69A",
+		"title": "Super Roamin'"
+	},
+	{
+		"id": "NEWADVENTURE",
+		"emoji": "0x1F9F3",
+		"title": "On an Odyssey"
+	},
+	{
+		"id": "SINKING_SHIP",
+		"emoji": "0x1F6A2",
+		"title": "Sinking Ship"
+	},
+	{
+		"id": "PARASITE",
+		"emoji": "0x1FA78",
+		"title": "Parasite"
+	},
+	{
+		"id": "DEFECTOR",
+		"emoji": "0x1F47E",
+		"title": "Defector"
+	},
+	{
+		"id": "HOMEBODY",
+		"emoji": "0x1F3E0",
+		"title": "Homebody"
+	},
+	{
+		"id": "KILLER_PIES",
+		"emoji": "0x1F967",
+		"title": "Flying Pies"
+	},
+	{
+		"id": "FRESH",
+		"emoji": "0x2728",
+		"title": "Fresh"
+	},
+	{
+		"id": "PARTING_GIFT",
+		"emoji": "0x1F381",
+		"title": "Parting Gift"
+	},
+	{
+		"id": "BLOCKED_BOOST",
+		"emoji": "0x1F6AB",
+		"title": "Blocked Boost"
+	},
+	{
+		"id": "HALL_EXIT_BOOST",
+		"emoji": "0x1F991",
+		"title": "Phoenix"
+	},
+	{
+		"id": "FLOOD_PUMPS",
+		"emoji": "0x1F4A7",
+		"title": "Flood Pumps"
+	},
+	{
+		"id": "POLAR_VORTEX",
+		"emoji": "0x1F976",
+		"title": "Polar Vortex"
+	},
+	{
+		"id": "SALMON_CANNONS",
+		"emoji": "0x1F41F",
+		"title": "Salmon Cannons"
+	},
+	{
+		"id": "EVENT_HORIZON",
+		"emoji": "0x1F30C",
+		"title": "Event Horizon"
+	},
+	{
+		"id": "SOUNDSYSTEM",
+		"emoji": "0x1F50A",
+		"title": "LCD Soundsystem"
+	},
+	{
+		"id": "ECHO_CHAMBER",
+		"emoji": "0x1F4E3",
+		"title": "Echo Chamber"
+	},
+	{
+		"id": "FIRE_INSURANCE",
+		"emoji": "0x1F9F2",
+		"title": "Heat Magnet"
+	},
+	{
+		"id": "PEANUT_MISTER",
+		"emoji": "0x1F95C",
+		"title": "Peanut Mister"
+	},
+	{
+		"id": "BLOOD_LUSTER",
+		"emoji": "0x1FA78",
+		"title": "Blood Luster"
+	},
+	{
+		"id": "BIRDHOUSES",
+		"emoji": "0x1F3D8",
+		"title": "Birdhouses"
+	},
+	{
+		"id": "SWEETENER",
+		"emoji": "0x1F36D",
+		"title": "Sweetener"
+	},
+	{
+		"id": "SECRET_BASE",
+		"emoji": "0x2660",
+		"title": "Secret Base"
+	},
+	{
+		"id": "HOOPS",
+		"emoji": "0x1F3C0",
+		"title": "Hoops"
+	},
+	{
+		"id": "GRIND_RAIL",
+		"emoji": "0x1F6F9",
+		"title": "Grind Rail"
+	},
+	{
+		"id": "CASINO_ZONE",
+		"emoji": "0x1F3B0",
+		"title": "Casino Zone"
+	},
+	{
+		"id": "CATAPULTS",
+		"emoji": "0x1F320",
+		"title": "Catapults"
+	},
+	{
+        "id": "BIG_BUCKET",
+		"emoji": "0x1FAA3",
+        "title": "Big Buckets"
+    },
+    {
+        "id": "SMALL_BUCKET",
+		"emoji": "0x1F5D1",
+        "title": "Small Bucket"
+    },
+    {
+        "id": "BUMPERS",
+		"emoji": "",
+        "title": "Bumpers"
+    },
+    {
+        "id": "BULLPEN",
+		"emoji": "0x1F402",
+        "title": "Bull Pen"
+    },
+    {
+        "id": "SEARCHLIGHTS",
+		"emoji": "0x1F526",
+        "title": "Searchlights"
+    },
+    {
+        "id": "SECRET_TUNNELS",
+		"emoji": "",
+        "title": "Secret Tunnels"
+    },
+    {
+        "id": "SOLAR_PANELS",
+		"emoji": "0x1F526",
+        "title": "Solar Panels"
+    },
+    {
+        "id": "TEMP_STOLEN",
+		"emoji": "",
+        "title": "Temp Stolen"
+    },
+    {
+        "id": "REDACTED",
+		"emoji": "0x1F4C1",
+        "title": "Redacted"
+    },
+    {
+        "id": "FUGITIVE",
+		"emoji": "0x1F463",
+        "title": "Fugitive"
+    },
+    {
+        "id": "BIG_RED_BUTTON",
+		"emoji": "0x1F50B",
+        "title": "Supercharged"
+    },
+    {
+        "id": "BASE_DEALING",
+		"emoji": "0x2660",
+        "title": "Base Dealing"
+    },
+    {
+        "id": "SMOOTH",
+		"emoji": "0x1F95C",
+        "title": "Smooth"
+    },
+    {
+        "id": "CHUNKY",
+		"emoji": "0x1F95C",
+        "title": "Chunky"
+    },
+    {
+        "id": "SUN_KISSED",
+		"emoji": "0x2600",
+        "title": "Sun Dialed"
+    },
+    {
+        "id": "UNHOLEY",
+		"emoji": "0x26AB",
+        "title": "Unholey"
+    },
+    {
+        "id": "SUPERCHARGED",
+		"emoji": "0x1F50B",
+        "title": "Supercharged"
+    },
+    {
+        "id": "HIGH_PRESSURE",
+		"emoji": "0x26F2",
+        "title": "High Pressure"
+    },
+    {
+        "id": "SCATTERED",
+		"emoji": "0x1F32B",
+        "title": "Scattered"
+    },
+    {
+        "id": "PATIENT",
+		"emoji": "0x1F440",
+        "title": "Patient"
+    },
+    {
+        "id": "HUNCH",
+		"emoji": "0x1F50D",
+        "title": "Hunch"
+    },
+    {
+        "id": "UNCERTAIN",
+		"emoji": "0x1F4AB",
+        "title": "Uncertain"
+    },
+    {
+        "id": "MUNCHIES",
+		"emoji": "0x1F36A",
+        "title": "Munchies"
+    },
+    {
+        "id": "DOUBLE_DOG",
+		"emoji": "0x1F436",
+        "title": "Double-Dog"
+    },
+    {
+        "id": "BLACKHOLE_PAYOUTS",
+		"emoji": "0x1F36E",
+        "title": "Jam-Packed"
+    },
+    {
+        "id": "SUN2_PAYOUTS",
+		"emoji": "0x1F369",
+        "title": "Glazed"
+    },
+    {
+        "id": "POPCORN_PAYOUTS",
+		"emoji": "0x1F37F",
+        "title": "Buttered Up"
+    },
+    {
+        "id": "STALEPOPCORN_PAYOUTS",
+		"emoji": "0x1F9C2",
+        "title": "Over Salted"
+    },
+    {
+        "id": "MAXIMALIST",
+		"emoji": "0x2B06",
+        "title": "Maximalist"
+    },
+    {
+        "id": "MINIMALIST",
+		"emoji": "0x2B07",
+        "title": "Minimalist"
+    },
+    {
+        "id": "FREE_WILL",
+		"emoji": "0x1F4DC",
+        "title": "Free Will"
+    },
+    {
+        "id": "CUSTOM_HATCHED",
+		"emoji": "0x1F423",
+        "title": "Custom Hatched"
+    },
+    {
+        "id": "FORCE",
+		"emoji": "0x1FAA2",
+        "title": "Force"
+    },
+    {
+        "id": "PSYCHOACOUSTICS",
+		"emoji": "0x1F4E1",
+        "title": "PsychoAcoustics"
+    },
+	{
+        "id": "CRIME_SCENE",
+		"emoji": "0x1F50D",
+        "title": "Crime Scene"
+    },
+	{
+        "id": "AFTER_PARTY",
+		"emoji": "0x1F973",
+        "title": "Afterparty"
+    },
+    {
+        "id": "MIDDLING",
+		"emoji": "0x3030",
+        "title": "Middling"
+    },
+    {
+        "id": "0",
+		"emoji": "0️⃣",
+        "title": "0"
+    },
+    {
+        "id": "H20",
+		"emoji": "0x1F4A7",
+        "title": "H20"
+    },
+	{
+		"id": "INVERTED",
+		"emoji": "0x1F643",
+		"title": "Inverted"
+	},
+    {
+        "id": "ATTRACTOR",
+		"emoji": "0x1F9F2",
+        "title": "Attractor"
+    },
+    {
+        "id": "SCRAMBLED",
+		"emoji": "0x1F373",
+        "title": "Scrambled"
+    },
+    {
+        "id": "CAREFUL",
+		"emoji": "0x26A0",
+        "title": "Careful"
+    },
+    {
+        "id": "AMBITIOUS",
+		"emoji": "0x1F44D",
+        "title": "Ambitious"
+    },
+    {
+        "id": "PRO_SKATER",
+        "emoji": "0x1F6F9",
+        "title": "Pro Skater"
+    },
+    {
+        "id": "PSYCHIC",
+		"emoji": "0x1F944",
+        "title": "Psychic"
+    },
+    {
+        "id": "FIERY",
+		"emoji": "0x1F4A5",
+        "title": "Fiery"
+    },
+    {
+        "id": "AAA",
+		"emoji": "0x1F50B",
+        "title": "Power Chaaarge"
+    },
+    {
+        "id": "UNAMBITIOUS",
+		"emoji": "0x1F9F1",
+        "title": "Unambitious"
+    },
+    {
+        "id": "COASTING",
+		"emoji": "0x1F9F1",
+        "title": "Coasting"
+    },
+    {
+        "id": "FLOOD_BATH",
+		"emoji": "0x1F6C1",
+        "title": "Flood Bath"
+    },
+    {
+        "id": "SLIPPERY",
+		"emoji": "0x1F4A6",
+        "title": "Slippery"
+    },
+    {
+        "id": "HOTEL_MOTEL",
+        "emoji": "0x1F3E8",
+        "title": "Hotel Motel"
+    },
+    {
+        "id": "FAX_MACHINE",
+        "emoji": "0x1F4E0",
+        "title": "Fax Machine"
+    },
+	{
+        "id": "ENTANGLED",
+		"emoji": "0x1F9F6",
+        "title": "Entangled"
+    },
+    {
+        "id": "OFFWORLD",
+		"emoji": "0x1F6F8",
+        "title": "Offworld"
+    },
+    {
+        "id": "ACIDIC",
+		"emoji": "0x1F9EA",
+        "title": "Acidic"
+    },
+    {
+        "id": "AA",
+		"emoji": "0x1F50C",
+        "title": "Power Chaarge"
+    },
+    {
+        "id": "SMITHY",
+		"emoji": "0x1F528",
+        "title": "Smithy"
+    },
+    {
+        "id": "COVERUP",
+		"emoji": "0x1F910",
+        "title": "Cover Up"
+    },
+    {
+        "id": "REPLICA",
+		"emoji": "0x1F490",
+        "title": "Replica"
+    },
+    {
+        "id": "DUST",
+		"emoji": "0x26B1",
+        "title": "Dust"
+    },
+    {
+        "id": "RALLY",
+		"emoji": "0x1F3C1",
+        "title": "Rally"
+    }
+]

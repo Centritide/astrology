@@ -1,0 +1,1074 @@
+<html>
+	<head>
+		<title>Hloroscopes</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<meta name="description" content="Blaseball player star charts over time.">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://yoori.space/hloroscopes/">
+		<meta property="og:title" content="Hloroscopes">
+		<meta property="og:description" content="Blaseball player star charts over time.">
+		<meta property="og:image" content="http://yoori.space/favicon-128.png">
+		<meta property="twitter:card" content="summary">
+		<meta name="twitter:title" content="Hloroscopes">
+		<meta name="twitter:description" content="Blaseball player star charts over time.">
+		<meta name="twitter:image" content="http://yoori.space/favicon-128.png">
+		<link rel="icon" href="/favicon-128.png" sizes="128x128">
+		<style>
+			html, body { padding:0;margin:0;background:#111;color:#fff;font-family:sans-serif }
+			a { color:#ffffff;text-decoration:none }
+			header { margin:10px 0 20px }
+			ul { list-style:none;padding:0;margin:0;text-align:center }
+			header li { display:inline-block;margin-right:5px;font-size:1.8em }
+			header ul::before { margin-right:5px;font-size:1.6em }
+			ul#teams::before { content:"Teams" }
+			ul#coffee::before { content:"Coffee Cup" }
+			
+			main { width:80%;margin:0px auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px }
+			h1, h3 { width:100%;margin:0;text-align:center }
+			footer { position:fixed;bottom:0;right:0 }
+			img.emoji { height:1em;width:1em;margin:.1em .05em .1em .1em;vertical-align:-0.1em }
+			.selector { display:flex;flex-wrap:wrap;justify-content:center;gap:20px;width:100%;text-align:center }
+			.selector a { padding:0.5em 1em;border-radius:1em;font-size:1.2em;font-weight:bold }
+			.selector a:hover { background:#ffffff;color:#111 }
+			.chart { display:grid;width:100%;min-height:400px;grid-template-columns:calc(75% - 20px) 25%;gap:20px }
+			.players { border:1px solid #fff;padding:20px;overflow:hidden auto }
+			.graph { flex-grow:1;border:1px solid #fff }
+			.graph canvas { height:100%;width:100% }
+			.divider { padding:10px;font-size:1.2em;font-weight:bold;text-align:center }
+			.player { display:block }
+			.player { border-radius:4px }
+			.player:nth-child(odd) { background:#333 }
+			.player:hover { background:#666 }
+			.player > span { position:relative;display:flex;flex-wrap:wrap;align-items:center;min-height:2em;line-height:1em;margin:0 10px;overflow:hidden }
+			.spoiler { display:inherit }
+			.spoiler-free .spoiler { display:none }
+			.card { position:absolute;width:400px;max-width:25vw;background:#111;border:1px solid #fff }
+			.card .header { border-bottom:1px solid #fff;padding:20px }
+			.card .name strong { font-size:1.2em }
+			.card .team { display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;margin-top:5px }
+			.card .team .logo { display:flex;height:1.6em;width:1.6em;align-items:center;justify-content:center;font-size:1.2em;margin-right:5px;border-radius:50% }
+			.card .modifiers { padding:10px 20px;border-bottom:1px solid #fff;font-size:1.2em }
+			.card .row { display:grid;grid-template-columns:50% 50%;padding:10px 20px }
+			.card .row:nth-child(even) { background:#333 }
+			.card .row span { overflow:hidden;text-overflow:ellipsis }
+			.card .items { display:flex;flex-direction:row;padding:0px 20px;gap:20px }
+			.card .items div { display:flex;flex-direction:column;justify-content:center;flex-grow:1;background:#333;border-radius:4px;padding:10px;text-align:center }
+			.card .items p { margin:0 }
+			.card .items p:last-child { margin-top:10px;word-break:break-word }
+			.soulscream, .soulsong { max-height:11em;font-weight:bold;font-style:italic;word-break:break-all;overflow:hidden;text-overflow }
+			.soulscream { color:#ff0000 }
+			.soulsong { color:#5988ff }
+			.half-star { display:inline-block;width:.6em;height:1.1em;overflow:hidden }
+			.graph circle.active, .graph path.active { cursor:pointer;fill:#ffffff;stroke:rgba(255,255,255,0.4);transition: all 0.4s ease-in-out }
+			
+			@media screen and (max-width: 800px) {
+				.chart { display:flex;flex-direction:column;gap:20px;height:inherit !important;margin-bottom:40px }
+				.card { font-size:0.75em;max-width:40vw }
+				.card .name { padding:10px }
+				.card .row { padding:5px 10px }
+				.card strong { overflow:hidden;text-overflow:ellipsis }
+				.card .items { padding:0px 10px;gap:10px }
+				.card .items div { padding:5px }
+				.card .items p:last-child { margin-top:5px }
+			}
+		</style>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7S24X2FST"></script>
+		<script>
+			var GA_TRACKING_ID = 'G-T7S24X2FST';
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', GA_TRACKING_ID, { send_page_view: false });
+		</script>
+	</head>
+	<body>
+		<header>
+			<ul id="teams"></ul>
+			<ul id="coffee"></ul>
+		</header>
+		<main>
+			<h1>Choose a team</h1>
+		</main>
+		<footer>yoori#1569 made this</footer>
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/underscore@1.11.0/underscore-min.js"></script>
+		<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js" crossorigin="anonymous"></script>
+		<script>
+			$(function() {
+				var api_teams = "https://cors-proxy.blaseball-reference.com/database/allTeams",
+					api_players = "https://cors-proxy.blaseball-reference.com/database/players",
+					api_updates = "https://api.sibr.dev/chronicler/v1/players/updates",
+					api_idols = "https://cors-proxy.blaseball-reference.com/api/getIdols",
+					api_tributes = "https://cors-proxy.blaseball-reference.com/api/getTribute",
+					teams,
+					updates = {},
+					special = { idols: [], tributes: [] };
+				
+				loadTeams(function() {
+					var params = getParams(window.location.search);
+					drawNav();
+					loadPage(params);
+					getPageView(params);
+				});
+				window.onresize = function() {
+					displayPlayer(getParams(window.location.search).player);
+					resizeChart();
+				};
+				
+				function loadPage(params) {
+					var current = getParams(window.location.search), newPath = window.location.protocol + "//" + window.location.host + window.location.pathname;
+					if(params.team) {
+						newPath += "?team=" + params.team;
+						if(!$(".players").length || current.team != params.team) {
+							displayTeam(params.team, params.player);
+						}
+					} else if(params.special) {
+						newPath += "?" + params.special;
+						if(!$(".players").length || current.special != params.special) {
+							displaySpecial(params.special, params.player);
+						}
+					}
+					if(params.player) {
+						newPath += "&player=" + params.player;
+						if(current.player != params.player) {
+							displayPlayer(params.player);
+						}
+					}
+					window.history.pushState({path: newPath}, '', newPath);
+				}
+				
+				function loadTeams(callback) {
+					$.ajax(api_teams, {
+						method: "GET",
+						datatype: "json",
+						success: function(data) {
+							teams = _.chain(data).map(function(team) {
+								return {
+									bench: team.bench,
+									bullpen: team.bullpen,
+									emoji: isNaN(Number(team.emoji)) ? team.emoji : ("&#" + team.emoji.substr(1)) + ";",
+									fullName: team.fullName,
+									id: team.id,
+									lineup: team.lineup,
+									location: team.location,
+									nickname: team.nickname,
+									players: [],
+									primaryColor: team.mainColor,
+									rotation: team.rotation,
+									secondaryColor: team.secondaryColor,
+									slogan: team.slogan
+								}
+							}).sortBy(function(team) { return isStandardTeam(team.id) ? team.fullName : undefined; }).value();
+							_.findWhere(teams, { id: "7fcb63bc-11f2-40b9-b465-f1d458692a63" }).percolated = [
+								"9c14cb0c-79ab-4b94-9ae3-c8de1c587e55", // GM
+								"afdbd837-7fc8-4c97-ac31-636950c2b3e4", // Blaseball Surgeon
+								"1a53768b-1ec1-4646-8417-dd58b9849bd7", // Ball Clark
+								"a13f67d5-22eb-4ee9-8b67-893b21acd87b", // Cedrissimo Sugar
+								"00ca40af-a8df-4519-af9a-beaf93ffc122", // Eli Winner
+								"82d5e79d-e125-4460-b1fa-d046ad7739e0", // Changeup Liu
+								"37bdafdf-f213-4718-8200-c123fca39ff5", // Slam Rosenthal
+								"555b0a07-a3e0-41bc-b3db-ca8f520857bc", // Oops All Keepers
+								"12f3a18d-cc63-480d-b2ad-f0d89c1c4562", // The Murph
+								"cacee0b8-50fc-4df4-96ea-089a3d501810", // Nlikki Hart
+								"9e39f808-ff70-4232-8a8c-28085227155f", // Bugcatcher Roland
+								"f6d3c134-e3ee-40a1-bd4d-095347444129"/*, // Parker MacMillan IIII 
+								"74b0974a-f827-4934-9dd0-2020728bd4cc", // Stealix Kramer
+								"3bf8713b-8886-4fc4-983e-e2c72bef7b95", // Stephen Shelled
+								"2aee32f9-a5bc-4f95-932c-cf7492d09374", // Cory Thirteen
+								"b357fbf4-533e-4f2c-8616-a576e9954795" // Cat Inning
+								"a11242ae-936a-46b4-9101-be2cabafeed4" // Electric Kettle*/
+							];
+							if(callback) {
+								callback();
+							}
+						}
+					});
+				}
+				
+				function loadPlayers(id, callback) {
+					var team = _.findWhere(teams, { id: id });
+					if(team.players.length && callback) {
+						callback();
+					} else {
+						$.ajax(api_players, {
+							method: "GET",
+							datatype: "json",
+							data: {
+								ids: _.union(team.bench, team.bullpen, team.lineup, team.rotation, team.percolated).join(",")
+							},
+							success: function(data) {
+								team.players = data;
+								if(callback) {
+									callback();
+								}
+							}
+						});
+					}
+				}
+				
+				function loadPlayerUpdates(id, callback) {
+					if(updates.hasOwnProperty(id) && callback) {
+						callback();
+					} else {
+						$.ajax(api_updates, {
+						method: "GET",
+						datatype: "json",
+						data: {
+							count: 1000,
+							player: id
+						},
+						success: function(data) {
+							updates[id] = _.chain(data.data).map(function(update) {
+								return {
+									id: update.updateId,
+									data: formatPlayerData(update.data),
+									start: new Date(update.firstSeen),
+									end: new Date(update.lastSeen),
+									raw: update.data,
+									changes: []
+								};
+							}).sortBy(function(m, n) {
+								return m.start - n.start;
+							}).value();
+							updates[id][0].changes.push("first seen");
+							for(var i = 1; i < updates[id].length; i++) {
+								_.each(updates[id][i].data, function(value, attribute) {
+									switch(attribute) {
+										case "allergic":
+										case "fingers":
+										case "id":
+											break;
+										case "modifiers":
+											var prevMods = updates[id][i - 1].data.modifiers;
+											if(prevMods.permanent.join(",") != value.permanent.join(",")) {
+												_.each(_.difference(prevMods.permanent, value.permanent), function(modifier) {
+													updates[id][i].changes.push("-" + modifier.replace(/\_/g, " ").toLowerCase());
+												});
+												_.each(_.difference(value.permanent, prevMods.permanent), function(modifier) {
+													updates[id][i].changes.push("+" + modifier.replace(/\_/g, " ").toLowerCase());
+												});
+											}
+											break;
+										case "teams":
+											var prevTeams = updates[id][i - 1].data.teams;
+											if(prevTeams.league != value.league) {
+												updates[id][i].changes.push("team");
+											}
+											if(prevTeams.tournament != value.tournament) {
+												updates[id][i].changes.push("tournament");
+											}
+											break;
+										default:
+											if(updates[id][i - 1].data[attribute] != value) {
+												updates[id][i].changes.push(attribute);
+											}
+									}
+									updates[id][i].changes.sort();
+								});
+							}
+							if(callback) {
+								callback();
+							}
+						}
+					});
+					}
+				}
+				
+				function loadSpecial(type, callback) {
+					var api_url;
+					switch(type) {
+						case "idols":
+							api_url = api_idols;
+							break;
+						case "tributes":
+							api_url = api_tributes;
+							break;
+					}
+					if(api_url) {
+						$.ajax(api_url, {
+							method: "GET",
+							datatype: "json",
+							success: function(data) {
+								var ids = _.map(data, function(player) { return player.playerId; });
+								$.ajax(api_players, {
+									method: "GET",
+									datatype: "json",
+									data: {
+										ids: ids.join(",")
+									},
+									success: function(data) {
+										_.each(data, function(player) {
+											special[type][_.indexOf(ids, player.id)] = player;
+										});
+										if(callback) {
+											callback();
+										}
+									}
+								});
+							}
+						});
+					}
+				}
+				
+				function getParams(query) {
+					var params = query.substr(1).split("&"), pageParams = {};
+					_.each(params, function(param) {
+						var pair = param.split("=");
+						switch(pair[0]) {
+							case "player":
+								pageParams.player = pair[1];
+								break;
+							case "team":
+								pageParams.team = pair[1];
+								break;
+							case "idols":
+							case "tributes":
+								pageParams.special = pair[0];
+								break;
+						}
+					});
+					return pageParams;
+				}
+				
+				function getPageView(params) {
+					var path = "/", title = "Hloroscopes [Beta]", team, player; 
+					if(params.team) {
+						team = _.findWhere(teams, { id: params.team });
+					}
+					if(params.player) {
+						if(team) {
+							player = _.findWhere(team.players, { id: params.player });
+						}
+						if(params.special && special[params.special]) {
+							player = _.findWhere(special[params.special], { id: params.player });
+						}
+					}
+					if(player) {
+						title += " - " + player.name;
+						path = "/" + player.name.toLowerCase();
+					} else if(team) {
+						title += " - " + team.fullName;
+						path += team.fullName;
+					} else if(params.special) {
+						switch(params.special) {
+							case "idols":
+								title += " - Idols";
+								break;
+							case "tributes":
+								title += " - Hall of Flame";
+								break;
+						}
+						path += params.special;
+					}
+					path = path.toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
+					document.title = title;
+					gtag('event', 'page_view', { page_title: title, page_location: window.location.href, page_path: path, send_to: GA_TRACKING_ID });
+				}
+			
+				function drawNav() {
+					$("#teams, #coffee").empty();
+					_.each(teams, function(team) {
+						$(isCoffeeCupTeam(team.id) ? "#coffee" : "#teams").append("<li><a style='color:" + team.secondaryColor + "' href='?team=" + team.id + "'>" + team.emoji + "</a></li>");
+					});
+					$("#teams").append("<li><a href='?idols'>&#x1F3C6;</a></li>");
+					$("#teams").append("<li><a href='?tributes'>&#x1F3DB;</a></li>");
+					if(typeof twemoji != "undefined") {
+						twemoji.parse($("header").get(0));
+					}
+					$("header a").click(function(e) {
+						var params = getParams($(this).attr("href"));
+						e.preventDefault();
+						getPageView(params);
+						loadPage(params);
+					});
+				}
+				
+				function displayPlayer(id) {
+					if(id) {
+						loadPlayerUpdates(id, function() {
+							displayPlayerUpdates(id, $("a[data-evenly-spaced]").data("evenly-spaced"));
+						});
+					}
+				}
+				
+				function displayPlayerUpdates(player, evenlySpaced) {
+					var graphEl = $("<div class='graph' />"), svgEl = $("<svg />"), changes = _.filter(updates[player], function(update) { return update.changes.length; }), i, svgHeight, svgWidth, availableHeight, availableWidth, innerPadding = 20, outerPadding = 40, titleOffset = 60, xMin = _.first(changes).start.getTime(), xMax =  _.last(changes).start.getTime(), yMin = -1, yMax = -1, radius = 4, plot = { batting: { color: "#7cb6e8", points: [] }, blaserunning: { color: "#33e28f", points: [] }, defense: { color: "#e43b79", points: [] }, pitching: { color: "#ffc107", points: [] } }, playerName = _.last(changes).data.name;
+					
+					_.each(changes, function(update) {
+						var ratings = [update.data.batting, update.data.blaserunning, update.data.defense, update.data.pitching], maxRating = _.max(ratings), minRating = _.min(ratings);
+						if(yMin < 0 || minRating < yMin) {
+							yMin = minRating;
+						}
+						if(yMax < 0 || maxRating > yMax) {
+							yMax = maxRating;
+						}
+					});
+					
+					if($(".graph").length) {
+						$(".graph").replaceWith(graphEl);
+					} else if($(".players").length) {
+						$(".players").before(graphEl);
+					} else {
+						$("main").append("<section class='chart' />");
+						resizeChart();
+						$(".chart").append(graphEl);
+					}
+					
+					svgEl.css({
+						"height": svgHeight = $(".players").innerHeight(),
+						"width": svgWidth = $(".graph").innerWidth()
+					});
+					availableHeight = svgHeight - outerPadding - titleOffset;
+					availableWidth = svgWidth - 2 * outerPadding;
+					svgEl.attr("viewBox", "0 0 " + svgWidth + " " + svgHeight);
+					graphEl.append(svgEl);
+					
+					svgEl.append("<text text-anchor='middle' dominant-baseline='middle' x='" + (svgWidth / 2) + "' y='" + (titleOffset / 2) + "' fill='#ffffff' style='font-size:1.2em;	font-weight:bold'>" + playerName + "</text>");
+					drawLine(svgEl, outerPadding, titleOffset, outerPadding, availableHeight + titleOffset, "#ffffff", 1);
+					drawLine(svgEl, outerPadding, availableHeight + titleOffset, outerPadding + availableWidth, availableHeight + titleOffset, "#ffffff", 1);
+					svgEl.append("<g transform='translate(" + (outerPadding / 2 - radius) + " " + (svgHeight / 2) + ") rotate(-90)'><text text-anchor='middle' x='0' y='0' fill='#ffffff' style='font-size:0.8em;font-weight:bold'>Number of Stars</text></g>");
+					svgEl.append("<text text-anchor='middle' dominant-baseline='middle' x='" + (svgWidth / 2) + "' y='" + (svgHeight - outerPadding / 2 + radius) + "' fill='#ffffff' style='font-size:0.8em;font-weight:bold'>Date</text>");
+					
+					for(i = Math.ceil(yMin * 10); i < yMax * 10; i++) {
+						var yPos = (availableHeight - outerPadding - innerPadding) * (1 - (i / 10 - yMin) / (yMax - yMin)) + innerPadding + titleOffset;
+						drawLine(svgEl, outerPadding, yPos, outerPadding + availableWidth, yPos, "#777777", 1);
+						svgEl.append("<text text-anchor='end' dominant-baseline='middle' x='" + (outerPadding - radius) + "' y='" + yPos + "' fill='#ffffff' style='font-size:0.8em'>" + (i / 2) + "</text>");
+					}
+					
+					var dateLabels = [];
+					_.each(changes, function(update, index) {
+						var xPos = xMin == xMax ? 0.5 : (update.start.getTime() - xMin) / (xMax - xMin),
+							xEven = changes.length < 2 ? 0.5 : index / (changes.length - 1),
+							yRange = yMax - yMin,
+							axisLabels = convertRelativeToAbsolutePoint({ x: xPos, xE: xEven, y: 0}, availableHeight, innerPadding + availableWidth, innerPadding + outerPadding, innerPadding + titleOffset),
+							axisX = evenlySpaced ? axisLabels.xE : axisLabels.x,
+							axisDate = formatDateLabel(update.start);
+						
+						plot.batting.points.push({
+							id: update.id, x: xPos, xE: xEven, y: (update.data.batting - yMin) / yRange
+						});
+						plot.blaserunning.points.push({
+							id: update.id, x: xPos, xE: xEven, y: (update.data.blaserunning - yMin) / yRange
+						});
+						plot.defense.points.push({
+							id: update.id, x: xPos, xE: xEven, y: (update.data.defense - yMin) / yRange
+						});
+						plot.pitching.points.push({
+							id: update.id, x: xPos, xE: xEven, y: (update.data.pitching - yMin) / yRange
+						});
+						drawLine(svgEl, axisX, axisLabels.y + outerPadding - radius, axisX, axisLabels.y + outerPadding + radius, "#ffffff", 1);
+						if(dateLabels.indexOf(axisDate) < 0) {
+							dateLabels.push(axisDate);
+							svgEl.append("<text text-anchor='middle' alignment-baseline=" + (dateLabels.length % 2 ? "baseline" : "hanging") + " x='" + axisX + "' y='" + (axisLabels.y + (dateLabels.length % 2 ? 3.5 : -3.5) * radius + outerPadding) + "' fill='#ffffff' style='font-size:0.6em'>" + axisDate + "</text>");
+						}
+						var emojiLabel;
+						if(update.changes.indexOf("deceased") > -1) {
+							emojiLabel = update.data.deceased ? "&#x1F480;" : "&#x1F607;";
+						} else if(update.changes.indexOf("+retired") > -1) {
+							emojiLabel = "&#x1F634;";
+						} else if(update.changes.indexOf("+coffee exit") > -1) {
+							emojiLabel ="&#x2615;";
+						} else if(update.changes.indexOf("team") > -1) {
+							emojiLabel = "&#x1F3A4;";
+						} else if(update.changes.indexOf("+alternate") > -1) {
+							emojiLabel = "&#x1F465;";
+						} else if(update.changes.indexOf("+shelled") > -1) {
+							emojiLabel = "&#x1F95C;";
+						} else if(update.changes.indexOf("-shelled") > -1) {
+							emojiLabel = "&#x1F423;";
+						} else if(update.changes.indexOf("item") > -1) {
+							emojiLabel = "&#x1F3CF;";
+						} else if(update.changes.indexOf("armor") > -1) {
+							emojiLabel = "&#x1F9E5;";
+						}
+						if(emojiLabel) {
+							svgEl.append("<text text-anchor='middle' x='" + axisX + "' y='" + (axisLabels.y + innerPadding) + "' fill='#ffffff'>" + emojiLabel + "</text>");
+						}
+					});
+					var legendOffset = 0;
+					_.each(plot, function(data, rating) {
+						_.each(data.points, function(point, index) {
+							var prevPoint, nextPoint, thisPoint = convertRelativeToAbsolutePoint(point, availableHeight, innerPadding + availableWidth, innerPadding + outerPadding, innerPadding + titleOffset);
+							if(index > 0) {
+								prevPoint = convertRelativeToAbsolutePoint(data.points[index - 1], availableHeight, innerPadding + availableWidth, innerPadding + outerPadding, innerPadding + titleOffset);
+							}
+							if(index < data.points.length - 1) {
+								nextPoint = convertRelativeToAbsolutePoint(data.points[index + 1], availableHeight, innerPadding + availableWidth, innerPadding + outerPadding, innerPadding + titleOffset);
+							}
+							if(prevPoint && nextPoint) {
+								drawPath(svgEl, thisPoint.id, evenlySpaced ? thisPoint.xE : thisPoint.x, prevPoint.y, evenlySpaced ? nextPoint.xE : nextPoint.x, thisPoint.y, data.color, 2);
+							} else if(prevPoint) {
+								drawPath(svgEl, thisPoint.id, evenlySpaced ? thisPoint.xE : thisPoint.x, prevPoint.y, evenlySpaced ? thisPoint.xE : thisPoint.x, thisPoint.y, data.color, 2);
+							} else if(nextPoint) {
+								drawPath(svgEl, thisPoint.id, evenlySpaced ? thisPoint.xE : thisPoint.x, thisPoint.y, evenlySpaced ? nextPoint.xE : nextPoint.x, thisPoint.y, data.color, 2);
+							}
+						});
+						_.each(data.points, function(point) {
+							point = convertRelativeToAbsolutePoint(point, availableHeight, innerPadding + availableWidth, innerPadding + outerPadding, innerPadding + titleOffset);
+							drawCircle(svgEl, evenlySpaced ? point.xE : point.x, point.y, radius, data.color, point.id);
+						});
+						var legendX = svgWidth - outerPadding / 2, legendY = outerPadding / 2 + legendOffset * radius * 3;
+						drawCircle(svgEl, legendX, legendY, radius, data.color); 
+						svgEl.append("<text text-anchor='end' dominant-baseline='middle' x='" + (legendX - radius * 2) + "' y='" + legendY + "' fill='" + data.color + "' style='font-size:0.8em'>" + rating + "</text>");
+						legendOffset++;
+					});
+					
+					$(".graph").html($(".graph").html()); // hack to make svgs actually render this way
+					$(".graph circle, .graph path").hover(function(e) {
+						var id = $(e.currentTarget).data("id"), leftOffset = e.clientX + 10, topOffset = e.clientY + 10;
+						if(id) {
+							$("[data-id=" + id + "]").addClass("active");
+							displayStatsForUpdate(player, id);
+							if(topOffset + $(".card").outerHeight(true) > $(window).outerHeight()) {
+								topOffset = $(window).outerHeight() - $(".card").outerHeight(true) - 20 - outerPadding;
+							}
+							if(leftOffset + $(".card").outerWidth(true) > $(window).outerWidth()) {
+								leftOffset = outerPadding;
+							}
+							$(".card").css({ left: leftOffset, top: topOffset });
+						}
+					}, function(e) {
+						var id = $(e.currentTarget).data("id");
+						if(id) {
+							$("[data-id=" + id + "]").removeClass("active");
+							$(".card").remove();
+						}
+					});
+				}
+				
+				function displayStatsForUpdate(player, update) {
+					var data = _.findWhere(updates[player], { id: update }), isRetired = _.intersection(data.data.modifiers.permanent, ["RETIRED", "COFFEE_EXIT"]).length > 0, isTeamAvailable = typeof data.data.teams.league != "undefined", leagueTeam = _.findWhere(teams, { id: data.data.teams.league }), tournamentTeam = _.findWhere(teams, { id: data.data.teams.tournament }), cardEl = $("<section class='card'><div class='header'><div class='name'><strong>" + getPlayerName(data.data) + "</strong> (" + data.start.toLocaleDateString() + " " + data.start.toLocaleTimeString() + ")</div>" + (isTeamAvailable ? "<div class='team'><span class='logo' style='background:" + (leagueTeam ? leagueTeam.primaryColor : "#999999") + "'>" + (leagueTeam ? leagueTeam.emoji : "&#x2753;") + "</span><span>" + (leagueTeam ? leagueTeam.fullName : "Null Team") + "</span></div>" : "") + (tournamentTeam ? "<div class='team'><span class='logo' style='background:" + tournamentTeam.primaryColor + "'>" + tournamentTeam.emoji + "</span><span>" + tournamentTeam.fullName + "<span></div>" : "") + "</div></div><div class='modifiers' style='display:" + (data.data.modifiers.permanent.length ? "block" : "none") + "'>" + _.reduce(data.data.modifiers.permanent, function(m, n) { return m + "<span>" + getEmojiForModifier(n) + "</span>"; }, "") + "</div><div class='row'><strong>Changes</strong><span>" + data.changes.join(", ") + "</span></div>" + (isRetired ? "" : "<div class='row'><strong>Batting</strong><span>" + getStarsForRating(data.data.batting) + "</span></div><div class='row'><strong>Pitching</strong><span>" + getStarsForRating(data.data.pitching) + "</span></div><div class='row'><strong>Blaserunning</strong><span>" + getStarsForRating(data.data.blaserunning) + "</span></div><div class='row'><strong>Defense</strong><span>" + getStarsForRating(data.data.defense) + "</span></div><div class='items'><div><p><strong>ITEM</strong></p><p>" + (data.data.item ? data.data.item : "N/A") + "</p></div><div><p><strong>ARMOR</strong></p><p>" + (data.data.armor ? data.data.armor : "N/A") + "</p></div></div>") + "<div class='row'><strong>Pregame Ritual</strong><span>" + (data.data.ritual ? data.data.ritual : "") + "</span></div><div class='row'><strong>Coffee Style</strong><span>" + data.data.coffee + "</span></div><div class='row'><strong>Blood Type</strong><span>" + data.data.blood + "</span></div>" + ($("a[data-spoiler-free]").data("spoiler-free") ? "" : "<div class='row'><strong>Peanut Allergy?</strong><span>" + (data.data.allergic ? "Yes" : "No") + "</span></div><div class='row'><strong>Total Fingers</strong><span>" + data.data.fingers + "</span></div>") + "<div class='row'><strong>Fate</strong><span>" + data.data.fate + "</span></div><div class='row'><strong>Soul" + (isRetired ? "song" : "scream") + "</strong><span class='soul" + (isRetired ? "song" : "scream") + "'>" + data.data.soulscream + "</span></div></section>");
+					if(typeof twemoji != "undefined") {
+						twemoji.parse(cardEl.get(0));
+					}
+					$("main").append(cardEl);
+				}
+				
+				function formatDateLabel(date) {
+					return date.toLocaleDateString(undefined, { "dateStyle": "short" });
+				}
+				
+				function convertRelativeToAbsolutePoint(point, height, width, padding, offset) {
+					return {
+						id: point.id,
+						x: (width - padding) * point.x + padding,
+						xE: (width - padding) * point.xE + padding,
+						y: (height - padding) * (1 - point.y) + offset
+					};
+				}
+				
+				function drawPath(svg, id, x1, y1, x2, y2, color, width) {
+					var halfWidth = width / 2, path = "<path data-id='" + id + "' d='";
+					path += "M" + (x2 + halfWidth) + " " + (y2 + halfWidth);
+					if(y1 > y2) {
+						path += " L" + (x1 + halfWidth) + " " + (y2 + halfWidth);
+						path += " L" + (x1 + halfWidth) + " " + (y1 - halfWidth);
+						path += " L" + (x1 - halfWidth) + " " + (y1 - halfWidth);
+						path += " L" + (x1 - halfWidth) + " " + (y2 - halfWidth);
+					} else if(y1 < y2) {
+						path += " L" + (x1 - halfWidth) + " " + (y2 + halfWidth);
+						path += " L" + (x1 - halfWidth) + " " + (y1 + halfWidth);
+						path += " L" + (x1 + halfWidth) + " " + (y1 + halfWidth);
+						path += " L" + (x1 + halfWidth) + " " + (y2 - halfWidth);
+					} else {
+						path += " L" + (x1 - halfWidth) + " " + (y1 + halfWidth);
+						path += " L" + (x1 - halfWidth) + " " + (y1 - halfWidth);
+					}
+					path += " L" + (x2 + halfWidth) + " " + (y2 - halfWidth);
+					path += " Z' stroke='rgba(255,255,255,0)' stroke-width='" + (width * 2) + "' fill='" + color + "'/>"
+					svg.append($(path));
+				}
+				
+				function drawLine(svg, x1, y1, x2, y2, color, width) {
+					svg.append("<line x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "' style='stroke:" + color + ";stroke-width:" + width + "' />");
+				}
+				
+				function drawCircle(svg, cx, cy, r, color, id) {
+					svg.append("<circle " + (id ? "data-id='" + id + "' " : "") + "cx='" + cx + "' cy='" + cy + "' r='" + r + "' fill='" + color + "' stroke='rgba(255,255,255,0)' style='stroke-width:" + (2 * r) + "' />");
+				}
+				
+				function displaySpecial(type, player) {
+					var loadingEl = $(".players").length ? $(".players") : $("main"), headerEl, emoji, title;
+					switch(type) {
+						case "idols":
+							emoji = "&#x1F3C6;";
+							title = "Idols";
+							break;
+						case "tributes":
+							emoji = "&#x1F3DB;";
+							title = "Hall of Flame";
+							break;
+					};
+					headerEl = $("<h1>" + emoji + " " + title + " " + emoji + "</h1>");
+					loadingEl.empty();
+					loadingEl.append("<h1>Loading...</h1>");
+					if($("main > h1").length) {
+						$("main > h1").replaceWith(headerEl);
+					} else {
+						$("main").append(headerEl);
+					}
+					if(typeof twemoji != "undefined") {
+						twemoji.parse($("main h1").get(0));
+					}
+					loadSpecial(type, function() {
+						displaySpecialStats(type);
+						displayPlayer(player);
+					});
+				}
+				
+				function displaySpecialStats(type) {
+					var playersEl = $("<div class='players'/>");
+					
+					appendSelector();
+					_.each(special[type], function(player) {
+						player = formatPlayerData(player);
+						playersEl.append("<a class='player' href='?" + type + "&player=" + player.id + "'><span class='name'>" + getPlayerName(player) + "</span></a>");
+					});
+					if($(".players").length) {
+						$(".players").replaceWith(playersEl);
+					} else {
+						$("main").append("<section class='chart' />");
+						resizeChart();
+						$(".chart").append(playersEl);
+					}
+					
+					if(typeof twemoji != "undefined") {
+						_.each($(".player"), function(el) {
+							twemoji.parse(el);
+						});
+					}
+					$("a.player").click(function(e) {
+						var params = getParams($(this).attr("href"));
+						e.preventDefault();
+						getPageView(params);
+						loadPage(params);
+					});
+				}
+				
+				function displayTeam(id, player) {
+					var team = _.findWhere(teams, { id: id }), loadingEl = $(".players").length ? $(".players") : $("main"), headerEl = $("<h1 style='color:" + team.secondaryColor + "'>" + team.emoji + " " + team.fullName + " " + team.emoji + "</h1>");
+					loadingEl.empty();
+					loadingEl.append("<h1>Loading...</h1>");
+					if($("main > h1").length) {
+						$("main > h1").replaceWith(headerEl);
+					} else {
+						$("main").append(headerEl);
+					}
+					if(typeof twemoji != "undefined") {
+						twemoji.parse($("main h1").get(0));
+					}
+					loadPlayers(id, function() {
+						displayTeamStats(team);
+						displayPlayer(player);
+					});
+				}
+				
+				function displayTeamStats(team) {
+					var playersEl = $("<div class='players '/>");
+					
+					appendSelector();
+					appendPlayers(team, playersEl, team.lineup, "Lineup");
+					appendPlayers(team, playersEl, team.rotation, "Rotation");
+					if(_.size(team.percolated)) {
+						appendPlayers(team, playersEl, team.percolated, "Percolated", true);
+					}
+					if(_.size(team.bench)) {
+						appendPlayers(team, playersEl, team.bench, "Bench", true);
+					}
+					if(_.size(team.bullpen)) {
+						appendPlayers(team, playersEl, team.bullpen, "Bullpen", true);
+					}
+					if($(".players").length) {
+						$(".players").replaceWith(playersEl);
+					} else {
+						$("main").append("<section class='chart' />");
+						resizeChart();
+						$(".chart").append(playersEl);
+					}
+					$(".players").toggleClass("spoiler-free", $($("a[data-spoiler-free]").get(0)).data("spoiler-free"));
+					
+					if(typeof twemoji != "undefined") {
+						_.each($(".player"), function(el) {
+							twemoji.parse(el);
+						});
+					}
+					$("a.player").click(function(e) {
+						var params = getParams($(this).attr("href"));
+						e.preventDefault();
+						getPageView(params);
+						loadPage(params);
+					});
+				}
+				
+				function appendSelector() {
+					if(!$(".selector").length) {
+						$("main").append("<div class='selector'><a data-spoiler-free='true' href='javascript:;'>Forbidden Knowledge Hidden</a><a data-evenly-spaced='false' href='javascript:;'>Spaced By Real Time</a></div>");
+						$("a[data-spoiler-free]").click(function(e) {
+							e.preventDefault();
+							$(".players").toggleClass("spoiler-free");
+							$(e.currentTarget).data("spoiler-free", !$(e.currentTarget).data("spoiler-free"));
+							$(e.currentTarget).text("Forbidden Knowledge " + ($(e.currentTarget).data("spoiler-free") ? "Hidden" : "Visible"));
+							gtag('event', 'toggle_forbidden_knowledge');
+						});
+						$("a[data-evenly-spaced]").click(function(e) {
+							e.preventDefault();
+							$(e.currentTarget).data("evenly-spaced", !$(e.currentTarget).data("evenly-spaced"));
+							$(e.currentTarget).text("Spaced " + ($(e.currentTarget).data("evenly-spaced") ? "Evenly" : "By Real Time"));
+							displayPlayer(getParams(window.location.search).player);
+							gtag('event', 'toggle_spacing');
+						});
+					}
+				}
+				
+				function appendPlayers(team, container, ids, label, spoiler) {
+					var players = _.map(ids, function(id) {
+						return formatPlayerData(_.findWhere(team.players, { id: id }));
+					});
+					container.append("<div class='divider" + (spoiler ? " spoiler" : "") + "'>" + label + "</div>");
+					_.each(players, function(player) {
+						container.append("<a class='player" + (spoiler ? " spoiler" : "") + "' href='?team=" + team.id + "&player=" + player.id + "'><span class='name'>" + getPlayerName(player) + "</span></a>");
+					});
+				}
+				
+				function resizeChart() {
+					$(".chart").css("height", $(window).outerHeight() - $("header").outerHeight(true) - $("main h1").outerHeight(true) - $("main .selector").outerHeight(true) - 60);
+				}
+				
+				function getTotalStarsForPlayers(players) {
+					return _.chain(players).reduce(function(m, n) {
+						return {
+							batting: m.batting + n.batting,
+							blaserunning: m.blaserunning + n.blaserunning,
+							defense: m.defense + n.defense,
+							pitching: m.pitching + n.pitching
+						};
+					}, { 
+						batting: 0, pitching: 0, blaserunning: 0, defense: 0 
+					}).mapObject(function(total) {
+						return Math.round(total * 500) / 100;
+					}).value();
+				}
+				
+				function formatPlayerData(data) {
+					return {
+						allergic: data.peanutAllergy,
+						armor: getItemName(data.armor || ""),
+						batting: calculateBatting(data),
+						blaserunning: calculateBlaserunning(data),
+						blood: getBloodType(data.blood),
+						coffee: getCoffeeType(data.coffee),
+						deceased: data.deceased,
+						defense: calculateDefense(data),
+						fate: data.fate || 0,
+						fingers: data.totalFingers,
+						id: data.id,
+						item: getItemName(data.bat || ""),
+						modifiers: {
+							game: data.gameAttr || [],
+							permanent: _.reject(data.permAttr || [], function(attr) { return ["COFFEE_RALLY", "MAGMATIC", "HEATING_UP", "INHABITING", "ON_FIRE"].indexOf(attr) > -1; }),
+							seasonal: data.seasAttr || [],
+							weekly: data.weekAttr || []
+						},
+						name: data.name,
+						pitching: calculatePitching(data),
+						ritual: data.ritual || null,
+						soulscream: calculateSoulscream(data),
+						teams: {
+							league: data.leagueTeamId,
+							tournament: data.tournamentTeamId
+						}
+					};
+				}
+				
+				function isStandardTeam(id) {
+					return !_.contains([
+						"40b9ec2a-cb43-4dbb-b836-5accb62e7c20", // pods
+						"c6c01051-cdd4-47d6-8a98-bb5b754f937f" // hall stars
+					], id);
+				}
+				
+				function isCoffeeCupTeam(id) {
+					return _.contains([
+						"f29d6e60-8fce-4ac6-8bc2-b5e3cabc5696", // black
+						"70eab4ab-6cb1-41e7-ac8b-1050ee12eecc", // light and sweet
+						"9e42c12a-7561-42a2-b2d0-7cf81a817a5e", // macchiato
+						"b3b9636a-f88a-47dc-a91d-86ecc79f9934", // cream and sugar
+						"4d921519-410b-41e2-882e-9726a4e54a6a", // cold brew
+						"e3f90fa1-0bbe-40df-88ce-578d0723a23b", // flat white
+						"4e5d0063-73b4-440a-b2d1-214a7345cf16", // americano
+						"d8f82163-2e74-496b-8e4b-2ab35b2d3ff1", // espresso
+						"e8f7ffee-ec53-4fe0-8e87-ea8ff1d0b4a9", // heavy foam
+						"49181b72-7f1c-4f1c-929f-928d763ad7fb", // latte
+						"a3ea6358-ce03-4f23-85f9-deb38cb81b20", // decaf
+						"a7592bd7-1d3c-4ffb-8b3a-0b1e4bc321fd", // milk substitute
+						"9a5ab308-41f2-4889-a3c3-733b9aab806e", // plenty of sugar
+						"3b0a289b-aebd-493c-bc11-96793e7216d5", // blasesonas
+						"d2634113-b650-47b9-ad95-673f8e28e687", // sibr
+						"7fcb63bc-11f2-40b9-b465-f1d458692a63" // real game band
+					], id);
+				}
+				
+				function getPlayerName(player) {
+					var name = "";
+					if(player.deceased) {
+						name += "<span title='DECEASED'>" + (typeof twemoji == "undefined" ? "&#x1F480;" : "&#x1FAA6;") + "</span> ";
+					}
+					name += player.name;
+					if(player.item) {
+						name +=	" <span title='" + player.item + "'>" + (typeof twemoji == "undefined" ? "&#x1F3CF;" : "&#x1F5E1;") + "</span>";
+					}
+					if(player.armor) {
+						name +=	" <span title='" + player.armor + "'>" + (typeof twemoji == "undefined" ? "&#x1F9E5;" : "&#x1F6E1;") + "</span>";
+					}
+					return name;
+				}
+				
+				function getEmojiForModifier(modifier) {
+					var emoji = "<span title='" + modifier + "'>";
+					switch(modifier) {
+						case "ALTERNATE":
+							emoji += "&#x1F465;";
+							break;
+						case "COFFEE_EXIT":
+							emoji += "&#x2615;";
+							break;
+						case "COFFEE_PERIL":
+							emoji +="&#x1F441;";
+							break;
+						case "CREDIT_TO_THE_TEAM":
+						case "DOUBLE_PAYOUTS":
+							emoji += "&#x1F4B0;";
+							break;
+						case "DEBT":
+						case "DEBT_TWO":
+							emoji += "&#x1F4B3;";
+							break;
+						case "FIRE_EATER":
+							emoji += "&#x1F525;";
+							break;
+						case "FIRST_BORN":
+						case "HARD_BOILED":
+							emoji += "&#x1F95A;";
+							break;
+						case "FLICKERING":
+						case "FLIICKERRRIIING":
+							emoji += typeof twemoji == "undefined" ? "&#x1F3A4;" : "&#x1F399;";
+							break;
+						case "FRIEND_OF_CROWS":
+							emoji += "&#x1F426;";
+							break;
+						case "FLINCH":
+							emoji += "&#x1F628;";
+							break;
+						case "HAUNTED":
+							emoji += "&#x1F47B;";
+							break;
+						case "HONEY_ROASTED":
+							emoji += "&#x1F36F;";
+							break;
+						case "NON_IDOLIZED":
+							emoji += "&#x1F512;";
+							break;
+						case "RECEIVER":
+							emoji += "&#x1F4DE;";
+							break;
+						case "RETIRED":
+							emoji += typeof twemoji == "undefined" ? "&#x1F3C6;" : "&#x1F6CF;";
+							break;
+						case "RETURNED":
+							emoji += typeof twemoji == "undefined" ? "&#x1F9DF;" : "&#x1F9DB;";
+							break;
+						case "REPEATING":
+						case "REVERBERATING":
+							emoji += "&#x1F30A;";
+							break;
+						case "SHELLED":
+							emoji += "&#x1F95C;";
+							break;
+						case "SIPHON":
+							emoji += "&#x1FA78;";
+							break;
+						case "SPICY":
+							emoji += "&#x1F975;";
+							break;
+						case "SQUIDDISH":
+							emoji += "&#x1F991;";
+							break;
+						case "STABLE":
+							emoji += typeof twemoji == "undefined" ? "&#x1F94C;" : "&#x1FAA8;";
+							break;
+						case "SUPERALLERGIC":
+							emoji += "&#x1F922;";
+							break;
+						case "SUPERYUMMY":
+							emoji += "&#x1F60B;";
+							break;
+						case "WILD":
+							emoji += "&#x1F611;";
+							break;
+						case "COFFEE_RALLY":
+						case "HEATING_UP":
+						case "MAGMATIC":
+						case "ON_FIRE":
+							break;
+						default:
+							console.log(modifier);
+							emoji += "&#x2753;";
+					}
+					emoji += "</span>";
+					return emoji;
+				}
+				
+				function getItemName(item) {
+					switch(item) {
+						case "AN_ACTUAL_AIRPLANE":
+							return "An Actual Airplane";
+						case "ARM_CANNON":
+							return "Literal Arm Cannon";
+						case "ENGLAND_MEMORABILIA":
+							return "Bangers &amp; Smash";
+						case "FIREPROOF":
+							return "Fireproof Jacket";
+						case "GRAVITY_BOOTS":
+							return "Gravity Boots";
+						case "GRAPPLING_HOOK":
+							return "Grappling Hook";
+						case "GUNBLADE_A":
+						case "the Dial Tone":
+							return "The Dial Tone";
+						case "GUNBLADE_B":
+						case "Gunblade Bat":
+							return "Vibe Check";
+						case "HEADPHONES":
+							return "Noise-Cancelling Headphones";
+						case "INKY_BLAGONBALL":
+							return "The 2-Blood Blagonball";
+						case "MUSHROOM":
+							return "Mushroom";
+						case "NIGHT_VISION_GOGGLES":
+							return "Night Vision Goggles";
+						case "SAWED_OFF_BAT":
+							return "The Iffey Jr.";
+						case "SCORPLERS_JACKET":
+							return "Scorpler's Jacket";
+						case "SHRINK_RAY":
+							return "Shrink Ray";
+						default:
+							return item;
+					}
+				}
+				
+				function getBloodType(id) {
+					switch(id) {
+						case 0:
+							return "A";
+						case 1:
+							return "AAA";
+						case 2:
+							return "AA";
+						case 3:
+							return "Acidic";
+						case 4:
+							return "Basic";
+						case 5:
+							return "O";
+						case 6:
+							return "O No";
+						case 7:
+							return "H2O";
+						case 8:
+							return "Electric";
+						case 9:
+							return "Love";
+						case 10:
+							return "Fire";
+						case 11:
+							return "Psychic";
+						case 12:
+							return "Grass";
+						default:
+							return "Blood?";
+					}
+				}
+				
+				function getCoffeeType(id) {switch(id) {
+						case 0:
+							return "Black";
+						case 1:
+							return "Light & Sweet";
+						case 2:
+							return "Macchiato";
+						case 3:
+							return "Cream & Sugar";
+						case 4:
+							return "Cold Brew";
+						case 5:
+							return "Flat White";
+						case 6:
+							return "Americano";
+						case 7:
+							return "Espresso";
+						case 8:
+							return "Heavy Foam";
+						case 9:
+							return "Latte";
+						case 10:
+							return "Decaf";
+						case 11:
+							return "Milk Substitute";
+						case 12:
+							return "Plenty of Sugar";
+						case 13:
+							return "Anything";
+						default:
+							return "Coffee?";
+					}
+				}
+				
+				function getStarsForRating(rating) {
+					if($("a[data-spoiler-free]").data("spoiler-free")) {
+						var i, stars = "", rounded = Math.round(rating * 10);
+						for(i = 0; i < Math.floor(rounded / 2); i++) {
+							stars += "&#x2B50;";
+						}
+						if(rounded % 2) {
+							stars += typeof twemoji == "undefined" ? "&#x00BD;" : "<span class='half-star'>&#x2B50</span>";
+						}
+						return stars;
+					} else {
+						return rating * 5;
+					}
+				}
+				
+				function calculateBatting(player) {
+					return Math.pow(1-player.tragicness, 0.01) * Math.pow(1-player.patheticism, 0.05) * Math.pow(player.thwackability * player.divinity, 0.35) * Math.pow(player.moxie * player.musclitude, 0.075) * Math.pow(player.martyrdom, 0.02);
+				}
+				
+				function calculatePitching(player) {
+					return Math.pow(player.unthwackability, 0.5) * Math.pow(player.ruthlessness, 0.4) * Math.pow(player.overpowerment, 0.15) * Math.pow(player.shakespearianism, 0.1) * Math.pow(player.coldness, 0.025);
+				}
+				
+				function calculateBlaserunning(player) {
+					return Math.pow(player.laserlikeness, 0.5) * Math.pow(player.baseThirst * player.continuation * player.groundFriction * player.indulgence, 0.1);
+				}
+				
+				function calculateDefense(player) {
+					return Math.pow(player.omniscience * player.tenaciousness, 0.2) * Math.pow(player.watchfulness * player.anticapitalism * player.chasiness, 0.1);
+				}
+				
+				function calculateSoulscream(player) {
+					var letters = ["A", "E", "I", "O", "U", "X", "H", "A", "E", "I"], stlats = [player.pressurization, player.divinity, player.tragicness, player.shakespearianism, player.ruthlessness], soulscream = "";
+				  
+					for(var i = 0; i < player.soul; i++) {
+						var magnitude = 1 / Math.pow(10, i);
+						for(var j = 0; j < 11; j++) {
+							soulscream += letters[Math.floor(((stlats[j % stlats.length] % magnitude) / magnitude) * 10)];
+						}
+					}
+					return soulscream;
+				}
+			});
+		</script>
+	</body>
+</html>
