@@ -408,7 +408,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		getModifier: getModifier,
 		getStatProgress: function(stat) {
 			var statPercent = this.get("data")[stat] * 100, progress = "<div class='stadium-stat-progress'><div class='stadium-stat-value " + stat + "' style='margin-left:";
-			if(statPercent > 49.5) {
+			if(statPercent > 50.5) {
 				progress += "50%;border-radius:0 5px 5px 0;width:" + (statPercent - 50);
 			} else if(statPercent < 49.5) {
 				progress += statPercent + "%;border-radius:5px 0 0 5px;width:" + (50 - statPercent);
