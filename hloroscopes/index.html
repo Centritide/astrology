@@ -72,7 +72,7 @@
 					<div class="team-modifiers">
 						<% _.each(_.union(get("permAttr"), get("seasAttr")), function(modifier) { %>
 							<% modifier = getModifier(modifier) %>
-							<span title="<%= modifier.title + (modifier.description ? (" - " + modifer.description) : "") %>"><%= emoji(modifier.emoji) %></span>
+							<span title="<%= modifier.title + (modifier.description ? (" - " + modifier.description) : "") %>"><%= emoji(modifier.emoji) %></span>
 						<% }) %>
 					</div>
 				<% } %>
