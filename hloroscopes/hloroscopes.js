@@ -212,11 +212,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		calculateSoulscream: function() {
 			var letters = ["A", "E", "I", "O", "U", "X", "H", "A", "E", "I"], stlats = [this.get("pressurization"), this.get("divinity"), this.get("tragicness"), this.get("shakespearianism"), this.get("ruthlessness")], soulscream = "";
 		  
-			for(var i = 0; i < this.get("soul"); i++) {
+			for(var i = 0; i < Math.min(this.get("soul"), 300); i++) {
 				var magnitude = 1 / Math.pow(10, i);
 				for(var j = 0; j < 11; j++) {
 					soulscream += letters[Math.floor(((stlats[j % stlats.length] % magnitude) / magnitude) * 10)];
 				}
+			}
+			if(i < this.get("soul")) {
+				soulscream += "... (CONT. FOR " + (this.get("soul") - i) + " SOUL)";
 			}
 			return soulscream;
 		},
@@ -368,6 +371,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			if(rounded % 2) {
 				stars += "<i class='half-star'>" + parseEmoji(0x2B50) + "</i>";
 			}
+			stars += "<small>(" + (Math.round(rating * 50) / 10) + ")</small>"
 			return stars;
 		},
 		isRetired: function() {
