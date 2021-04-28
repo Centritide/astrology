@@ -526,14 +526,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				} else {
 					switch(player.position) {
 						case "lineup":
-							player.data.position = "batters";
-							break;
 						case "rotation":
-							player.data.position = "pitchers";
-							break;
 						case "bench":
 						case "bullpen":
-							player.data.position = "shadows";
+							player.data.position = "active";
 							break;
 						default:
 							player.data.position = "inactive";
@@ -912,12 +908,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				PlayersCollection.fetch({
 					success: function() {
 						thisView.model.set({
-							"batters": [],
+							"active": [],
 							"deceased": [],
 							"exhibition": [],
 							"inactive": [],
-							"pitchers": [],
-							"shadows": [],
 							"players": PlayersCollection
 						});
 						PlayersCollection.forEach(function(player) {
@@ -1985,7 +1979,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			id: model.get("id"),
 			inconvenience: model.get("inconvenience"),
 			luxuriousness: model.luxuriousness(),
-			mainColor: model.get("mainColor"),
 			modifiers: model.get("mods"),
 			mysticism: model.get("mysticism"),
 			name: model.get("name"),
@@ -1993,10 +1986,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			obtuseness: model.get("obtuseness"),
 			ominousness: model.get("ominousness"),
 			prefab: model.prefab(),
-			secondaryColor: model.get("secondaryColor"),
-			tertiaryColor: model.get("tertiaryColor"),
 			viscosity: model.get("viscosity"),
-			weather: model.weather(),
+			weather: model.weather()
 		};
 	}
 	

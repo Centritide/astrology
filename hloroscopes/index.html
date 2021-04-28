@@ -78,12 +78,10 @@
 				<% } %>
 				<div class="team-players">
 					<% if(get("id") == "all") { %>
-						<%= players("Batters") %>
-						<%= players("Pitchers") %>
+						<%= players("Active") %>
 						<%= players("Deceased") %>
-						<%= players("Exhibition") %>
 						<div class="shadows">
-							<%= players("Shadows") %>
+							<%= players("Exhibition") %>
 							<%= players("Inactive") %>
 						</div>
 					<% } else if(get("tributes") && get("tributes").length) { %>

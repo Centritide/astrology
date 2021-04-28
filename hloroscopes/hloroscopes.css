@@ -1,3 +1,79 @@
+:root {
+	--body-bg: #fff;
+	--body-text: #000;
+	--body-border: #000;
+	--nav-hover: #ddd;
+	--header-text: #666;
+	--player-alt-bg: #ddd;
+	--player-hover-bg: #aaa;
+	--modifiers-bg: #f7f7f7;
+	--vibe-most-excellent: #000;
+	--vibe-excellent: #000;
+	--vibe-quality: #000;
+	--vibe-neutral: #000;
+	--vibe-less-than-ideal: #000;
+	--vibe-far-less-than-ideal: #000;
+	--vibe-honestly-terrible: #000;
+	--vibe-most-excellent-bg: #15d400;
+	--vibe-excellent-bg: #5de04f;
+	--vibe-quality-bg: #8fdb88;
+	--vibe-neutral-bg: #d1d1d1;
+	--vibe-less-than-ideal-bg: #d97373;
+	--vibe-far-less-than-ideal-bg: #de3c3c;
+	--vibe-honestly-terrible-bg: #e00000;
+	--stat-alt-bg: #eee;
+	--stat-progress-bg: #bbb;
+	--toggle-bg: #999;
+	--toggle-hover: #fff;
+	--toggle-hover-bg: #777;
+	--toggle-light-hover: #292746;
+	--footer-link: #000;
+	--footer-hover: #fff;
+	--footer-hover-bg: #000;
+	--guide: #aaa;
+	--chart-transparent: rgba(170,170,170,0);
+	--chart-hover: #aaa;
+	--chart-hover-bg: rgba(170,170,170,0.4);
+}
+
+.dark {
+	--body-bg: #111;
+	--body-text: #fff;
+	--body-border: #fff;
+	--nav-hover: #333;
+	--header-text: #999;
+	--player-alt-bg: #333;
+	--player-hover-bg: #666;
+	--modifiers-bg: #222;
+	--vibe-most-excellent: #15d400;
+	--vibe-excellent: #5de04f;
+	--vibe-quality: #8fdb88;
+	--vibe-neutral: #d1d1d1;
+	--vibe-less-than-ideal: #d97373;
+	--vibe-far-less-than-ideal: #de3c3c;
+	--vibe-honestly-terrible: #e00000;
+	--vibe-most-excellent-bg: transparent;
+	--vibe-excellent-bg: transparent;
+	--vibe-quality-bg: transparent;
+	--vibe-neutral-bg: transparent;
+	--vibe-less-than-ideal-bg: transparent;
+	--vibe-far-less-than-ideal-bg: transparent;
+	--vibe-honestly-terrible-bg: transparent;
+	--stat-alt-bg: #333;
+	--stat-progress-bg: #555;
+	--toggle-bg: #333;
+	--toggle-hover: #fff;
+	--toggle-hover-bg: #585858;
+	--toggle-light-hover: #f5d641;
+	--footer-link: #fff;
+	--footer-hover: #111;
+	--footer-hover-bg: #fff;
+	--guide: #777;
+	--chart-transparent: rgba(255,255,255,0);
+	--chart-hover: #fff;
+	--chart-hover-bg: rgba(255,255,255,0.4);
+}
+
 html, 
 body {
 	margin: 0;
@@ -21,8 +97,8 @@ ul {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	background: #ffffff;
-	color: #000000;
+	background: var(--body-bg);
+	color: var(--body-text);
 }
 
 .transition {
@@ -53,7 +129,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-	background: #dddddd;
+	background: var(--nav-hover);
 }
 
 nav ul li a i {
@@ -61,19 +137,9 @@ nav ul li a i {
 }
 
 nav ul li a span {
-	color: #000000;
+	color: var(--body-text);
 	padding: .3em .6em;
 	border-radius: 5px;
-}
-
-header {
-	background: #ffffff;
-	position: fixed;
-	left: 240px;
-	right: 20px;
-	top: 0;
-	padding: 5px;
-	z-index: 1;
 }
 
 img.emoji {
@@ -115,13 +181,13 @@ section.index p > * {
 }
 
 section.index a {
-	color: #000000;
+	color: var(--footer-link);
 	border-radius: 5px;
 }
 
 section.index a:hover {
-	background: #000000;
-	color: #ffffff;
+	background: var(--footer-hover-bg);
+	color: var(--footer-hover);
 }
 
 section.team {
@@ -129,23 +195,7 @@ section.team {
 	display: flex;
 	flex-direction: column;
 	margin: 20px;
-	border: 1px solid #000000;
-}
-
-.team-stat-row { 
-	display: grid;
-	grid-template-columns: 50% 50%;
-	padding: 10px 20px;
-	align-items: center;
-}
-
-.team-stat-row:nth-child(odd) { 
-	background: #eeeeee;
-}
-
-.team-stat-row span {
-	display: flex;
-	flex-direction: row;
+	border: 1px solid var(--body-border);
 }
 
 .team-icon {
@@ -162,7 +212,7 @@ section.team {
 	align-items: center;
 	gap: 10px;
 	padding: 20px;
-	border-bottom: 1px solid #000000;
+	border-bottom: 1px solid var(--body-border);
 }
 
 .team-header .team-icon {
@@ -174,7 +224,7 @@ section.team {
 }
 
 .team-header .team-name a {
-	color: #000000;
+	color: var(--body-text);
 }
 
 .team-slogan {
@@ -192,8 +242,8 @@ section.team {
 
 a.team-history {
 	display: block;
-    background: #999999;
-    color: #000000;
+    background: var(--toggle-bg);
+    color: var(--body-text);
     border-radius: 5px;
     padding: .3em .6em;
 	margin-top: 10px;
@@ -206,7 +256,7 @@ a.team-history {
     display: inline-block;
     font-size: .8em;
     padding: .3em .6em;
-    border: 1px solid #000000;
+    border: 1px solid var(--body-border);
     border-radius: 5px;
     margin-top: 5px;
 }
@@ -215,9 +265,9 @@ a.team-history {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	background: #f7f7f7;
+	background: var(--modifiers-bg);
 	padding: 10px 20px;
-	border-bottom: 1px solid #000000;
+	border-bottom: 1px solid var(--body-border);
 	font-size: 1.2em;
 	transition: all 0.4s ease-out;
 }
@@ -228,7 +278,7 @@ a.team-history {
 }
 
 .team-players a {
-	color: #000000;
+	color: var(--body-text);
 	padding: 5px;
 }
 
@@ -239,7 +289,7 @@ a.team-history {
 
 .players-header {
 	display: block;
-	color: #666666;
+	color: var(--header-text);
 	text-align: center;
 	margin-bottom: 10px;
 }
@@ -255,11 +305,11 @@ a.team-history {
 }
 
 .team-players ul li:nth-child(odd) {
-	background: #dddddd;
+	background: var(--player-alt-bg);
 }
 
 .team-players ul li:hover {
-	background: #aaaaaa;
+	background: var(--player-hover-bg);
 }
 
 .team-toggles {
@@ -268,13 +318,13 @@ a.team-history {
 	flex-direction: row;
 	flex-wrap: wrap;
 	padding: 20px;
-	border-top: 1px solid #000000;
+	border-top: 1px solid var(--body-border);
 	gap: 5px;
 }
 
 .team-toggles a {
-	background: #999999;
-	color: #000000;
+	background: var(--toggle-bg);
+	color: var(--body-text);
 	border-radius: 5px;
 	padding: .3em .6em;
 	font-weight: bold;
@@ -290,7 +340,7 @@ a[data-toggle-spacing] {
 }
 
 .chart text:not(.legend) {
-	fill: #000000;
+	fill: var(--body-text);
 }
 
 .chart text.title {
@@ -316,131 +366,90 @@ a[data-toggle-spacing] {
 
 .chart line.axis-border,
 .chart line.axis-date-guide {
-	stroke: #000000;
+	stroke: var(--body-text);
 	stroke-width: 1;
 }
 
 .chart line.axis-star-guide,
 .chart line.axis-num-players-guide,
 .chart line.axis-stats-guide {
-	stroke: #aaaaaa;
+	stroke: var(--guide);
 	stroke-width: 1;
 }
 
 .chart circle,
 .chart path {
-	stroke: rgba(255,255,255,0);
+	stroke: var(--chart-transparent);
 	transition: all 0.4s ease-out;
-}
-
-.card .grandiosity {
-	background: #b77ce8;
-}
-
-.card .fortification {
-	background: #7c9fe8;
-}
-
-.card .obtuseness {
-	background: #7cb6e8;
-}
-
-.card .ominousness {
-	background: #33e28f;
-}
-
-.card .inconvenience {
-	background: #8be860;
-}
-
-.card .viscosity {
-	background: #ffc107;
-}
-
-.card .forwardness {
-	background: #ea9d1e;
-}
-
-.card .mysticism {
-	background: #dc2020;
-}
-
-.card .elongation {
-	background: #e43b79;
-}
-
-.chart .grandiosity {
-	fill: #b77ce8;
-}
-
-.chart .fortification {
-	fill: #7c9fe8;
-}
-
-.chart .batting,
-.chart .lineup,
-.chart .obtuseness {
-	fill: #7cb6e8;
-}
-
-.chart .baserunning,
-.chart .bench,
-.chart .ominousness {
-	fill: #33e28f;
-}
-
-.chart .inconvenience {
-	fill: #8be860;
-}
-
-.chart .pitching,
-.chart .rotation,
-.chart .viscosity {
-	fill: #ffc107;
-}
-
-.chart .forwardness {
-	fill: #ea9d1e;
-}
-
-.chart .mysticism {
-	fill: #dc2020;
-}
-
-.chart .defense,
-.chart .bullpen,
-.chart .elongation {
-	fill: #e43b79;
-}
-
-.dark .chart text:not(.legend) {
-	fill: #ffffff;
-}
-
-.dark .chart line.axis-border,
-.dark .chart line.axis-date-guide {
-	stroke: #ffffff;
-}
-
-.dark .chart line.axis-star-guide,
-.dark .chart line.axis-num-players-guide,
-.dark .chart line.axis-stats-guide {
-	stroke: #777777;
 }
 
 .chart circle.active, 
 .chart path.active { 
-	fill: #aaaaaa;
-	stroke: rgba(170,170,170,0.4);
+	fill: var(--chart-hover);
+	stroke: var(--chart-hover-bg);
 	cursor: pointer;
+}
+
+.grandiosity {
+	background: #b77ce8;
+	fill: #b77ce8;
+}
+
+.fortification {
+	background: #6b6dd3;
+	fill: #6b6dd3;
+}
+
+.batting,
+.lineup,
+.obtuseness {
+	background: #7cb6e8;
+	fill: #7cb6e8;
+}
+
+.baserunning,
+.bench,
+.ominousness {
+	background: #33e28f;
+	fill: #33e28f;
+}
+
+.inconvenience {
+	background: #8be860;
+	fill: #8be860;
+}
+
+.pitching,
+.rotation,
+.viscosity {
+	background: #ffc107;
+	fill: #ffc107;
+}
+
+.forwardness {
+	background: #ea9d1e;
+	fill: #ea9d1e;
+}
+
+.mysticism {
+	background: #dc2020;
+	fill: #dc2020;
+}
+
+.defense,
+.bullpen,
+.elongation {
+	background: #e43b79;
+	fill: #e43b79;
 }
 
 section.card {
 	position: absolute;
 	max-height: calc(100vh - 30px);
 	width: 400px;
-	background: #ffffff;
-	border: 1px solid #000000;
+	background: var(--body-bg);
+	color: var(--body-text);
+	border: 1px solid var(--body-border);
 	overflow: hidden;
 }
 
@@ -460,7 +469,7 @@ section.card {
 
 .card .player-header,
 .card .stadium-header { 
-	border-bottom: 1px solid #000000;
+	border-bottom: 1px solid var(--body-border);
 	padding: 20px;
 }
 
@@ -487,15 +496,15 @@ section.card {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	background: #f7f7f7;
+	background: var(--modifiers-bg);
 	padding: 10px 20px;
-	border-bottom: 1px solid #000000;
+	border-bottom: 1px solid var(--body-border);
 	font-size: 1.2em;
 }
 
 .card .stadium-details-header {
 	display: block;
-	color: #666666;
+	color: var(--header-text);
 	text-align: center;
 	margin: 10px 0;
 }
@@ -507,7 +516,7 @@ section.card {
 .player-vibes {
 	height: 1.5em;
 	line-height: 1.5em;
-    color: #000000;
+    color: var(--body-text);
     justify-self: start;
     padding: 0px 4px 0px 2px;
 	margin: 2px 0;
@@ -522,33 +531,41 @@ section.card {
 }
 
 .vibe-most-excellent {
-	background: #15d400;
+	background: var(--vibe-most-excellent-bg);
+	color: var(--vibe-most-excellent);
 }
 
 .vibe-excellent {
-	background: #5de04f;
+	background: var(--vibe-excellent-bg);
+	color: var(--vibe-excellent);
 }
 
 .vibe-quality {
-	background: #8fdb88;
+	background: var(--vibe-quality-bg);
+	color: var(--vibe-quality);
 }
 
 .vibe-neutral {
-	background: #d1d1d1;
+	background: var(--vibe-neutral-bg);
+	color: var(--vibe-neutral);
 }
 
 .vibe-less-than-ideal {
-	background: #d97373;
+	background: var(--vibe-less-than-ideal-bg);
+	color: var(--vibe-less-than-ideal);
 }
 
 .vibe-far-less-than-ideal {
-	background: #de3c3c;
+	background: var(--vibe-far-less-than-ideal-bg);
+	color: var(--vibe-far-less-than-ideal);
 }
 
 .vibe-honestly-terrible {
-	background: #e00000;
+	background: var(--vibe-honestly-terrible-bg);
+	color: var(--vibe-honestly-terrible);
 }
 
+.card .team-stat-row,
 .card .player-stat-row,
 .card .stadium-stat-row { 
 	display: grid;
@@ -557,11 +574,13 @@ section.card {
 	align-items: center;
 }
 
+.card .team-stat-row:nth-child(odd),
 .card .player-stat-row:nth-child(odd),
 .card .stadium-stat-row:nth-child(odd) { 
-	background: #eeeeee;
+	background: var(--stat-alt-bg);
 }
 
+.card .team-stat-row span,
 .card .player-stat-row span,
 .card .stadium-stat-row span {
 	display: flex;
@@ -571,7 +590,7 @@ section.card {
 .card .stadium-stat-progress {
 	width: 100%;
 	height: 100%;
-	background: #bbbbbb;
+	background: var(--stat-progress-bg);
 	border-radius: 5px;
 }
 
@@ -592,7 +611,7 @@ section.card {
 	flex-direction: column;
 	justify-content: center;
     flex-basis: calc(50% - 30px);
-	background: #eeeeee;
+	background: var(--stat-alt-bg);
 	border-radius: 5px;
 	padding: 10px;
 	text-align: center;
@@ -649,116 +668,14 @@ i.half-star {
 	grid-template-columns: 80% 20%;
 }
 
-#root.dark,
-.dark .card {
-	background: #111111;
-	color: #ffffff;
-}
-
-.dark section.team,
-.dark .team-header,
-.dark .team-card,
-.dark .team-modifiers,
-.dark .team-toggles,
-.dark .card,
-.dark .card .player-header,
-.dark .card .player-deceased,
-.dark .card .player-modifiers,
-.dark .card .stadium-header,
-.dark .card .stadium-modifiers {
-	border-color: #ffffff;
-}
-
-.dark .team-modifiers, 
-.dark .player-deceased, 
-.dark .player-modifiers, 
-.dark .stadium-modifiers {
-	background: #222222;
-}
-
-.dark .players-header,
-.dark .stadium-details-header {
-	color: #999999;
-}
-
-
-.dark section.index a,
-.dark .team-header .team-name a,
-.dark .team-players a {
-	color: #ffffff;
-}
-
-.dark section.index a:hover {
-	background: #ffffff;
-	color: #111111;
-}
-
-.dark nav ul li a:hover,
-.dark .team-stat-row:nth-child(odd),
-.dark .team-players ul li:nth-child(odd),
-.dark .card .player-stat-row:nth-child(odd),
-.dark .card .stadium-stat-row:nth-child(odd),
-.dark .card .player-items div {
-	background: #333333;
-}
-
-.dark .card .stadium-stat-progress {
-	background: #555555;
-}
-
-.dark .team-players ul li:hover {
-	background: #666666;
-}
-
-.dark a.team-history,
-.dark .team-toggles a {
-	background: #222222;
-	color: #ffffff;
-}
-
-.dark a[data-toggle-lights]:hover {
-	background: #f5d641;
-}
-
-.dark .chart circle.active, 
-.dark .chart path.active {
-	fill: #ffffff;
-	stroke: rgba(255,255,255,0.4);
-}
-
 .dark .player-vibes,
 .dark .player-vibe-freq {
-	background: transparent;
 	padding: 0;
 	margin: 0;
 }
 
-.dark .vibe-most-excellent {
-	color: #15d400;
-}
-
-.dark .vibe-excellent {
-	color: #5de04f;
-}
-
-.dark .vibe-quality {
-	color: #8fdb88;
-}
-
-.dark .vibe-neutral {
-	color: #d1d1d1;
-}
-
-.dark .vibe-less-than-ideal {
-	color: #d97373;
-}
-
-.dark .vibe-far-less-than-ideal {
-	color: #de3c3c;
-}
-
-.dark .vibe-honestly-terrible {
-	color: #e00000;
+a[data-toggle-lights]:hover {
+	background: var(--toggle-light-hover);
 }
 
 a[data-toggle-knowledge]:hover {
@@ -768,11 +685,7 @@ a[data-toggle-knowledge]:hover {
 
 a.team-history:hover,
 a[data-toggle-spacing]:hover {
-	background: #585858;
-}
-
-a[data-toggle-lights]:hover {
-	background: #292746;
+	background: var(--toggle-hover-bg);
 }
 
 @media screen and (max-width: 700px) {	

@@ -325,7 +325,7 @@
 	},
 	{
 		"id": "SABOTEUR",
-		"emoji": "0x1F494",
+		"emoji": "0x1F608",
 		"title": "Saboteur",
         "description": "A Saboteur has a chance of intentionally failing."
 	},
@@ -745,13 +745,13 @@
 	},
 	{
 		"id": "BLOCKED_BOOST",
-		"emoji": "0x1F6AB",
+		"emoji": "0x1F3A7",
 		"title": "Blocked Boost",
         "description": "If this player is protected from a Steal or Swap Will, they'll be boosted by 2%."
 	},
 	{
 		"id": "HALL_EXIT_BOOST",
-		"emoji": "0x1F991",
+		"emoji": "0x1FAB6",
 		"title": "Phoenix",
         "description": "When this player exits the Hall of Flame, they'll be boosted 10% to 20%."
 	},
@@ -811,7 +811,7 @@
 	},
 	{
 		"id": "BIRDHOUSES",
-		"emoji": "0x1F3D8",
+		"emoji": "0x1F426",
 		"title": "Birdhouses",
         "description": "Birdhouses invite Birds to come live in your Ballpark."
 	},
@@ -823,7 +823,7 @@
 	},
 	{
 		"id": "SECRET_BASE",
-		"emoji": "0x2660",
+		"emoji": "0x1F6AA",
 		"title": "Secret Base",
         "description": "The Secret Base is a hidden base beyond 2nd that allows a baserunner to hide between innings."
 	},
@@ -1021,13 +1021,13 @@
     },
     {
         "id": "MAXIMALIST",
-		"emoji": "0x2B06",
+		"emoji": "0x1F53C",
         "title": "Maximalist",
         "description": "This Player plays 250% better at Maximum Blaseball."
     },
     {
         "id": "MINIMALIST",
-		"emoji": "0x2B07",
+		"emoji": "0x1F53D",
         "title": "Minimalist",
         "description": "This Player plays 75% worse at Maximum Blaseball."
     },
@@ -1069,7 +1069,7 @@
     },
     {
         "id": "MIDDLING",
-		"emoji": "0x3030",
+		"emoji": "0x1F937",
         "title": "Middling",
         "description": "This Team or Player will Overperform in the Midseason."
     },
@@ -1105,7 +1105,7 @@
     },
     {
         "id": "AMBITIOUS",
-		"emoji": "0x1F44D",
+		"emoji": "0x1F451",
         "title": "Ambitious",
         "description": "This Team or Player will Overperform in the Postseason."
     },
