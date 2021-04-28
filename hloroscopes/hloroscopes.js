@@ -371,7 +371,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			if(rounded % 2) {
 				stars += "<i class='half-star'>" + parseEmoji(0x2B50) + "</i>";
 			}
-			stars += "<small>(" + (Math.round(rating * 50) / 10) + ")</small>"
 			return stars;
 		},
 		isRetired: function() {

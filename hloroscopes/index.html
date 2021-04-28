@@ -216,38 +216,42 @@
 						</div>
 						<div class="player-stat-row">
 							<strong>Batting</strong>
-							<span><%= isForbidden() ? 5 * get("data").batting : getStarsForRating(get("data").batting) %></span>
+							<span>
+								<%= getStarsForRating(get("data").batting) %>
+								<small><%= Math.round(get("data").batting * 500) / 100)%></small>
+							</span>
 						</div>
 						<div class="player-stat-row">
 							<strong>Pitching</strong>
-							<span><%= isForbidden() ? 5 * get("data").pitching : getStarsForRating(get("data").pitching) %></span>
+							<span>
+								<%= getStarsForRating(get("data").pitching) %>
+								<small><%= Math.round(get("data").pitching * 500) / 100)%></small>
+							</span>
 						</div>
 						<div class="player-stat-row">
 							<strong>Baserunning</strong>
-							<span><%= isForbidden() ? 5 * get("data").baserunning : getStarsForRating(get("data").baserunning) %></span>
+							<span>
+								<%= getStarsForRating(get("data").baserunning) %><small>
+								<small><%= Math.round(get("data").baserunning * 500) / 100)%></small>
+							</span>
 						</div>
 						<div class="player-stat-row">
 							<strong>Defense</strong>
-							<span><%= isForbidden() ? 5 * get("data").defense : getStarsForRating(get("data").defense) %></span>
+							<span>
+								<%= getStarsForRating(get("data").defense) %>
+								<small><%= Math.round(get("data").defense * 500) / 100)%></small>
+							</span>
 						</div>
 						<div class="player-items">
 							<% _.each(get("data").items, function(item) { %>
 								<div>
 									<p><strong><%= item.name %></strong></p>
-									<% if(item.durability > -1) { %>
-										<p><% for(var i = 0; i < item.durability; i++) { %>
-											<%= i < item.health ? emoji(0x1F534) : emoji(0x2B55) %>
-										<% } %></p>
-									<% } else { %>
-										<p>Legendary Item</p>
-									<% } %>
+									<p><%= item.durability > -1 ? _.times(item.durability, function(i) { emoji(i < item.health ? 0x1F534 : 0x2B55); }).join("") : "Legendary Item" %></p>
 								</div>
 							<% }) %>
-							<% for(var i = get("data").items.length; i < 4; i++) { %>
-								<div>
-									<p>Empty Slot</p>
-								</div>
-							<% } %>
+							<% _.times(4 - get("data").items.length, function(e) { %>
+								<div><p>Empty Slot</p></div>
+							<% }) %>
 						</div>
 					<% } %>
 					<div class="player-stat-row">
@@ -361,7 +365,7 @@
 					</div>
 					<div class="team-stat-row">
 						<strong>Championships</strong>
-						<span><% for(var i = 0; i < model.get("data").championships; i++) { print(emoji(0x1F48D)) } %></span>
+						<span><%= _.times(model.get("data").championships, function() { emoji(0x1F48D) }).join("") %></span>
 					</div>
 					<% if(model.get("data").level) { %>
 						<div class="team-stat-row">
