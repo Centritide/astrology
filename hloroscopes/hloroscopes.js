@@ -410,7 +410,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		emoji: parseEmoji,
 		getModifier: getModifier,
 		getStatProgress: function(stat) {
-			var statPercent = this.get("data")[stat] * 100, progress = "<div class='stadium-stat-progress'><div class='stadium-stat-value " + stat + "' style='margin-left:";
+			var statPercent = this.get("data")[stat] * 100, progress = "<div class='stadium-stat-value " + stat + "' style='margin-left:";
 			if(statPercent > 51) {
 				progress += "50%;border-radius:0 5px 5px 0;width:" + (statPercent - 50);
 			} else if(statPercent < 49) {
@@ -418,7 +418,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			} else {
 				progress += "49.5%;border-radius:5px;width:1";
 			}
-			progress += "%'></div></div>";
+			progress += "%'></div>";
 			return progress;
 		},
 		isForbidden: function() {

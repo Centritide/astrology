@@ -515,75 +515,84 @@
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Grandiosity</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").grandiosity %></span>
-						<% } else { %>
-							<%= getStatProgress("grandiosity") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("grandiosity") %>
+							</div>
+							<small>(<%= Math.round(get("data").grandiosity * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Fortification</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").fortification %></span>
-						<% } else { %>
-							<%= getStatProgress("fortification") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("fortification") %>
+							</div>
+							<small>(<%= Math.round(get("data").fortification * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Obtuseness</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").obtuseness %></span>
-						<% } else { %>
-							<%= getStatProgress("obtuseness") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("obtuseness") %>
+							</div>
+							<small>(<%= Math.round(get("data").obtuseness * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Ominousness</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").ominousness %></span>
-						<% } else { %>
-							<%= getStatProgress("ominousness") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("ominousness") %>
+							</div>
+							<small>(<%= Math.round(get("data").ominousness * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Inconvenience</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").inconvenience %></span>
-						<% } else { %>
-							<%= getStatProgress("inconvenience") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("inconvenience") %>
+							</div>
+							<small>(<%= Math.round(get("data").inconvenience * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Viscosity</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").viscosity %></span>
-						<% } else { %>
-							<%= getStatProgress("viscosity") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("viscosity") %>
+							</div>
+							<small>(<%= Math.round(get("data").viscosity * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Forwardness</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").forwardness %></span>
-						<% } else { %>
-							<%= getStatProgress("forwardness") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("forwardness") %>
+							</div>
+							<small>(<%= Math.round(get("data").forwardness * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Mysticism</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").mysticism %></span>
-						<% } else { %>
-							<%= getStatProgress("mysticism") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("mysticism") %>
+							</div>
+							<small>(<%= Math.round(get("data").mysticism * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Elongation</strong>
-						<% if(isForbidden()) { %>
-							<span><%= get("data").elongation %></span>
-						<% } else { %>
-							<%= getStatProgress("elongation") %>
-						<% } %>
+						<div class='stadium-stat-container'>
+							<div class='stadium-stat-progress'>
+								<%= getStatProgress("elongation") %>
+							</div>
+							<small>(<%= Math.round(get("data").elongation * 100) / 100 %>)</small>
+						</div>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Filthiness</strong>
