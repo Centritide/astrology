@@ -162,6 +162,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return (activeTeam ? activeTeam.slug() + "/" : "") + this.get("name").toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		calculateBatting: function() {
+			console.log(this.get("items"));
 			return (
 				Math.pow(1 - this.get("tragicness"), 0.01) *
 				Math.pow(this.get("buoyancy"), 0) *
@@ -171,9 +172,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				Math.pow(this.get("musclitude"), 0.075) *
 				Math.pow(1 - this.get("patheticism"), 0.05) *
 				Math.pow(this.get("martyrdom"), 0.02)
-			) + _.reduce(this.items(), function(i, j) {
-				return i + (j.health > 0 ? j.battingMod : 0);
-			}, 0);
+			);
 		},
 		calculatePitching: function() {
 			return (
@@ -183,9 +182,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				Math.pow(this.get("coldness"), 0.025) *
 				Math.pow(this.get("overpowerment"), 0.15) *
 				Math.pow(this.get("ruthlessness"), 0.4)
-			) + _.reduce(this.items(), function(i, j) {
-				return i + (j.health > 0 ? j.pitchingMod : 0);
-			}, 0);
+			);
 		},
 		calculateBaserunning: function() {
 			return (
@@ -194,9 +191,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				Math.pow(this.get("baseThirst"), 0.1) *
 				Math.pow(this.get("indulgence"), 0.1) *
 				Math.pow(this.get("groundFriction"), 0.1)
-			) + _.reduce(this.items(), function(i, j) {
-				return i + (j.health > 0 ? j.baserunningMod : 0);
-			}, 0);
+			);
 		},
 		calculateDefense: function() {
 			return (
@@ -205,9 +200,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				Math.pow(this.get("watchfulness"), 0.1) *
 				Math.pow(this.get("anticapitalism"), 0.1) *
 				Math.pow(this.get("chasiness"), 0.1)
-			) + _.reduce(this.items(), function(i, j) {
-				return i + (j.health > 0 ? j.defenseMod : 0);
-			}, 0);
+			);
 		},
 		calculateSoulscream: function() {
 			var letters = ["A", "E", "I", "O", "U", "X", "H", "A", "E", "I"], stlats = [this.get("pressurization"), this.get("divinity"), this.get("tragicness"), this.get("shakespearianism"), this.get("ruthlessness")], soulscream = "";
@@ -292,7 +285,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		modifiers: function() {
 			return {
 				game: this.get("gameAttr") || [],
-				item: _.chain([getItem(this.get("bat")), getItem(this.get("armor"))]).pluck("attr").compact().without("NONE").union(this.get("itemAttr")).value(),
+				item: _.chain([getLegendaryItem(this.get("bat")), getLegendaryItem(this.get("armor"))])
+					.pluck("attr")
+					.compact()
+					.union(this.get("itemAttr"))
+					.value(),
 				permanent: _.reject(_.union(this.get("permAttr") || [], ), function(attr) { return _.contains(["COFFEE_RALLY", "ELSEWHERE", "HEATING_UP", "INHABITING", "MAGMATIC", "ON_FIRE", "OVERPERFORMING", "UNDERPERFORMING"], attr); }),
 				seasonal: this.get("seasAttr") || [],
 				weekly: this.get("weekAttr") || []
@@ -316,19 +313,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			}
 		},
 		items: function() {
-			return _.chain([getItem(this.get("bat")), getItem(this.get("armor"))]).union(_.map(this.get("items"), function(item) {
-				console.log(new App.Models.Item(item));
-				return {
-					id: item.id,
-					name: item.name,
-					health: item.health,
-					durability: item.durability,
-					battingMod: item.hittingRating,
-					defenseMod: item.defenseRating,
-					pitchingMod: item.pitchingRating,
-					baserunningMod: item.baserunningRating
-				};
-			})).compact().value();
+			return _.chain([getLegendaryItem(this.get("bat")), getLegendaryItem(this.get("armor"))])
+				.union(this.get("items"))
+				.compact()
+				.map(function(item) { return new App.Models.Item(item); })
+				.value();
 		}
 	});
 	App.Models.Update = Backbone.Model.extend({
@@ -495,26 +484,22 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		}
 	});
 	App.Models.Item = Backbone.Model.extend({
-		getAdjustmentStatName: function(stat) {
-			return ["tragicness", "buoyancy", "thwackability", "moxie", "divinity", "musclitude", "patheticism", "martyrdom", "cinnamon", "baseThirst", "laserlikeness", "continuation", "indulgence", "groundFriction", "shakespearianism", "suppression", "unthwackability", "coldness", "overpowerment", "ruthlessness", "pressurization", "omniscience", "tenaciousness", "watchfulness", "anticapitalism", "chasiness"][stat];
-		},
 		getAggregateAdjustments: function() {
-			var thisItem = this, adjustments = {};
-			_.each(["prePrefix", "prefixes", "postPrefix", "root", "suffix"], function(affixes) {
-				if(thisItem.get(affixes) != null && thisItem.get(affixes).length) {
-					_.each(thisItem.get(affixes), function(affix) {
-						_.each(affix.adjustments, function(adjustment) {
-							var statName = thisItem.getAdjustmentStatName(adjustment.stat);
+			var stats = ["tragicness", "buoyancy", "thwackability", "moxie", "divinity", "musclitude", "patheticism", "martyrdom", "cinnamon", "baseThirst", "laserlikeness", "continuation", "indulgence", "groundFriction", "shakespearianism", "suppression", "unthwackability", "coldness", "overpowerment", "ruthlessness", "pressurization", "omniscience", "tenaciousness", "watchfulness", "anticapitalism", "chasiness"], adjustments = {};
+			_.chain([this.get("prePrefix"), this.get("postPrefix"), this.get("root"), this.get("suffix")])
+				.union(this.get("prefixes"))
+				.compact()
+				.each(function(affix) {
+					_.each(affix.adjustments, function(adjustment) {
+						if(adjustment.type === 1) {
+							var statName = stats[adjustment.stat];
 							if(!adjustments.hasOwnProperty(statName)) {
 								adjustments[statName] = 0;
 							}
-							if(adjustment.type === 1) {
-								adjustments[statName] += adjustment.value;
-							}
-						});
+							adjustments[statName] += adjustment.value;
+						}
 					});
-				}
-			});
+				});
 			return adjustments;
 		}
 	});
@@ -1852,22 +1837,18 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		return mod;
 	}
 	
-	function getItem(id) {
+	function getLegendaryItem(id) {
 		if(id) {
 			var item = _.findWhere(items, { id: id });
 			if(!item) {
 				item = {
 					"id": id,
 					"name": id,
-					"attr": "NONE"
+					"attr": null
 				}
 			}
 			item.health = -1;
 			item.durability = -1;
-			item.hittingMod = 0;
-			item.defenseMod = 0;
-			item.pitchingMod = 0;
-			item.baserunningMod = 0;
 			return item;
 		} else {
 			return null;

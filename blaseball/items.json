@@ -7,22 +7,22 @@
     {
         "id": "GUNBLADE_A",
         "name": "The Dial Tone",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "GUNBLADE_B",
         "name": "Vibe Check",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "MUSHROOM",
         "name": "Mushroom",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "GRAPPLING_HOOK",
         "name": "Grappling Hook",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "HEADPHONES",
@@ -32,17 +32,17 @@
     {
         "id": "ENGLAND_MEMORABILIA",
         "name": "Bangers & Smash",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "ARM_CANNON",
         "name": "Literal Arm Cannon",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "SHRINK_RAY",
         "name": "Shrink Ray",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "GRAVITY_BOOTS",
@@ -52,12 +52,12 @@
     {
         "id": "BIRDSONG",
         "name": "Birdsong",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "NIGHT_VISION_GOGGLES",
         "name": "Night Vision Goggles",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "SAWED_OFF_BAT",
@@ -72,7 +72,7 @@
     {
         "id": "INKY_BLAGONBALL",
         "name": "The 2-Blood Blagonball",
-        "attr": "NONE"
+        "attr": null
     },
     {
         "id": "AN_ACTUAL_AIRPLANE",
