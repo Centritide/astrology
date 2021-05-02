@@ -324,7 +324,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		getItemAdjustments: function() {
 			return _.reduce(this.items(), function(i, j) {
 				if(j.get("health") > 0) {
-					_.each(j.getAggregateAdjustments(), function(stat, value) {
+					_.each(j.getAggregateAdjustments(), function(value, stat) {
 						if(!i.hasOwnProperty(stat)) {
 							i[stat] = 0;
 						}
