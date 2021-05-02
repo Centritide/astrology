@@ -317,6 +317,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		},
 		items: function() {
 			return _.chain([getItem(this.get("bat")), getItem(this.get("armor"))]).union(_.map(this.get("items"), function(item) {
+				console.log(new App.Models.Item(item));
 				return {
 					id: item.id,
 					name: item.name,
@@ -491,6 +492,30 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				}
 				return weatherName;
 			});
+		}
+	});
+	App.Models.Item = Backbone.Model.extend({
+		getAdjustmentStatName: function(stat) {
+			return ["tragicness", "buoyancy", "thwackability", "moxie", "divinity", "musclitude", "patheticism", "martyrdom", "cinnamon", "baseThirst", "laserlikeness", "continuation", "indulgence", "groundFriction", "shakespearianism", "suppression", "unthwackability", "coldness", "overpowerment", "ruthlessness", "pressurization", "omniscience", "tenaciousness", "watchfulness", "anticapitalism", "chasiness"][stat];
+		},
+		getAggregateAdjustments: function() {
+			var thisItem = this, adjustments = {};
+			_.each(["prePrefix", "prefixes", "postPrefix", "root", "suffix"], function(affixes) {
+				if(thisItem.get(affixes) != null && thisItem.get(affixes).length) {
+					_.each(thisItem.get(affixes), function(affix) {
+						_.each(affix.adjustments, function(adjustment) {
+							var statName = thisItem.getAdjustmentStatName(adjustment.stat);
+							if(!adjustments.hasOwnProperty(statName)) {
+								adjustments[statName] = 0;
+							}
+							if(adjustment.type === 1) {
+								adjustments[statName] += adjustment.value;
+							}
+						});
+					});
+				}
+			});
+			return adjustments;
 		}
 	});
 	//-- END MODELS --

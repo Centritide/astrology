@@ -925,13 +925,13 @@
     },
     {
         "id": "SMOOTH",
-		"emoji": "0x1F95C",
+		"emoji": "0x1F9C8",
         "title": "Smooth",
         "description": "This player will have 100% more Speed in Peanut weather."
     },
     {
         "id": "CHUNKY",
-		"emoji": "0x1F95C",
+		"emoji": "0x1F330",
         "title": "Chunky",
         "description": "This player will have 100% more Power in Peanut weather."
     },
