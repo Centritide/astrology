@@ -854,7 +854,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			}));
 		}
 	});
-	App.Collections.Item = Backbone.Model.extend({
+	App.Collections.Items = Backbone.Model.extend({
 		model: App.Models.Item,
 		getAggregateAdjustments: function() {
 			return this.reduce(function(i, j) {
