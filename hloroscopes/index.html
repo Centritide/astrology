@@ -243,7 +243,7 @@
 							</span>
 						</div>
 						<div class="player-items">
-							<% var items = items(); %>
+							<% var items = get("data").items(); %>
 							<% _.each(items, function(item) { %>
 								<div>
 									<p><strong><%= item.get("name") %></strong></p>
