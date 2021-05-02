@@ -9,7 +9,7 @@ requirejs.config({
         json: "../libs/json",
 		jquery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min",
 		backbone: "https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min",
-		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.11.0/underscore-min",
+		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min",
 		twemoji: "https://twemoji.maxcdn.com/v/latest/twemoji.min"
 	},
 	shim : {
@@ -164,58 +164,51 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		calculateBatting: function() {
 			var adjustments = this.getStatAdjustments();
 			return (
-				Math.pow(1 - this.get("tragicness") + (adjustments.hasOwnProperty("tragicness") ?  adjustments.tragicness : 0), 0.01) *
-				Math.pow(this.get("buoyancy") + (adjustments.hasOwnProperty("buoyancy") ?  adjustments.buoyancy : 0), 0) *
-				Math.pow(this.get("thwackability") + (adjustments.hasOwnProperty("thwackability") ?  adjustments.thwackability : 0), 0.35) *
-				Math.pow(this.get("moxie") + (adjustments.hasOwnProperty("moxie") ?  adjustments.moxie : 0), 0.075) *
-				Math.pow(this.get("divinity") + (adjustments.hasOwnProperty("divinity") ?  adjustments.divinity : 0), 0.35) *
-				Math.pow(this.get("musclitude") + (adjustments.hasOwnProperty("musclitude") ?  adjustments.musclitude : 0), 0.075) *
-				Math.pow(1 - this.get("patheticism") + (adjustments.hasOwnProperty("patheticism") ? adjustments.patheticism : 0), 0.05) *
-				Math.pow(this.get("martyrdom") + (adjustments.hasOwnProperty("martyrdom") ? adjustments.martyrdom : 0), 0.02)
+				Math.pow(1 - this.get("tragicness") + _.get(adjustments, "tragicness", 0), 0.01) *
+				Math.pow(this.get("buoyancy") + _.get(adjustments, "buoyancy", 0), 0) *
+				Math.pow(this.get("thwackability") + _.get(adjustments, "thwackability", 0), 0.35) *
+				Math.pow(this.get("moxie") + _.get(adjustments, "moxie", 0), 0.075) *
+				Math.pow(this.get("divinity") + _.get(adjustments, "divinity", 0), 0.35) *
+				Math.pow(this.get("musclitude") + _.get(adjustments, "musclitude", 0), 0.075) *
+				Math.pow(1 - this.get("patheticism") + _.get(adjustments, "patheticism", 0), 0.05) *
+				Math.pow(this.get("martyrdom") + _.get(adjustments, "martyrdom", 0), 0.02)
 			);
 		},
 		calculatePitching: function() {
 			var adjustments = this.getStatAdjustments();
 			return (
-				Math.pow(this.get("shakespearianism") + (adjustments.hasOwnProperty("shakespearianism") ?  adjustments.shakespearianism : 0), 0.1) *
-				Math.pow(this.get("suppression") + (adjustments.hasOwnProperty("suppression") ?  adjustments.suppression : 0), 0) *
-				Math.pow(this.get("unthwackability") + (adjustments.hasOwnProperty("unthwackability") ?  adjustments.unthwackability : 0), 0.5) *
-				Math.pow(this.get("coldness") + (adjustments.hasOwnProperty("coldness") ?  adjustments.coldness : 0), 0.025) *
-				Math.pow(this.get("overpowerment") + (adjustments.hasOwnProperty("overpowerment") ?  adjustments.overpowerment : 0), 0.15) *
-				Math.pow(this.get("ruthlessness") + (adjustments.hasOwnProperty("ruthlessness") ?  adjustments.ruthlessness : 0), 0.4)
+				Math.pow(this.get("shakespearianism") + _.get(adjustments, "shakespearianism", 0), 0.1) *
+				Math.pow(this.get("suppression") + _.get(adjustments, "suppression", 0), 0) *
+				Math.pow(this.get("unthwackability") + _.get(adjustments, "unthwackability", 0), 0.5) *
+				Math.pow(this.get("coldness") + _.get(adjustments, "coldness", 0), 0.025) *
+				Math.pow(this.get("overpowerment") + _.get(adjustments, "overpowerment", 0), 0.15) *
+				Math.pow(this.get("ruthlessness") + _.get(adjustments, "ruthlessness", 0), 0.4)
 			);
 		},
 		calculateBaserunning: function() {
 			var adjustments = this.getStatAdjustments();
 			return (
-				Math.pow(this.get("laserlikeness") + (adjustments.hasOwnProperty("laserlikeness") ?  adjustments.laserlikeness : 0), 0.5) *
-				Math.pow(this.get("continuation") + (adjustments.hasOwnProperty("continuation") ?  adjustments.continuation : 0), 0.1) *
-				Math.pow(this.get("baseThirst") + (adjustments.hasOwnProperty("baseThirst") ?  adjustments.baseThirst : 0), 0.1) *
-				Math.pow(this.get("indulgence") + (adjustments.hasOwnProperty("indulgence") ?  adjustments.indulgence : 0), 0.1) *
-				Math.pow(this.get("groundFriction") + (adjustments.hasOwnProperty("groundFriction") ?  adjustments.groundFriction : 0), 0.1)
+				Math.pow(this.get("laserlikeness") + _.get(adjustments, "laserlikeness", 0), 0.5) *
+				Math.pow(this.get("continuation") + _.get(adjustments, "continuation", 0), 0.1) *
+				Math.pow(this.get("baseThirst") + _.get(adjustments, "baseThirst", 0), 0.1) *
+				Math.pow(this.get("indulgence") + _.get(adjustments, "indulgence", 0), 0.1) *
+				Math.pow(this.get("groundFriction") + _.get(adjustments, "groundFriction", 0), 0.1)
 			);
 		},
 		calculateDefense: function() {
 			var adjustments = this.getStatAdjustments();
 			return (
-				Math.pow(this.get("omniscience") + (adjustments.hasOwnProperty("omniscience") ?  adjustments.omniscience : 0), 0.2) *
-				Math.pow(this.get("tenaciousness") + (adjustments.hasOwnProperty("tenaciousness") ?  adjustments.tenaciousness : 0), 0.2) *
-				Math.pow(this.get("watchfulness") + (adjustments.hasOwnProperty("watchfulness") ?  adjustments.watchfulness : 0), 0.1) *
-				Math.pow(this.get("anticapitalism") + (adjustments.hasOwnProperty("anticapitalism") ?  adjustments.anticapitalism : 0), 0.1) *
-				Math.pow(this.get("chasiness") + (adjustments.hasOwnProperty("chasiness") ?  adjustments.chasiness : 0), 0.1)
+				Math.pow(this.get("omniscience") + _.get(adjustments, "omniscience", 0), 0.2) *
+				Math.pow(this.get("tenaciousness") + _.get(adjustments, "tenaciousness", 0), 0.2) *
+				Math.pow(this.get("watchfulness") + _.get(adjustments, "tragicness", 0), 0.1) *
+				Math.pow(this.get("anticapitalism") + _.get(adjustments, "anticapitalism", 0), 0.1) *
+				Math.pow(this.get("chasiness") + _.get(adjustments, "chasiness", 0), 0.1)
 			);
 		},
 		calculateSoulscream: function() {
 			var soulscream = "",
-				adjustments = this.getStatAdjustments(),
 				letters = ["A", "E", "I", "O", "U", "X", "H", "A", "E", "I"], 
-				stlats = [
-					this.get("pressurization") + (adjustments.hasOwnProperty("pressurization") ?  adjustments.pressurization : 0), 
-					this.get("divinity") + (adjustments.hasOwnProperty("divinity") ?  adjustments.divinity : 0), 
-					this.get("tragicness") + (adjustments.hasOwnProperty("tragicness") ?  adjustments.tragicness : 0), 
-					this.get("shakespearianism") + (adjustments.hasOwnProperty("shakespearianism") ?  adjustments.shakespearianism : 0), 
-					this.get("ruthlessness") + (adjustments.hasOwnProperty("ruthlessness") ?  adjustments.ruthlessness : 0)
-				];
+				stlats = [this.get("pressurization"), this.get("divinity"), this.get("tragicness"), this.get("shakespearianism"), this.get("ruthlessness")];
 		  
 			for(var i = 0; i < Math.min(this.get("soul"), 300); i++) {
 				var magnitude = 1 / Math.pow(10, i);
@@ -317,9 +310,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			var adjustments = this.getStatAdjustments();
 			if(this.get("buoyancy") && this.has("cinnamon") && this.has("pressurization")) {
 				return {
-					frequency: 6 + Math.round(10 * (this.get("buoyancy") + (adjustments.hasOwnProperty("buoyancy") ?  adjustments.buoyancy : 0))),
-					minimum: -1 * (this.get("pressurization") + (adjustments.hasOwnProperty("pressurization") ?  adjustments.pressurization : 0)),
-					maximum: this.get("cinnamon") + (adjustments.hasOwnProperty("cinnamon") ?  adjustments.cinnamon : 0)
+					frequency: 6 + Math.round(10 * (this.get("buoyancy") + _.get(adjustments, "buoyancy", 0))),
+					minimum: -1 * (this.get("pressurization") + _.get(adjustments, "pressurization", 0)),
+					maximum: this.get("cinnamon") + _.get(adjustments, "cinnamon", 0)
 				};
 			} else {
 				return null;
