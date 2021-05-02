@@ -163,7 +163,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		},
 		calculateBatting: function() {
 			if(this.items() && this.items().length) {
-				console.log(this.items(), this.getAggregateAdjustments());
+				console.log(this.items(), this.getItemAdjustments());
 			}
 			return (
 				Math.pow(1 - this.get("tragicness"), 0.01) *
@@ -318,6 +318,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return _.chain([getLegendaryItem(this.get("bat")), getLegendaryItem(this.get("armor"))])
 				.union(this.get("items"))
 				.compact()
+				.map(function(item) { return new App.Models.Item(item); })
 				.value()
 		},
 		getItemAdjustments: function() {
