@@ -243,8 +243,7 @@
 							</span>
 						</div>
 						<div class="player-items">
-							<% var items = get("data").items(); %>
-							<% _.each(items, function(item) { %>
+							<% _.each(get("data").items, function(item) { %>
 								<div>
 									<p><strong><%= item.get("name") %></strong></p>
 									<p>
@@ -258,7 +257,7 @@
 									</p>
 								</div>
 							<% }) %>
-							<% _.times(4 - items.length, function(e) { %>
+							<% _.times(4 - get("data").items.length, function(e) { %>
 								<div><p>Empty Slot</p></div>
 							<% }) %>
 						</div>

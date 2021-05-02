@@ -161,8 +161,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		slug: function() {
 			return (activeTeam ? activeTeam.slug() + "/" : "") + this.get("name").toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
+		getAdjustedStat: function(stat) {
+			return this.get(stat) + (this.get("adjustments").hasOwnProperty(stat) ? this.get("adjustments")[stat] : 0);
+		},
 		calculateBatting: function() {
-			console.log(this.getItemAdjustments());
+			console.log("thwackability", this.get("thwackability"), this.getAdjustedStat("thwackability"));
 			return (
 				Math.pow(1 - this.get("tragicness"), 0.01) *
 				Math.pow(this.get("buoyancy"), 0) *
@@ -319,7 +322,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				.map(function(item) { return new App.Models.Item(item); })
 				.value()
 		},
-		getItemAdjustments: function() {
+		getStatAdjustments: function() {
 			return _.reduce(this.items(), function(i, j) {
 				if(j.get("health") > 0) {
 					_.each(j.getAggregateAdjustments(), function(value, stat) {
@@ -1947,6 +1950,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	function formatPlayerData(data) {
 		var model = new App.Models.Player(data);
 		return {
+			adjustments: model.getStatAdjustments(),
 			allergy: model.get("peanutAllergy"),
 			baserunning: model.calculateBaserunning(),
 			batting: model.calculateBatting(),
