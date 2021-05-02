@@ -163,7 +163,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		},
 		calculateBatting: function() {
 			if(this.items() && this.items().length) {
-				console.log(this.items(), this.items().getAggregateAdjustments());
+				console.log(this.items(), this.getAggregateAdjustments());
 			}
 			return (
 				Math.pow(1 - this.get("tragicness"), 0.01) *
@@ -315,12 +315,23 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			}
 		},
 		items: function() {
-			return new App.Collections.Items(
-				_.chain([getLegendaryItem(this.get("bat")), getLegendaryItem(this.get("armor"))])
-					.union(this.get("items"))
-					.compact()
-					.value()
-			);
+			return _.chain([getLegendaryItem(this.get("bat")), getLegendaryItem(this.get("armor"))])
+				.union(this.get("items"))
+				.compact()
+				.value()
+		},
+		getItemAdjustments: function() {
+			return _.reduce(this.items(), function(i, j) {
+				if(j.get("health") > 0) {
+					_.each(j.getAggregateAdjustments(), function(stat, value) {
+						if(!i.hasOwnProperty(stat)) {
+							i[stat] = 0;
+						}
+						i[stat] += value;
+					});
+				}
+				return i;
+			}, {});
 		}
 	});
 	App.Models.Update = Backbone.Model.extend({
@@ -854,22 +865,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			this.set(this.filter(function(model) {
 				return model.get("changes").length;
 			}));
-		}
-	});
-	App.Collections.Items = Backbone.Model.extend({
-		model: App.Models.Item,
-		getAggregateAdjustments: function() {
-			return this.reduce(function(i, j) {
-				if(j.get("health") > 0) {
-					_.each(j.getAggregateAdjustments(), function(stat, value) {
-						if(!i.hasOwnProperty(stat)) {
-							i[stat] = 0;
-						}
-						i[stat] += value;
-					});
-				}
-				return i;
-			}, {});
 		}
 	});
 	//-- END COLLECTIONS --
