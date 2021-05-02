@@ -162,7 +162,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return (activeTeam ? activeTeam.slug() + "/" : "") + this.get("name").toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		calculateBatting: function() {
-			console.log(this.get("items"));
+			console.log(this.items(), this.items.getAggregateAdjustments());
 			return (
 				Math.pow(1 - this.get("tragicness"), 0.01) *
 				Math.pow(this.get("buoyancy"), 0) *
@@ -313,11 +313,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			}
 		},
 		items: function() {
-			return _.chain([getLegendaryItem(this.get("bat")), getLegendaryItem(this.get("armor"))])
-				.union(this.get("items"))
-				.compact()
-				.map(function(item) { return new App.Models.Item(item); })
-				.value();
+			return new App.Collections.Items(
+				_.chain([getLegendaryItem(this.get("bat")), getLegendaryItem(this.get("armor"))])
+					.union(this.get("items"))
+					.compact()
+					.value()
+			);
 		}
 	});
 	App.Models.Update = Backbone.Model.extend({
@@ -851,6 +852,22 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			this.set(this.filter(function(model) {
 				return model.get("changes").length;
 			}));
+		}
+	});
+	App.Collections.Item = Backbone.Model.extend({
+		model: App.Models.Item,
+		getAggregateAdjustments: function() {
+			return this.reduce(function(i, j) {
+				if(j.get("health") > 0) {
+					_.each(j.getAggregateAdjustments(), function(stat, value) {
+						if(!i.hasOwnProperty(stat)) {
+							i[stat] = 0;
+						}
+						i[stat] += value;
+					});
+				}
+				return i;
+			}, {});
 		}
 	});
 	//-- END COLLECTIONS --
