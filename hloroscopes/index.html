@@ -243,13 +243,14 @@
 							</span>
 						</div>
 						<div class="player-items">
-							<% _.each(get("data").items, function(item) { %>
+							<% var items = items(); %>
+							<% _.each(items, function(item) { %>
 								<div>
-									<p><strong><%= item.name %></strong></p>
+									<p><strong><%= item.get("name") %></strong></p>
 									<p>
-										<% if(item.durability > -1) {
-											_.times(item.durability, function(i) { 
-												print(emoji(i < item.health ? 0x1F534 : 0x2B55));
+										<% if(item.get("durability") > -1) {
+											_.times(item.get("durability"), function(i) { 
+												print(emoji(i < item.get("health") ? 0x1F534 : 0x2B55));
 											});
 										} else { %>
 											Legendary Item
@@ -257,7 +258,7 @@
 									</p>
 								</div>
 							<% }) %>
-							<% _.times(4 - get("data").items.length, function(e) { %>
+							<% _.times(4 - items.length, function(e) { %>
 								<div><p>Empty Slot</p></div>
 							<% }) %>
 						</div>

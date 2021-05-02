@@ -29,7 +29,7 @@ requirejs.config({
 	}
 });
 //Start the main app logic.
-requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, modifiers, items, weathers) {
+requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, modifiers, oldItems, weathers) {
 	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null }, activeTeam, activePlayer, navView, teamView, updatesView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
 	
 	//-- BEGIN ROUTER --
@@ -162,9 +162,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return (activeTeam ? activeTeam.slug() + "/" : "") + this.get("name").toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		calculateBatting: function() {
-			if(this.items() && this.items().length) {
-				console.log(this.items(), this.getItemAdjustments());
-			}
+			console.log(this.getItemAdjustments());
 			return (
 				Math.pow(1 - this.get("tragicness"), 0.01) *
 				Math.pow(this.get("buoyancy"), 0) *
@@ -648,10 +646,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 								} else if(prevData.items.length > 0 && value.length > 0) {
 									var durabilities = {};
 									_.each(prevData.items, function(item) {
-										durabilities[item.id] = item.health;
+										durabilities[item.id] = item.get("health");
 									});
 									_.each(value, function(item) {
-										if(durabilities.hasOwnProperty(item.id) && durabilities[item.id] != item.health) {
+										if(durabilities.hasOwnProperty(item.id) && durabilities[item.id] != item.get("health")) {
 											model.get("changes").push("durability");
 											return;
 										}
@@ -1854,7 +1852,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	
 	function getLegendaryItem(id) {
 		if(id) {
-			var item = _.findWhere(items, { id: id });
+			var item = _.findWhere(oldItems, { id: id });
 			if(!item) {
 				item = {
 					"id": id,
