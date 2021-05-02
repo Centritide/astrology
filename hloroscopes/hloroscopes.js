@@ -37,11 +37,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		routes: {
 			"": "index",
 			":team": "team",
-			":team/:player": "player"
+			":team/:player": "chart",
+			":team/:player/compare": "table"
 		},
-		index: loadPage,
+		index: loadIndex,
 		team: loadPage,
-		player: loadPage
+		chart: loadChart,
+		table: loadTable
 	});
 	//-- END ROUTER --
 	
@@ -1301,6 +1303,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			}
 		}
 	});
+	App.Views.StlatUpdates = App.Views.Updates.extend({
+		template: _.template($("#template-stlats").html()),
+		el: "section.chart",
+		render: function() {
+			this.$el.html(this.template({}));
+		}
+	});
 	App.Views.TeamHistory = Backbone.View.extend({
 		template: _.template($("#template-history-chart").html()),
 		el: "section.chart",
@@ -1733,8 +1742,34 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	function isMobile() {
 		return /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent) || $(window).width() < 700;
 	}
+
+	function loadIndex() {
+		$("main").html(_.template($("#template-index").html())({ isLightMode: function() { return lightMode; }, emoji: parseEmoji }));
+		$("section.index a:last-child").click(function(e) {
+			e.preventDefault();
+			lightMode = !lightMode;
+			$("#root").addClass("transition");
+			$("#root").toggleClass("dark", !lightMode);
+			$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
+			if(navView) {
+				navView.render();
+			}
+			if(localStorageExists()) {
+				localStorage.setItem("lightModeState", lightMode);
+			}
+			gtag('event', 'toggle_lights');
+		});
+	}
+
+	function loadChart(team, player) {
+		loadPage(team, player, App.Views.Updates);
+	}
 	
-	function loadPage(team, player) {
+	function loadTable(team, player) {
+		loadPage(team, player, App.Views.StlatUpdates);
+	}
+
+	function loadPage(team, player, updateViewClass) {
 		if(!navView) {
 			navView = new App.Views.Nav({ collection: new App.Collections.Teams });
 		}
@@ -1742,29 +1777,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			activePage.player = null;
 			activePlayer = null;
 		}
-		if(team) {
-			if(team != activePage.team) {
-				loadTeam(team);
-			}
-			if(player && player != activePage.player) {
-				loadPlayer(player);
-			}
-		} else {
-			$("main").html(_.template($("#template-index").html())({ isLightMode: function() { return lightMode; }, emoji: parseEmoji }));
-			$("section.index a:last-child").click(function(e) {
-				e.preventDefault();
-				lightMode = !lightMode;
-				$("#root").addClass("transition");
-				$("#root").toggleClass("dark", !lightMode);
-				$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
-				if(navView) {
-					navView.render();
-				}
-				if(localStorageExists()) {
-					localStorage.setItem("lightModeState", lightMode);
-				}
-				gtag('event', 'toggle_lights');
-			});				
+		if(team != activePage.team) {
+			loadTeam(team);
+		}
+		if(player && player != activePage.player) {
+			loadPlayer(player, updateViewClass);
 		}
 	}
 	
@@ -1784,7 +1801,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		}
 	}
 	
-	function loadPlayer(id) {
+	function loadPlayer(id, updateViewClass) {
 		activePage.player = id;
 		if(activeTeam) {
 			if(stadiumView) {
@@ -1816,7 +1833,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				activePlayer = activeTeam.get("players").find(function(model) {
 					return model.id == id || model.slug() == activeTeam.slug() + "/" + id;
 				});
-				updatesView = new App.Views.Updates({
+				updatesView = new updateViewClass({
 					id: activePlayer.id,
 					collection: new App.Collections.Updates
 				});
