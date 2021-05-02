@@ -162,7 +162,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return (activeTeam ? activeTeam.slug() + "/" : "") + this.get("name").toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		calculateBatting: function() {
-			console.log(this.items(), this.items.getAggregateAdjustments());
+			if(this.items() && this.items().length) {
+				console.log(this.items(), this.items().getAggregateAdjustments());
+			}
 			return (
 				Math.pow(1 - this.get("tragicness"), 0.01) *
 				Math.pow(this.get("buoyancy"), 0) *
