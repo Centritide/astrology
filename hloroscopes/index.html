@@ -373,13 +373,7 @@
 						<tr>
 							<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
 							<td><%= model.get("data").name %></td>
-							<td>
-								<% if(get("data").teams.league) { 
-									var leagueTeam = getTeamById(get("data").teams.league); %>
-									<span><%= leagueTeam.get("emoji") %></span>
-									<span><%= leagueTeam.get("fullName") %></span>
-								<% } %>
-							</td>
+							<td>-</td>
 							<td><%= model.getTotalRoundedRating() %></td>
 							<td><%= model.getRoundedRating("batting") %></td>
 							<td><%= model.getRoundedAttribute("buoyancy") %></td>
@@ -404,18 +398,18 @@
 							<td><%= model.getRoundedAttribute("indulgence") %></td>
 							<td><%= model.getRoundedAttribute("laserlikeness") %></td>
 							<td><%= model.getRoundedRating("defense") %></td>
-							<td><%= model.getRoundedAttribute("anticapitalism") %><</td>
+							<td><%= model.getRoundedAttribute("anticapitalism") %></td>
 							<td><%= model.getRoundedAttribute("chasiness") %></td>
 							<td><%= model.getRoundedAttribute("omniscience") %></td>
 							<td><%= model.getRoundedAttribute("tenaciousness") %></td>
 							<td><%= model.getRoundedAttribute("watchfulness") %></td>
 							<td><%= model.getRoundedAttribute("pressurization") %></td>
-							<td><%= model.getRoundedAttribute("cinnamon") %></td>
+							<td><%= model.get("raw").cinnamon ? model.getRoundedAttribute("cinnamon") : "-" %></td>
 							<td><%= model.get("raw").soul %></td>
-							<td><%= model.get("raw").fate %></td>
+							<td><%= model.get("raw").fate ? model.get("raw").fate : "-" %></td>
 							<td><%= model.get("raw").totalFingers %></td>
 							<td><%= model.get("raw").peanutAllergy ? emoji(0x1f922) : emoji(0x1f60b) %></td>
-							<td><%= model.get("raw").eDensity %></td>
+							<td><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
 						</tr>
 					<% }) %>
 				</tbody>
