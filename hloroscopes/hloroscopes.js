@@ -374,8 +374,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			vibeSymbol += " ";
 			return "<span class='player-vibes vibe-" + vibeText.replace(/\s+/g, "-").toLowerCase() + "'>" + (isMobile() ? "" : vibeSymbol) + (secretsVisible ? vibes : vibeText) + "</span>";
 		},
-		getTotalRoundedRating: function() {
-			return Math.round(5000 * (this.get("data").batting + this.get("data").pitching + this.get("data").baserunning + this.get("data").defense)) / 1000;
+		getCombinedRoundedRating: function() {
+			return Math.round(500 * (this.get("data").batting + this.get("data").pitching + this.get("data").baserunning + this.get("data").defense)) / 100;
 		},
 		getRoundedRating: function(rating) {
 			return Math.round(500 * this.get("data")[rating]) / 100;
@@ -1112,7 +1112,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			$(e.currentTarget).data("toggle-knowledge", secretsVisible);
 			$("#root").toggleClass("secrets", secretsVisible);
 			$(e.currentTarget).html("Forbidden Knowledge " + (secretsVisible ? "Visible" : "Hidden"));
-			if(updatesView) {
+			if(updatesView && updatesView instanceof App.Views.Update) {
 				updatesView.render();
 			}
 			if(historyView) {
@@ -1131,7 +1131,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			evenlySpaced = !$(e.currentTarget).data("toggle-spacing");
 			$(e.currentTarget).data("toggle-spacing", evenlySpaced);
 			$(e.currentTarget).html("Spaced " + (evenlySpaced ? "Evenly" : "By Real Time"));
-			if(updatesView) {
+			if(updatesView && updatesView instanceof App.Views.Update) {
 				updatesView.render();
 			}
 			if(historyView) {
@@ -1155,7 +1155,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			if(navView) {
 				navView.render();
 			}
-			if(updatesView) {
+			if(updatesView && updatesView instanceof App.Views.Update) {
 				updatesView.render();
 			}
 			if(historyView) {
@@ -1806,7 +1806,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	}
 	
 	window.onresize = function() {
-		if(updatesView) {
+		if(updatesView && updatesView instanceof App.Views.Update) {
 			updatesView.render();
 		}
 		if(historyView) {

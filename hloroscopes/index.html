@@ -415,7 +415,7 @@
 										print("-");	
 									} %>
 								</td>
-								<td class="player-stat"><%= model.getTotalRoundedRating() %></td>
+								<td class="player-stat"><%= model.getCombinedRoundedRating() %></td>
 								<td class="player-stat"><%= model.getRoundedRating("batting") %></td>
 								<td class="player-stat <%= model.getScaleClass("buoyancy") %>"><%= model.getRoundedAttribute("buoyancy") %></td>
 								<td class="player-stat <%= model.getScaleClass("divinity") %>"><%= model.getRoundedAttribute("divinity") %></td>

@@ -722,6 +722,9 @@ i.half-star {
 }
 
 .advanced th {
+    position: sticky;
+    top: 0;
+    background: var(--body-bg);
 	font-weight: bold;
 	text-align: center;
 	padding: .2em .4em;
