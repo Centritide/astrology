@@ -554,10 +554,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return adjustments;
 		},
 		getEmoji: function() {
-			if(this.durability < 0) {
+			if(this.get("durability") < 0) {
 				return "0x1F3CF";
 			}
-			if(this.health < 0) {
+			if(this.get("health") < 1) {
 				return "0x274C";
 			}
 			switch(this.get("root").name) {
