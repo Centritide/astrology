@@ -1313,8 +1313,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			}
 		}
 	});
-	App.Views.StlatUpdates = App.Views.Updates.extend({
-		template: _.template($("#template-stlats").html()),
+	App.Views.AdvancedUpdates = App.Views.Updates.extend({
+		template: _.template($("#template-advanced").html()),
 		el: "section.chart",
 		render: function() {
 			this.$el.html(this.template(this.collection));
@@ -1758,7 +1758,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	}
 	
 	function loadTable(team, player) {
-		loadPage(team, player, App.Views.StlatUpdates);
+		loadPage(team, player, App.Views.AdvancedUpdates);
 	}
 
 	function loadPage(team, player, viewClass) {

@@ -659,6 +659,10 @@ i.half-star {
 	overflow: hidden;
 }
 
+.advanced {
+	color: var(--body-text);
+}
+
 .shadows,
 .player-stat-row.shadows,
 .players-column.shadows {

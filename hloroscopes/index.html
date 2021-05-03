@@ -307,8 +307,8 @@
 			</section>
 		</script>
 
-		<script type="text/template" id="template-stlats">
-			<table>
+		<script type="text/template" id="template-advanced">
+			<table class="advanced">
 				<colgroup span="4"></colgroup>
 				<colgroup span="9"></colgroup>
 				<colgroup span="7"></colgroup>
@@ -375,7 +375,7 @@
 							<td><%= model.get("data").name %></td>
 							<td>
 								<% if(get("data").teams.league) { 
-									var leagueTeam = getTeamById(get("data").teams.league)); %>
+									var leagueTeam = getTeamById(get("data").teams.league); %>
 									<span><%= leagueTeam.get("emoji") %></span>
 									<span><%= leagueTeam.get("fullName") %></span>
 								<% } %>
