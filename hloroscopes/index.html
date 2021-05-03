@@ -379,7 +379,12 @@
 								<td>
 									<% if(model.get("data").teams.league) { 
 										var leagueTeam = model.getTeamById(model.get("data").teams.league);
-										print(leagueTeam ? emoji(leagueTeam.get("emoji")) + " " + leagueTeam.get("nickname")) : "-");
+										if(leagueTeam) { %>
+											<span><%= emoji(leagueTeam.get("emoji")) %></span>
+											<span><%= leagueTeam.get("nickname") %></span>
+										<% } else {
+											print("-");
+										}
 									} else {
 										print("-");	
 									} %>
@@ -387,7 +392,12 @@
 								<td>
 									<% if(model.get("data").teams.tournament) { 
 										var tournamentTeam = model.getTeamById(model.get("data").teams.tournament);
-										print(tournamentTeam ? (emoji(tournamentTeam.get("emoji")) + " " + tournamentTeam.get("nickname")) : "-");
+										if(tournamentTeam) { %>
+											<span><%= emoji(tournamentTeam.get("emoji")) %></span>
+											<span><%= tournamentTeam.get("nickname") %></span>
+										<% } else {
+											print("-");
+										}
 									} else {
 										print("-");	
 									} %>
