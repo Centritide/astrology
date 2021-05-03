@@ -114,7 +114,7 @@
 			<div class="players-header"><%= position %></div>
 			<ul>
 				<% _.each(players, function(player) { %>
-					<li><a href="#<%= player.slug() %>"><%= player.get("name") %></a><a class="player-link" href="https://blaseball.com/player/<%= player.id %>"><%= emoji(0x1F517) %></a></li>
+					<li><a href="#<%= player.slug() %>"><%= player.get("name") %></a><a class="shadows player-link" href="#<%= player.slug() %>/advanced" title="See the history of advanced player stats for <%= player.get("name") %>"><%= emoji(0x1F34E) %></a><a class="player-link" href="https://blaseball.com/player/<%= player.id %>" title="Go to official player page for <%= player.get("name") %>"><%= emoji(0x1F517) %></a></li>
 				<% }); %>
 			</ul>
 		</script>
@@ -308,7 +308,7 @@
 		</script>
 
 		<script type="text/template" id="template-advanced">
-			<h1><%= models.last().get("data").name %></h1>
+			<h1><%= last().get("data").name %></h1>
 			<div class="advanced">
 				<table>
 					<colgroup span="6"></colgroup>
