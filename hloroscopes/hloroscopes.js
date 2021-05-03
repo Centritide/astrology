@@ -383,6 +383,27 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		getRoundedAttribute: function(attribute) {
 			return Math.round(1000 * this.get("raw")[attribute]) / 1000;
 		},
+		getScaleClass: function(attribute) {
+			var rating = this.get("raw")[attribute];
+			if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
+				rating = 1 - rating;
+			}
+			if(rating > 0.95) {
+				return "stat-exceptional";
+			} else if(rating > 0.85) {
+				return "stat-great";
+			} else if(rating > 0.65) {
+				return "stat-good";
+			}  else if(rating < 0.15) {
+				return "stat-terrible'";
+			} else if(rating < 0.25) {
+				return "stat-bad'";
+			} else if(rating < 0.45) {
+				return "stat-poor";
+			} else {
+				return "stat-okay";
+			};
+		},
 		getStarsForRating: function(rating) {
 			var i, stars = "", rounded = Math.round(this.get("data")[rating] * 10);
 			for(i = 0; i < Math.floor(rounded / 2); i++) {
