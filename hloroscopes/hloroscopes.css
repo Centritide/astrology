@@ -190,6 +190,13 @@ section.index a:hover {
 	color: var(--footer-hover);
 }
 
+section.table {
+	height: 100%;
+	width: 100%;
+	color: var(--body-text);
+	overflow: auto;
+}
+
 section.team {
 	max-height: 100%;
 	display: flex;
@@ -657,10 +664,6 @@ i.half-star {
 	display: flex;
 	width: .6em;
 	overflow: hidden;
-}
-
-.advanced {
-	color: var(--body-text);
 }
 
 .shadows,
