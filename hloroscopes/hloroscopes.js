@@ -30,7 +30,7 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, modifiers, oldItems, weathers) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null }, activeTeam, activePlayer, navView, teamView, updatesView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null }, activeTeam, activePlayer, navView, teamView, updatesView, historyView, stadiumView, updates = {}, updatesViewClass, secretsVisible = false, evenlySpaced = false, lightMode = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -40,7 +40,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			":team/:player": "chart",
 			":team/:player/compare": "table"
 		},
-		index: loadIndex,
+		index: loadPage,
 		team: loadPage,
 		chart: loadChart,
 		table: loadTable
@@ -1743,33 +1743,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		return /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent) || $(window).width() < 700;
 	}
 
-	function loadIndex() {
-		$("main").html(_.template($("#template-index").html())({ isLightMode: function() { return lightMode; }, emoji: parseEmoji }));
-		$("section.index a:last-child").click(function(e) {
-			e.preventDefault();
-			lightMode = !lightMode;
-			$("#root").addClass("transition");
-			$("#root").toggleClass("dark", !lightMode);
-			$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
-			if(navView) {
-				navView.render();
-			}
-			if(localStorageExists()) {
-				localStorage.setItem("lightModeState", lightMode);
-			}
-			gtag('event', 'toggle_lights');
-		});
-	}
-
 	function loadChart(team, player) {
-		loadPage(team, player, App.Views.Updates);
+		loadPage(team, player, App.Views.Update);
 	}
 	
 	function loadTable(team, player) {
 		loadPage(team, player, App.Views.StlatUpdates);
 	}
 
-	function loadPage(team, player, updateViewClass) {
+	function loadPage(team, player, viewClass) {
 		if(!navView) {
 			navView = new App.Views.Nav({ collection: new App.Collections.Teams });
 		}
@@ -1777,11 +1759,30 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			activePage.player = null;
 			activePlayer = null;
 		}
-		if(team != activePage.team) {
-			loadTeam(team);
-		}
-		if(player && player != activePage.player) {
-			loadPlayer(player, updateViewClass);
+		if(team) {
+			if(team != activePage.team) {
+				loadTeam(team);
+			}
+			updatesViewClass = viewClass;
+			if(player && (player != activePage.player || !(updatesView instanceof updatesViewClass))) {
+				loadPlayer(player);
+			}
+		} else {
+			$("main").html(_.template($("#template-index").html())({ isLightMode: function() { return lightMode; }, emoji: parseEmoji }));
+			$("section.index a:last-child").click(function(e) {
+				e.preventDefault();
+				lightMode = !lightMode;
+				$("#root").addClass("transition");
+				$("#root").toggleClass("dark", !lightMode);
+				$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
+				if(navView) {
+					navView.render();
+				}
+				if(localStorageExists()) {
+					localStorage.setItem("lightModeState", lightMode);
+				}
+				gtag('event', 'toggle_lights');
+			});
 		}
 	}
 	
@@ -1801,7 +1802,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		}
 	}
 	
-	function loadPlayer(id, updateViewClass) {
+	function loadPlayer(id) {
 		activePage.player = id;
 		if(activeTeam) {
 			if(stadiumView) {
@@ -1833,7 +1834,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				activePlayer = activeTeam.get("players").find(function(model) {
 					return model.id == id || model.slug() == activeTeam.slug() + "/" + id;
 				});
-				updatesView = new updateViewClass({
+				updatesView = new updatesViewClass({
 					id: activePlayer.id,
 					collection: new App.Collections.Updates
 				});
