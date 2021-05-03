@@ -374,11 +374,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			vibeSymbol += " ";
 			return "<span class='player-vibes vibe-" + vibeText.replace(/\s+/g, "-").toLowerCase() + "'>" + (isMobile() ? "" : vibeSymbol) + (secretsVisible ? vibes : vibeText) + "</span>";
 		},
-		getRoundedAttribute: function(attribute) {
-			return Math.round(1000 * this.get("raw")[attribute]) / 1000;
+		getTotalRoundedRating: function() {
+			return Math.round(5000 * (this.get("data").batting + this.get("data").pitching + this.get("data").baserunning + this.get("data").defense)) / 1000;
 		},
 		getRoundedRating: function(rating) {
 			return Math.round(500 * this.get("data")[rating]) / 100;
+		},
+		getRoundedAttribute: function(attribute) {
+			return Math.round(1000 * this.get("raw")[attribute]) / 1000;
 		},
 		getStarsForRating: function(rating) {
 			var i, stars = "", rounded = Math.round(this.get("data")[rating] * 10);

@@ -354,13 +354,13 @@
 						<th>indlg</th>
 						<th>laser</th>
 						<th><%= emoji(0x2B50) %></th>
-						<th>ancap<</th>
+						<th>ancap</th>
 						<th>chase</th>
 						<th>omni</th>
 						<th>tenac</th>
 						<th>watch</th>
 						<th>prssr</th>
-						<th>cinnm</th>
+						<th>cinn</th>
 						<th>soul</th>
 						<th>fate</th>
 						<th>fingers</th>
@@ -373,43 +373,49 @@
 						<tr>
 							<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
 							<td><%= model.get("data").name %></td>
-							<td>-</td>
-							<td><%= 5 * (model.get("data").batting + model.get("data").pitching + model.get("data").baserunning + model.get("data").defense) %></td>
+							<td>
+								<% if(get("data").teams.league) { 
+									var leagueTeam = getTeamById(get("data").teams.league)); %>
+									<span><%= leagueTeam.get("emoji") %></span>
+									<span><%= leagueTeam.get("fullName") %></span>
+								<% } %>
+							</td>
+							<td><%= model.getTotalRoundedRating() %></td>
 							<td><%= model.getRoundedRating("batting") %></td>
 							<td><%= model.getRoundedAttribute("buoyancy") %></td>
 							<td><%= model.getRoundedAttribute("divinity") %></td>
 							<td><%= model.getRoundedAttribute("martyrdom") %></td>
 							<td><%= model.getRoundedAttribute("moxie") %></td>
 							<td><%= model.getRoundedAttribute("musclitude") %></td>
-							<td><%= model.getRoundedAttribute("patdeticism") %></td>
-							<td><%= model.getRoundedAttribute("tdwackability") %></td>
+							<td><%= model.getRoundedAttribute("patheticism") %></td>
+							<td><%= model.getRoundedAttribute("thwackability") %></td>
 							<td><%= model.getRoundedAttribute("tragicness") %></td>
 							<td><%= model.getRoundedRating("pitching") %></td>
-							<td>cold</td>
-							<td>op</td>
-							<td>rutd</td>
-							<td>shakes</td>
-							<td>supp</td>
-							<td>untdwk</td>
+							<td><%= model.getRoundedAttribute("coldness") %></td>
+							<td><%= model.getRoundedAttribute("overpowerment") %></td>
+							<td><%= model.getRoundedAttribute("ruthlessness") %></td>
+							<td><%= model.getRoundedAttribute("shakespearianism") %></td>
+							<td><%= model.getRoundedAttribute("suppression") %></td>
+							<td><%= model.getRoundedAttribute("unthwackability") %></td>
 							<td><%= model.getRoundedRating("baserunning") %></td>
-							<td>tdrst</td>
-							<td>cont</td>
-							<td>fric</td>
-							<td>indlg</td>
-							<td>laser</td>
+							<td><%= model.getRoundedAttribute("baseThirst") %></td>
+							<td><%= model.getRoundedAttribute("continuation") %></td>
+							<td><%= model.getRoundedAttribute("groundFriction") %></td>
+							<td><%= model.getRoundedAttribute("indulgence") %></td>
+							<td><%= model.getRoundedAttribute("laserlikeness") %></td>
 							<td><%= model.getRoundedRating("defense") %></td>
-							<td>ancap<</td>
-							<td>chase</td>
-							<td>omni</td>
-							<td>tenac</td>
-							<td>watch</td>
-							<td>prssr</td>
-							<td>cinnm</td>
-							<td>soul</td>
-							<td>fate</td>
-							<td>fingers</td>
-							<td>allergy</td>
-							<td>density</td>
+							<td><%= model.getRoundedAttribute("anticapitalism") %><</td>
+							<td><%= model.getRoundedAttribute("chasiness") %></td>
+							<td><%= model.getRoundedAttribute("omniscience") %></td>
+							<td><%= model.getRoundedAttribute("tenaciousness") %></td>
+							<td><%= model.getRoundedAttribute("watchfulness") %></td>
+							<td><%= model.getRoundedAttribute("pressurization") %></td>
+							<td><%= model.getRoundedAttribute("cinnamon") %></td>
+							<td><%= model.get("raw").soul %></td>
+							<td><%= model.get("raw").fate %></td>
+							<td><%= model.get("raw").totalFingers %></td>
+							<td><%= model.get("raw").peanutAllergy ? emoji(0x1f922) : emoji(0x1f60b) %></td>
+							<td><%= model.get("raw").eDensity %></td>
 						</tr>
 					<% }) %>
 				</tbody>
