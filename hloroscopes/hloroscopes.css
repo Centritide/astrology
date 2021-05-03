@@ -149,6 +149,15 @@ img.emoji {
 	vertical-align:-0.1em;
 }
 
+table {
+	border-collapse: collapse;
+}
+
+tbody, td, tfoot, th, thead, tr {
+	border: 0 solid;
+	border-color: inherit;
+}
+
 main {
 	flex-grow: 1;
 	display: flex;
@@ -698,11 +707,25 @@ i.half-star {
 
 .advanced table {
 	color: var(--body-text);
-	border: 1px solid var(--body-border);
 }
 
 .advanced table colgroup {
     border-right: 2px solid var(--body-border);
+}
+
+.advanced th {
+	font-weight: bold;
+	text-align: center;
+	padding: .2em .4em;
+	border-bottom-width: 1px;
+}
+
+.advanced td {
+	padding: .2em .4em;
+}
+
+.advanced .player-stat {
+	text-align: center;
 }
 
 a[data-toggle-lights]:hover {

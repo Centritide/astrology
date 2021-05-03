@@ -1318,6 +1318,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		el: "section.chart",
 		render: function() {
 			this.$el.html(this.template(this.collection));
+			this.$el.find(".advanced").css({
+				height: $("main").innerHeight(),
+				width: isMobile() ? $(window).width() : $("main").width() - 320
+			});
 		}
 	});
 	App.Views.TeamHistory = Backbone.View.extend({
