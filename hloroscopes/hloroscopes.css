@@ -83,7 +83,7 @@
 	width: 5px;
 }
 
-::-webkit-scrolbar-thumb {
+::-webkit-scrollbar-thumb {
 	background: var(--body-text);
 	border-radius: 50px;
 }
