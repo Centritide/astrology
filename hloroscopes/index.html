@@ -49,7 +49,6 @@
 		
 		<script type="text/template" id="template-team">
 			<section class="chart"></section>
-			<section class="table"></section>
 			<section class="team">
 				<div class="team-header">
 					<div>
@@ -309,112 +308,114 @@
 		</script>
 
 		<script type="text/template" id="template-advanced">
-			<table class="advanced">
-				<colgroup span="4"></colgroup>
-				<colgroup span="9"></colgroup>
-				<colgroup span="7"></colgroup>
-				<colgroup span="6"></colgroup>
-				<colgroup span="6"></colgroup>
-				<colgroup span="2"></colgroup>
-				<colgroup span="5"></colgroup>
-				<thead>
-					<tr>
-						<th colspan="4">General</th>
-						<th colspan="9">Batting</th>
-						<th colspan="7">Pitching</th>
-						<th colspan="6">Baserunning</th>
-						<th colspan="6">Defense</th>
-						<th colspan="2">Vibes</th>
-						<th colspan="5">Misc</th>
-					</tr>
-					<tr>
-						<th>Date</th>
-						<th>Name</th>
-						<th>Team</th>
-						<th><%= emoji(0x1F31F) %></th>
-						<th><%= emoji(0x2B50) %></th>
-						<th>float</th>
-						<th>divin</th>
-						<th>martyr</th>
-						<th>moxie</th>
-						<th>muscl</th>
-						<th>path</th>
-						<th>thwack</th>
-						<th>tragic</th>
-						<th><%= emoji(0x2B50) %></th>
-						<th>cold</th>
-						<th>op</th>
-						<th>ruth</th>
-						<th>shakes</th>
-						<th>supp</th>
-						<th>unthwk</th>
-						<th><%= emoji(0x2B50) %></th>
-						<th>thrst</th>
-						<th>cont</th>
-						<th>fric</th>
-						<th>indlg</th>
-						<th>laser</th>
-						<th><%= emoji(0x2B50) %></th>
-						<th>ancap</th>
-						<th>chase</th>
-						<th>omni</th>
-						<th>tenac</th>
-						<th>watch</th>
-						<th>prssr</th>
-						<th>cinn</th>
-						<th>soul</th>
-						<th>fate</th>
-						<th>fingers</th>
-						<th>allergy</th>
-						<th>density</th>
-					</tr>
-				</thead>
-				<tbody>
-					<% _.each(models, function(model) { %>
+			<div class="advanced">
+				<table>
+					<colgroup span="4"></colgroup>
+					<colgroup span="9"></colgroup>
+					<colgroup span="7"></colgroup>
+					<colgroup span="6"></colgroup>
+					<colgroup span="6"></colgroup>
+					<colgroup span="2"></colgroup>
+					<colgroup span="5"></colgroup>
+					<thead>
 						<tr>
-							<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
-							<td><%= model.get("data").name %></td>
-							<td>-</td>
-							<td><%= model.getTotalRoundedRating() %></td>
-							<td><%= model.getRoundedRating("batting") %></td>
-							<td><%= model.getRoundedAttribute("buoyancy") %></td>
-							<td><%= model.getRoundedAttribute("divinity") %></td>
-							<td><%= model.getRoundedAttribute("martyrdom") %></td>
-							<td><%= model.getRoundedAttribute("moxie") %></td>
-							<td><%= model.getRoundedAttribute("musclitude") %></td>
-							<td><%= model.getRoundedAttribute("patheticism") %></td>
-							<td><%= model.getRoundedAttribute("thwackability") %></td>
-							<td><%= model.getRoundedAttribute("tragicness") %></td>
-							<td><%= model.getRoundedRating("pitching") %></td>
-							<td><%= model.getRoundedAttribute("coldness") %></td>
-							<td><%= model.getRoundedAttribute("overpowerment") %></td>
-							<td><%= model.getRoundedAttribute("ruthlessness") %></td>
-							<td><%= model.getRoundedAttribute("shakespearianism") %></td>
-							<td><%= model.getRoundedAttribute("suppression") %></td>
-							<td><%= model.getRoundedAttribute("unthwackability") %></td>
-							<td><%= model.getRoundedRating("baserunning") %></td>
-							<td><%= model.getRoundedAttribute("baseThirst") %></td>
-							<td><%= model.getRoundedAttribute("continuation") %></td>
-							<td><%= model.getRoundedAttribute("groundFriction") %></td>
-							<td><%= model.getRoundedAttribute("indulgence") %></td>
-							<td><%= model.getRoundedAttribute("laserlikeness") %></td>
-							<td><%= model.getRoundedRating("defense") %></td>
-							<td><%= model.getRoundedAttribute("anticapitalism") %></td>
-							<td><%= model.getRoundedAttribute("chasiness") %></td>
-							<td><%= model.getRoundedAttribute("omniscience") %></td>
-							<td><%= model.getRoundedAttribute("tenaciousness") %></td>
-							<td><%= model.getRoundedAttribute("watchfulness") %></td>
-							<td><%= model.getRoundedAttribute("pressurization") %></td>
-							<td><%= model.get("raw").cinnamon ? model.getRoundedAttribute("cinnamon") : "-" %></td>
-							<td><%= model.get("raw").soul %></td>
-							<td><%= model.get("raw").fate ? model.get("raw").fate : "-" %></td>
-							<td><%= model.get("raw").totalFingers %></td>
-							<td><%= model.get("raw").peanutAllergy ? emoji(0x1f922) : emoji(0x1f60b) %></td>
-							<td><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
+							<th colspan="4">General</th>
+							<th colspan="9">Batting</th>
+							<th colspan="7">Pitching</th>
+							<th colspan="6">Baserunning</th>
+							<th colspan="6">Defense</th>
+							<th colspan="2">Vibes</th>
+							<th colspan="5">Misc</th>
 						</tr>
-					<% }) %>
-				</tbody>
-			</table>
+						<tr>
+							<th title="Date">Date</th>
+							<th title="Player Name">Name</th>
+							<th title="Player Team">Team</th>
+							<th title="Combined Stars"><%= emoji(0x1F31F) %></th>
+							<th title="Batting Stars"><%= emoji(0x2B50) %></th>
+							<th title="Buoyancy">float</th>
+							<th title="Divinity">divin</th>
+							<th title="Martyrdom">martyr</th>
+							<th title="Moxie">moxie</th>
+							<th title="Musclitude">muscl</th>
+							<th title="Patheticism">path</th>
+							<th title="Thwackability">thwack</th>
+							<th title="Tragicness">tragic</th>
+							<th title="Pitching Stars"><%= emoji(0x2B50) %></th>
+							<th title="Coldness">cold</th>
+							<th title="Overpowerment">op</th>
+							<th title="Ruthlessness">ruth</th>
+							<th title="Shakespearianism">shakes</th>
+							<th title="Suppression">supp</th>
+							<th title="Unthwackability">unthwk</th>
+							<th title="Baserunning Stars"><%= emoji(0x2B50) %></th>
+							<th title="Base Thirst">thrst</th>
+							<th title="Continuation">cont</th>
+							<th title="Ground Friction">fric</th>
+							<th title="Indulgence">indlg</th>
+							<th title="Laserlikeness">laser</th>
+							<th title="Defense Stars"><%= emoji(0x2B50) %></th>
+							<th title="Anticapitalism">ancap</th>
+							<th title="Chasiness">chase</th>
+							<th title="Omniscience">omni</th>
+							<th title="Tenaciousness">tenac</th>
+							<th title="Watchfulness">watch</th>
+							<th title="Pressurization">prssr</th>
+							<th title="Cinnamon">cinn</th>
+							<th title="Soul">soul</th>
+							<th title="Fate">fate</th>
+							<th title="Total Fingers">fingers</th>
+							<th title="Peanut Allergy">allergy</th>
+							<th title="eDensity">density</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% _.each(models, function(model) { %>
+							<tr>
+								<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
+								<td><%= model.get("data").name %></td>
+								<td>-</td>
+								<td><%= model.getTotalRoundedRating() %></td>
+								<td><%= model.getRoundedRating("batting") %></td>
+								<td><%= model.getRoundedAttribute("buoyancy") %></td>
+								<td><%= model.getRoundedAttribute("divinity") %></td>
+								<td><%= model.getRoundedAttribute("martyrdom") %></td>
+								<td><%= model.getRoundedAttribute("moxie") %></td>
+								<td><%= model.getRoundedAttribute("musclitude") %></td>
+								<td><%= model.getRoundedAttribute("patheticism") %></td>
+								<td><%= model.getRoundedAttribute("thwackability") %></td>
+								<td><%= model.getRoundedAttribute("tragicness") %></td>
+								<td><%= model.getRoundedRating("pitching") %></td>
+								<td><%= model.getRoundedAttribute("coldness") %></td>
+								<td><%= model.getRoundedAttribute("overpowerment") %></td>
+								<td><%= model.getRoundedAttribute("ruthlessness") %></td>
+								<td><%= model.getRoundedAttribute("shakespearianism") %></td>
+								<td><%= model.getRoundedAttribute("suppression") %></td>
+								<td><%= model.getRoundedAttribute("unthwackability") %></td>
+								<td><%= model.getRoundedRating("baserunning") %></td>
+								<td><%= model.getRoundedAttribute("baseThirst") %></td>
+								<td><%= model.getRoundedAttribute("continuation") %></td>
+								<td><%= model.getRoundedAttribute("groundFriction") %></td>
+								<td><%= model.getRoundedAttribute("indulgence") %></td>
+								<td><%= model.getRoundedAttribute("laserlikeness") %></td>
+								<td><%= model.getRoundedRating("defense") %></td>
+								<td><%= model.getRoundedAttribute("anticapitalism") %></td>
+								<td><%= model.getRoundedAttribute("chasiness") %></td>
+								<td><%= model.getRoundedAttribute("omniscience") %></td>
+								<td><%= model.getRoundedAttribute("tenaciousness") %></td>
+								<td><%= model.getRoundedAttribute("watchfulness") %></td>
+								<td><%= model.getRoundedAttribute("pressurization") %></td>
+								<td><%= model.get("raw").cinnamon ? model.getRoundedAttribute("cinnamon") : "-" %></td>
+								<td><%= model.get("raw").soul %></td>
+								<td><%= model.get("raw").fate ? model.get("raw").fate : "-" %></td>
+								<td><%= model.get("raw").totalFingers %></td>
+								<td><%= model.get("raw").peanutAllergy ? emoji(0x1f922) : emoji(0x1f60b) %></td>
+								<td><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
+							</tr>
+						<% }) %>
+					</tbody>
+				</table>
+			</div>
 		</script>
 		
 		<script type="text/template" id="template-history-chart">

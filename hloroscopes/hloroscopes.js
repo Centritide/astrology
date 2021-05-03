@@ -1270,7 +1270,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				});
 			});
 			
-			$(".chart, .table").empty();
 			this.$el.html(this.template({
 				emojiSvg: function(emoji) {
 					return $(parseEmoji(emoji, { "folder": "svg", "ext": ".svg" })).attr("src");
@@ -1316,9 +1315,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	});
 	App.Views.AdvancedUpdates = App.Views.Updates.extend({
 		template: _.template($("#template-advanced").html()),
-		el: "section.table",
+		el: "section.chart",
 		render: function() {
-			$(".chart, .table").empty();
 			this.$el.html(this.template(this.collection));
 		}
 	});
@@ -1459,7 +1457,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				});
 			});
 			
-			$(".chart, .table").empty();
 			this.$el.html(this.template({
 				emojiSvg: function(emoji) {
 					return $(parseEmoji(emoji, { "folder": "svg", "ext": ".svg" })).attr("src");
@@ -1652,7 +1649,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				});
 			});
 			
-			$(".chart, .table").empty();
 			this.$el.html(this.template({
 				emojiSvg: function(emoji) {
 					return $(parseEmoji(emoji, { "folder": "svg", "ext": ".svg" })).attr("src");

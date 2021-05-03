@@ -190,13 +190,6 @@ section.index a:hover {
 	color: var(--footer-hover);
 }
 
-section.table {
-	height: 100%;
-	width: 100%;
-	color: var(--body-text);
-	overflow: auto;
-}
-
 section.team {
 	max-height: 100%;
 	display: flex;
@@ -695,6 +688,21 @@ i.half-star {
 .dark .player-vibe-freq {
 	padding: 0;
 	margin: 0;
+}
+
+.advanced {
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+}
+
+.advanced table {
+	color: var(--body-text);
+	border: 1px solid var(--body-border);
+}
+
+.advanced table colgroup {
+    border-right: 2px solid var(--body-border);
 }
 
 a[data-toggle-lights]:hover {
