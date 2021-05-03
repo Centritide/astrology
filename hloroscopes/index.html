@@ -390,12 +390,13 @@
 									} %>
 								</td>
 								<td class="player-stat">
-									<% if(model.get("data").modifiers.length) {
-										_.each(model.get("data").modifiers, function(modifier) {
+									<% var playerMods = _.union(model.get("data").modifiers.permanent, model.get("data").modifiers.seasonal, model.get("data").modifiers.item);
+									if(playerMods.length) {
+										_.each(playerMods, function(modifier) {
 											modifier = getModifier(modifier) %>
 											<span title="<%= modifier.title + (modifier.description ? (" - " + modifier.description) : "") %>"><%= emoji(modifier.emoji) %></span>
-										<% }) %>
-									<% } else {
+										<% });
+									} else {
 										print("-")
 									} %>
 								</td>
