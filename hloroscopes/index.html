@@ -310,7 +310,7 @@
 		<script type="text/template" id="template-advanced">
 			<div class="advanced">
 				<table>
-					<colgroup span="4"></colgroup>
+					<colgroup span="6"></colgroup>
 					<colgroup span="9"></colgroup>
 					<colgroup span="7"></colgroup>
 					<colgroup span="6"></colgroup>
@@ -319,7 +319,7 @@
 					<colgroup span="5"></colgroup>
 					<thead>
 						<tr>
-							<th colspan="4">General</th>
+							<th colspan="6">General</th>
 							<th colspan="9">Batting</th>
 							<th colspan="7">Pitching</th>
 							<th colspan="6">Baserunning</th>
@@ -329,8 +329,10 @@
 						</tr>
 						<tr>
 							<th title="Date">Date</th>
+							<th title="Changes">Changes</th>
 							<th title="Player Name">Name</th>
 							<th title="Player Team">Team</th>
+							<th title="Player Items">Items</th>
 							<th title="Combined Stars"><%= emoji(0x1F31F) %></th>
 							<th title="Batting Stars"><%= emoji(0x2B50) %></th>
 							<th title="Buoyancy">float</th>
@@ -373,8 +375,22 @@
 						<% _.each(models, function(model) { %>
 							<tr>
 								<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
+								<td><%= _.reduce(model.get("changes"), function(c, d) { return c + ", " + d; }) %></td>
 								<td><%= model.get("data").name %></td>
 								<td>-</td>
+								<td>
+									<% _.each(model.get("data").items, function(item) { 
+										if(item.get("durability") > -1) {
+											if(item.get("health") > 0) {
+												print(item.get("name"));
+											} else {
+												print(emoji(0x274C));
+											}
+										} else {
+											print(emoji(0x1F3CF)); 
+										}
+									}) %>
+								</td>
 								<td class="player-stat"><%= model.getTotalRoundedRating() %></td>
 								<td class="player-stat"><%= model.getRoundedRating("batting") %></td>
 								<td class="player-stat <%= model.getScaleClass("buoyancy") %>"><%= model.getRoundedAttribute("buoyancy") %></td>
@@ -406,11 +422,11 @@
 								<td class="player-stat <%= model.getScaleClass("watchfulness") %>"><%= model.getRoundedAttribute("watchfulness") %></td>
 								<td class="player-stat <%= model.getScaleClass("pressurization") %>"><%= model.getRoundedAttribute("pressurization") %></td>
 								<td class="player-stat <%= model.getScaleClass("cinnamon") %>"><%= model.get("raw").cinnamon ? model.getRoundedAttribute("cinnamon") : "-" %></td>
-								<td><%= model.get("raw").soul %></td>
-								<td><%= model.get("raw").fate ? model.get("raw").fate : "-" %></td>
-								<td><%= model.get("raw").totalFingers %></td>
-								<td><%= model.get("raw").peanutAllergy ? emoji(0x1f922) : emoji(0x1f60b) %></td>
-								<td><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
+								<td class="player-stat"><%= model.get("raw").soul %></td>
+								<td class="player-stat"><%= model.get("raw").fate ? model.get("raw").fate : "-" %></td>
+								<td class="player-stat"><%= model.get("raw").totalFingers %></td>
+								<td class="player-stat"><%= model.get("raw").peanutAllergy ? emoji(0x1f922) : emoji(0x1f60b) %></td>
+								<td class="player-stat"><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
 							</tr>
 						<% }) %>
 					</tbody>

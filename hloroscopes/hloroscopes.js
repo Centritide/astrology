@@ -395,9 +395,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			} else if(rating > 0.65) {
 				return "stat-good";
 			}  else if(rating < 0.15) {
-				return "stat-terrible'";
+				return "stat-terrible";
 			} else if(rating < 0.25) {
-				return "stat-bad'";
+				return "stat-bad";
 			} else if(rating < 0.45) {
 				return "stat-poor";
 			} else {
