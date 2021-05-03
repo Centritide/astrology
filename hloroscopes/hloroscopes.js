@@ -552,6 +552,38 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					});
 				});
 			return adjustments;
+		},
+		getEmoji: function() {
+			if(this.durability < 0) {
+				return "0x1F3CF";
+			}
+			if(this.health < 0) {
+				return "0x274C";
+			}
+			switch(this.get("root").name) {
+				case "Bat":
+					return "0x1F3CF";
+				case "Board":
+					return "0x1F6F9";
+				case "Cap":
+					return "0x1F9E2";
+				case "Field":
+					return "0x1F535";
+				case "Glove":
+					return "0x1F9E4";
+				case "Jersey":
+					return "0x1F455";
+				case "Necklace":
+					return "0x1F4FF";
+				case "Ring":
+					return "0x1F48D";
+				case "Shoes":
+					return "0x1F45F";
+				case "Sunglasses":
+					return "0x1F576";
+				default:
+					return "0x2753";
+			}
 		}
 	});
 	//-- END MODELS --

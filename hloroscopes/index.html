@@ -329,10 +329,10 @@
 						</tr>
 						<tr>
 							<th title="Date">Date</th>
-							<th title="Changes">Changes</th>
-							<th title="Player Name">Name</th>
-							<th title="Player Team">Team</th>
-							<th title="Player Items">Items</th>
+							<th title="Name">Name</th>
+							<th title="League Team">Team</th>
+							<th title="Tournament Team">Tournament</th>
+							<th title="Items">Items</th>
 							<th title="Combined Stars"><%= emoji(0x1F31F) %></th>
 							<th title="Batting Stars"><%= emoji(0x2B50) %></th>
 							<th title="Buoyancy">float</th>
@@ -375,21 +375,31 @@
 						<% _.each(models, function(model) { %>
 							<tr>
 								<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
-								<td><%= _.reduce(model.get("changes"), function(c, d) { return c + ", " + d; }) %></td>
 								<td><%= model.get("data").name %></td>
-								<td>-</td>
 								<td>
-									<% _.each(model.get("data").items, function(item) { 
-										if(item.get("durability") > -1) {
-											if(item.get("health") > 0) {
-												print(item.get("name"));
-											} else {
-												print(emoji(0x274C));
-											}
-										} else {
-											print(emoji(0x1F3CF)); 
-										}
-									}) %>
+									<% if(model.get("data").teams.league) { 
+										var leagueTeam = getTeamById(get("data").teams.league);
+										print(leagueTeam ? leagueTeam.get("emoji") + leagueTeam.get("fullName") : "-");
+									} else {
+										print("-");	
+									} %>
+								</td>
+								<td>
+									<% if(model.get("data").teams.tournament) { 
+										var tournamentTeam = getTeamById(get("data").teams.tournament);
+										print(tournamentTeam ? tournamentTeam.get("emoji") + tournamentTeam.get("fullName") : "-");
+									} else {
+										print("-");	
+									} %>
+								</td>
+								<td class="player-stat">
+									<% if(model.get("data").items.length) {
+										_.each(model.get("data").items, function(item) { %>
+											<span title="<%= item.get("name") %>"><%= item.getEmoji() %></span>
+										<% });
+									} else {
+										print("-");	
+									} %>
 								</td>
 								<td class="player-stat"><%= model.getTotalRoundedRating() %></td>
 								<td class="player-stat"><%= model.getRoundedRating("batting") %></td>
