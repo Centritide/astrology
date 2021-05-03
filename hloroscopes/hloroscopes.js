@@ -30,7 +30,7 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, modifiers, oldItems, weathers) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null }, activeTeam, activePlayer, navView, teamView, updatesView, historyView, stadiumView, updates = {}, updatesViewClass, secretsVisible = false, evenlySpaced = false, lightMode = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null, style: "chart" }, activeTeam, activePlayer, navView, teamView, updatesView, advancedView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -1112,7 +1112,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			$(e.currentTarget).data("toggle-knowledge", secretsVisible);
 			$("#root").toggleClass("secrets", secretsVisible);
 			$(e.currentTarget).html("Forbidden Knowledge " + (secretsVisible ? "Visible" : "Hidden"));
-			if(updatesView && updatesView instanceof App.Views.Update) {
+			if(updatesView) {
 				updatesView.render();
 			}
 			if(historyView) {
@@ -1131,7 +1131,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			evenlySpaced = !$(e.currentTarget).data("toggle-spacing");
 			$(e.currentTarget).data("toggle-spacing", evenlySpaced);
 			$(e.currentTarget).html("Spaced " + (evenlySpaced ? "Evenly" : "By Real Time"));
-			if(updatesView && updatesView instanceof App.Views.Update) {
+			if(updatesView) {
 				updatesView.render();
 			}
 			if(historyView) {
@@ -1155,7 +1155,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			if(navView) {
 				navView.render();
 			}
-			if(updatesView && updatesView instanceof App.Views.Update) {
+			if(updatesView) {
 				updatesView.render();
 			}
 			if(historyView) {
@@ -1382,8 +1382,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		el: "section.chart",
 		render: function() {
 			this.$el.html(this.template(this.collection));
+			this.resize();
+		},
+		resize: function() {
 			this.$el.find(".advanced").css({
-				height: $("main").innerHeight(),
+				height: $("main").innerHeight() - this.$el.find("h1").height(),
 				width: isMobile() ? $(window).width() : $("main").width() - 320
 			});
 		}
@@ -1806,8 +1809,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	}
 	
 	window.onresize = function() {
-		if(updatesView && updatesView instanceof App.Views.Update) {
+		if(updatesView) {
 			updatesView.render();
+		}
+		if(advancedView) {
+			advancedView.resize();
 		}
 		if(historyView) {
 			historyView.render();
@@ -1822,14 +1828,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	}
 
 	function loadChart(team, player) {
-		loadPage(team, player, App.Views.Updates);
+		loadPage(team, player, "chart");
 	}
 	
 	function loadTable(team, player) {
-		loadPage(team, player, App.Views.AdvancedUpdates);
+		loadPage(team, player, "table");
 	}
 
-	function loadPage(team, player, viewClass) {
+	function loadPage(team, player, style) {
 		if(!navView) {
 			navView = new App.Views.Nav({ collection: new App.Collections.Teams });
 		}
@@ -1841,8 +1847,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			if(team != activePage.team) {
 				loadTeam(team);
 			}
-			updatesViewClass = viewClass;
-			if(player && (player != activePage.player || !(updatesView instanceof updatesViewClass))) {
+			if(player && (player != activePage.player || style != activePage.style)) {
+				if(style != activePage.style) {
+					activePage.style = style;
+				}
 				loadPlayer(player);
 			}
 		} else {
@@ -1889,6 +1897,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			if(historyView) {
 				historyView.undelegateEvents();
 			}
+			if(advancedView) {
+				advancedView.undelegateEvents();
+			}
 			if(updatesView) {
 				updatesView.undelegateEvents();
 			}
@@ -1898,6 +1909,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					collection: new App.Collections.TeamUpdates
 				});
 				updatesView = null;
+				advancedView = null;
 				stadiumView = null;
 				loadPageView();
 			} else if(id == "stadium") {
@@ -1906,16 +1918,26 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					collection: new App.Collections.StadiumUpdates
 				});
 				updatesView = null;
+				advancedView = null;
 				historyView = null;
 				loadPageView();
 			} else if(activeTeam.get("players") && activeTeam.get("players").length) {
 				activePlayer = activeTeam.get("players").find(function(model) {
 					return model.id == id || model.slug() == activeTeam.slug() + "/" + id;
 				});
-				updatesView = new updatesViewClass({
-					id: activePlayer.id,
-					collection: new App.Collections.Updates
-				});
+				if(activePage.style == "table") {
+					advancedView = new App.Views.AdvancedUpdates({
+						id: activePlayer.id,
+						collection: new App.Collections.Updates
+					});
+					updatesView = null;
+				} else {
+					updatesView = new App.Views.Updates({
+						id: activePlayer.id,
+						collection: new App.Collections.Updates
+					});
+					advancedView = null;
+				}
 				historyView = null;
 				stadiumView = null;
 				loadPageView();

@@ -308,6 +308,7 @@
 		</script>
 
 		<script type="text/template" id="template-advanced">
+			<h1><%= models.last().get("data").name %></h1>
 			<div class="advanced">
 				<table>
 					<colgroup span="6"></colgroup>
@@ -374,7 +375,7 @@
 					<tbody>
 						<% _.each(models, function(model) { %>
 							<tr>
-								<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
+								<td class="player-timestamp"><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
 								<td><%= model.get("data").name %></td>
 								<td class="player-stat">
 									<% if(model.get("data").teams.league) { 

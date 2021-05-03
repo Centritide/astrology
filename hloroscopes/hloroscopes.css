@@ -2,6 +2,7 @@
 	--body-bg: #fff;
 	--body-text: #000;
 	--body-border: #000;
+	--scroll-hover: #585858;
 	--nav-hover: #ddd;
 	--header-text: #666;
 	--player-alt-bg: #ddd;
@@ -41,6 +42,7 @@
 	--body-bg: #111;
 	--body-text: #fff;
 	--body-border: #fff;
+	--scroll-hover: #ddd;
 	--nav-hover: #333;
 	--header-text: #999;
 	--player-alt-bg: #333;
@@ -74,6 +76,36 @@
 	--chart-transparent: rgba(255,255,255,0);
 	--chart-hover: #fff;
 	--chart-hover-bg: rgba(255,255,255,0.4);
+}
+
+::-webkit-scrollbar {
+	height: 5px;
+	width: 5px;
+}
+
+::-webkit-scrolbar-thumb {
+	background: var(--body-text);
+	border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb:active,
+::-webkit-scrollbar-thumb:hover {
+	background: var(--scroll-hover);
+}
+
+::-webkit-scrollbar-track {
+	width:5px;
+	border-radius:50px;
+	background: var(--body-bg);
+}
+
+::-webkit-scrollbar-track:active,
+::-webkit-scrollbar-track:hover {
+	background:var(--nav-hover);
+}
+
+::-webkit-scrollbar-corner{
+	background: transparent;
 }
 
 html, 
@@ -126,8 +158,8 @@ nav ul li a {
 	align-items: center;
 	justify-content: center;
 	padding: .3em .6em;
-	font-weight: bold;
 	border-radius: 5px;
+	font-weight: bold;
 }
 
 nav ul li a:hover {
@@ -701,6 +733,11 @@ i.half-star {
 	margin: 0;
 }
 
+.chart h1 {
+	margin: 0;
+	text-align: center;
+}
+
 .advanced {
 	overflow: auto;
 }
@@ -734,6 +771,12 @@ i.half-star {
 .advanced td {
 	padding: .2em .4em;
 	white-space: nowrap;
+}
+
+.advanced .player-timestamp {
+	position: sticky;
+	left: 0;
+	background: var(--body-bg);
 }
 
 .advanced .player-stat {
