@@ -381,7 +381,18 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return Math.round(500 * this.get("data")[rating]) / 100;
 		},
 		getRoundedAttribute: function(attribute) {
-			return Math.round(1000 * this.get("raw")[attribute]) / 1000;
+			var adjustments =  _.reduce(this.get("data").items, function(i, j) {
+				if(j.get("health") > 0) {
+					_.each(j.getAggregateAdjustments(), function(value, stat) {
+						if(!i.hasOwnProperty(stat)) {
+							i[stat] = 0;
+						}
+						i[stat] += value;
+					});
+				}
+				return i;
+			}, {});
+			return Math.round(1000 * (this.get("raw")[attribute] + _.get(adjustments, attribute, 0))) / 1000;
 		},
 		getScaleClass: function(attribute) {
 			var rating = this.get("raw")[attribute];

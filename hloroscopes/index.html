@@ -405,7 +405,13 @@
 								<td class="player-stat">
 									<% if(model.get("data").items.length) {
 										_.each(model.get("data").items, function(item) { %>
-											<span title="<%= item.get("name") %> (<%= item.get("health") %>/<%= item.get("durability") %>)"><%= emoji(item.getEmoji()) %></span>
+											<span title="<%= item.get("name") %><% if(item.get("durability") > 0) {
+												if(item.get("health") > 0) {
+													print(" (" + item.get("health") + "/" + item.get("durability") + ")");
+												} else {
+													print(" (broken)");
+												}
+											} %>"><%= emoji(item.getEmoji()) %></span>
 										<% });
 									} else {
 										print("-");	
