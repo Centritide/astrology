@@ -378,7 +378,7 @@
 								<td><%= model.get("data").name %></td>
 								<td>
 									<% if(model.get("data").teams.league) { 
-										var leagueTeam = model.getTeamById(get("data").teams.league);
+										var leagueTeam = model.getTeamById(model.get("data").teams.league);
 										print(leagueTeam ? leagueTeam.get("emoji") + leagueTeam.get("fullName") : "-");
 									} else {
 										print("-");	
@@ -386,7 +386,7 @@
 								</td>
 								<td>
 									<% if(model.get("data").teams.tournament) { 
-										var tournamentTeam = model.getTeamById(get("data").teams.tournament);
+										var tournamentTeam = model.getTeamById(model.get("data").teams.tournament);
 										print(tournamentTeam ? tournamentTeam.get("emoji") + tournamentTeam.get("fullName") : "-");
 									} else {
 										print("-");	
