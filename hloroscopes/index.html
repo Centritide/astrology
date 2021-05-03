@@ -217,29 +217,29 @@
 						<div class="player-stat-row">
 							<strong>Batting</strong>
 							<span>
-								<%= getStarsForRating(get("data").batting) %>
-								<small>(<%= Math.round(get("data").batting * 500) / 100 %>)</small>
+								<%= getStarsForRating("batting") %>
+								<small>(<%= getRoundedRating("batting") %>)</small>
 							</span>
 						</div>
 						<div class="player-stat-row">
 							<strong>Pitching</strong>
 							<span>
-								<%= getStarsForRating(get("data").pitching) %>
-								<small>(<%= Math.round(get("data").pitching * 500) / 100 %>)</small>
+								<%= getStarsForRating("pitching") %>
+								<small>(<%= getRoundedRating("pitching") %>)</small>
 							</span>
 						</div>
 						<div class="player-stat-row">
 							<strong>Baserunning</strong>
 							<span>
-								<%= getStarsForRating(get("data").baserunning) %>
-								<small>(<%= Math.round(get("data").baserunning * 500) / 100 %>)</small>
+								<%= getStarsForRating("baserunning") %>
+								<small>(<%= getRoundedRating("baserunning") %>)</small>
 							</span>
 						</div>
 						<div class="player-stat-row">
 							<strong>Defense</strong>
 							<span>
-								<%= getStarsForRating(get("data").defense) %>
-								<small>(<%= Math.round(get("data").defense * 500) / 100 %>)</small>
+								<%= getStarsForRating("defense") %>
+								<small>(<%= getRoundedRating("defense") %>)</small>
 							</span>
 						</div>
 						<div class="player-items">
@@ -308,9 +308,111 @@
 		</script>
 
 		<script type="text/template" id="template-stlats">
-			<h1>Under construction?</h1>
 			<table>
-
+				<colgroup span="4"></colgroup>
+				<colgroup span="9"></colgroup>
+				<colgroup span="7"></colgroup>
+				<colgroup span="6"></colgroup>
+				<colgroup span="6"></colgroup>
+				<colgroup span="2"></colgroup>
+				<colgroup span="5"></colgroup>
+				<thead>
+					<tr>
+						<th colspan="4">General</th>
+						<th colspan="9">Batting</th>
+						<th colspan="7">Pitching</th>
+						<th colspan="6">Baserunning</th>
+						<th colspan="6">Defense</th>
+						<th colspan="2">Vibes</th>
+						<th colspan="5">Misc</th>
+					</tr>
+					<tr>
+						<th>Date</th>
+						<th>Name</th>
+						<th>Team</th>
+						<th><%= emoji(0x1F31F) %></th>
+						<th><%= emoji(0x2B50) %></th>
+						<th>float</th>
+						<th>divin</th>
+						<th>martyr</th>
+						<th>moxie</th>
+						<th>muscl</th>
+						<th>path</th>
+						<th>thwack</th>
+						<th>tragic</th>
+						<th><%= emoji(0x2B50) %></th>
+						<th>cold</th>
+						<th>op</th>
+						<th>ruth</th>
+						<th>shakes</th>
+						<th>supp</th>
+						<th>unthwk</th>
+						<th><%= emoji(0x2B50) %></th>
+						<th>thrst</th>
+						<th>cont</th>
+						<th>fric</th>
+						<th>indlg</th>
+						<th>laser</th>
+						<th><%= emoji(0x2B50) %></th>
+						<th>ancap<</th>
+						<th>chase</th>
+						<th>omni</th>
+						<th>tenac</th>
+						<th>watch</th>
+						<th>prssr</th>
+						<th>cinnm</th>
+						<th>soul</th>
+						<th>fate</th>
+						<th>fingers</th>
+						<th>allergy</th>
+						<th>density</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% _.each(models, function(model) { %>
+						<tr>
+							<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
+							<td><%= model.get("data").name %></td>
+							<td>-</td>
+							<td><%= 5 * (model.get("data").batting + model.get("data").pitching + model.get("data").baserunning + model.get("data").defense) %></td>
+							<td><%= model.getRoundedRating("batting") %></td>
+							<td><%= model.getRoundedAttribute("buoyancy") %></td>
+							<td><%= model.getRoundedAttribute("divinity") %></td>
+							<td><%= model.getRoundedAttribute("martyrdom") %></td>
+							<td><%= model.getRoundedAttribute("moxie") %></td>
+							<td><%= model.getRoundedAttribute("musclitude") %></td>
+							<td><%= model.getRoundedAttribute("patdeticism") %></td>
+							<td><%= model.getRoundedAttribute("tdwackability") %></td>
+							<td><%= model.getRoundedAttribute("tragicness") %></td>
+							<td><%= model.getRoundedRating("pitching") %></td>
+							<td>cold</td>
+							<td>op</td>
+							<td>rutd</td>
+							<td>shakes</td>
+							<td>supp</td>
+							<td>untdwk</td>
+							<td><%= model.getRoundedRating("baserunning") %></td>
+							<td>tdrst</td>
+							<td>cont</td>
+							<td>fric</td>
+							<td>indlg</td>
+							<td>laser</td>
+							<td><%= model.getRoundedRating("defense") %></td>
+							<td>ancap<</td>
+							<td>chase</td>
+							<td>omni</td>
+							<td>tenac</td>
+							<td>watch</td>
+							<td>prssr</td>
+							<td>cinnm</td>
+							<td>soul</td>
+							<td>fate</td>
+							<td>fingers</td>
+							<td>allergy</td>
+							<td>density</td>
+						</tr>
+					<% }) %>
+				</tbody>
 			</table>
 		</script>
 		

@@ -38,7 +38,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			"": "index",
 			":team": "team",
 			":team/:player": "chart",
-			":team/:player/compare": "table"
+			":team/:player/advanced": "table"
 		},
 		index: loadPage,
 		team: loadPage,
@@ -374,8 +374,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			vibeSymbol += " ";
 			return "<span class='player-vibes vibe-" + vibeText.replace(/\s+/g, "-").toLowerCase() + "'>" + (isMobile() ? "" : vibeSymbol) + (secretsVisible ? vibes : vibeText) + "</span>";
 		},
+		getRoundedAttribute: function(attribute) {
+			return Math.round(1000 * this.get("raw")[attribute]) / 1000;
+		},
+		getRoundedRating: function(rating) {
+			return Math.round(500 * this.get("data")[rating]) / 100;
+		},
 		getStarsForRating: function(rating) {
-			var i, stars = "", rounded = Math.round(rating * 10);
+			var i, stars = "", rounded = Math.round(this.get("data")[rating] * 10);
 			for(i = 0; i < Math.floor(rounded / 2); i++) {
 				stars += "<i class='full-star'>" + parseEmoji(0x2B50) + "</i>";
 			}
@@ -701,7 +707,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			this.set(this.filter(function(model) {
 				return model.get("changes").length;
 			}));
-		}
+		},
+		emoji: parseEmoji
 	});
 	App.Collections.TeamUpdates = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v1/teams/updates",
@@ -1307,7 +1314,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		template: _.template($("#template-stlats").html()),
 		el: "section.chart",
 		render: function() {
-			this.$el.html(this.template({}));
+			this.$el.html(this.template(this.collection));
 		}
 	});
 	App.Views.TeamHistory = Backbone.View.extend({
@@ -1744,7 +1751,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	}
 
 	function loadChart(team, player) {
-		loadPage(team, player, App.Views.Update);
+		loadPage(team, player, App.Views.Updates);
 	}
 	
 	function loadTable(team, player) {
