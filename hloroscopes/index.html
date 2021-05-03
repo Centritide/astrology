@@ -455,7 +455,7 @@
 										<span title="Allergic"><%= emoji(0x1f922) ></span>
 									<% } else { %>
 										<span title="Not Allergic"><%= emoji(0x1f60b) %></span>
-									} %>
+									<% } %>
 								</td>
 								<td class="player-stat"><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
 							</tr>
