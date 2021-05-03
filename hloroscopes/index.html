@@ -330,8 +330,8 @@
 						<tr>
 							<th title="Date">Date</th>
 							<th title="Name">Name</th>
-							<th title="League Team">Team</th>
-							<th title="Tournament Team">Tournament</th>
+							<th title="Team">Team</th>
+							<th title="Modifications">Modifications</th>
 							<th title="Items">Items</th>
 							<th title="Combined Stars"><%= emoji(0x1F31F) %></th>
 							<th title="Batting Stars"><%= emoji(0x2B50) %></th>
@@ -376,7 +376,7 @@
 							<tr>
 								<td><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
 								<td><%= model.get("data").name %></td>
-								<td>
+								<td class="player-stat">
 									<% if(model.get("data").teams.league) { 
 										var leagueTeam = model.getTeamById(model.get("data").teams.league);
 										if(leagueTeam) { %>
@@ -389,17 +389,14 @@
 										print("-");	
 									} %>
 								</td>
-								<td>
-									<% if(model.get("data").teams.tournament) { 
-										var tournamentTeam = model.getTeamById(model.get("data").teams.tournament);
-										if(tournamentTeam) { %>
-											<span><%= emoji(tournamentTeam.get("emoji")) %></span>
-											<span><%= tournamentTeam.get("nickname") %></span>
-										<% } else {
-											print("-");
-										}
-									} else {
-										print("-");	
+								<td class="player-stat">
+									<% if(model.get("data").modifiers.length) {
+										_.each(model.get("data").modifiers, function(modifier) {
+											modifier = getModifier(modifier) %>
+											<span title="<%= modifier.title + (modifier.description ? (" - " + modifier.description) : "") %>"><%= emoji(modifier.emoji) %></span>
+										<% }) %>
+									<% } else {
+										print("-")
 									} %>
 								</td>
 								<td class="player-stat">
