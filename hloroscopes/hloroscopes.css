@@ -322,7 +322,7 @@ a.team-history {
 
 .team-players a {
 	color: var(--body-text);
-	padding: 5px;
+	padding: 5px 5px 5px 0;
 }
 
 .team-players a:not(.player-link) {
@@ -754,7 +754,9 @@ i.half-star {
     border-right-width: 0px;
 }
 
-.advanced tr:hover {
+.advanced th:hover,
+.advanced tr:hover,
+.advanced tr:hover .player-timestamp {
 	background: var(--table-hover);
 }
 
@@ -777,6 +779,11 @@ i.half-star {
 	position: sticky;
 	left: 0;
 	background: var(--body-bg);
+	z-index: 1;
+}
+
+.advanced th.player-timestamp {
+	z-index: 2;
 }
 
 .advanced .player-stat {

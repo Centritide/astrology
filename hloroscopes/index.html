@@ -320,16 +320,16 @@
 					<colgroup span="5"></colgroup>
 					<thead>
 						<tr>
-							<th colspan="6">General</th>
-							<th colspan="9">Batting</th>
-							<th colspan="7">Pitching</th>
-							<th colspan="6">Baserunning</th>
-							<th colspan="6">Defense</th>
-							<th colspan="2">Vibes</th>
-							<th colspan="5">Misc</th>
+							<th colspan="6" title="General Player Info">General</th>
+							<th colspan="9" title="Batting Stats">Batting</th>
+							<th colspan="7" title="Pitching Stats">Pitching</th>
+							<th colspan="6" title="Baserunning Stats">Baserunning</th>
+							<th colspan="6" title="Defense Stats">Defense</th>
+							<th colspan="2" title="Vibe Stats">Vibes</th>
+							<th colspan="5" title="Miscellaneous Player Info">Misc</th>
 						</tr>
 						<tr>
-							<th title="Date">Date</th>
+							<th class="player-timestamp" title="Date">Date</th>
 							<th title="Name">Name</th>
 							<th title="Team">Team</th>
 							<th title="Modifications">Modifications</th>
@@ -450,7 +450,13 @@
 								<td class="player-stat"><%= model.get("raw").soul %></td>
 								<td class="player-stat"><%= model.get("raw").fate ? model.get("raw").fate : "-" %></td>
 								<td class="player-stat"><%= model.get("raw").totalFingers %></td>
-								<td class="player-stat"><%= model.get("raw").peanutAllergy ? emoji(0x1f922) : emoji(0x1f60b) %></td>
+								<td class="player-stat">
+									<% if(model.get("raw").peanutAllergy) { %>
+										<span title="Allergic"><%= emoji(0x1f922) ></span>
+									<% } else { %>
+										<span title="Not Allergic"><%= emoji(0x1f60b) %></span>
+									} %>
+								</td>
 								<td class="player-stat"><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
 							</tr>
 						<% }) %>
