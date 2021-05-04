@@ -374,14 +374,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			vibeSymbol += " ";
 			return "<span class='player-vibes vibe-" + vibeText.replace(/\s+/g, "-").toLowerCase() + "'>" + (isMobile() ? "" : vibeSymbol) + (secretsVisible ? vibes : vibeText) + "</span>";
 		},
-		getCombinedRoundedRating: function() {
-			return Math.round(500 * (this.get("data").batting + this.get("data").pitching + this.get("data").baserunning + this.get("data").defense)) / 100;
-		},
-		getRoundedRating: function(rating) {
-			return Math.round(500 * this.get("data")[rating]) / 100;
-		},
-		getRoundedAttribute: function(attribute) {
-			var adjustments =  _.reduce(this.get("data").items, function(i, j) {
+		getStatAdjustments: function() {
+			return _.reduce(this.get("data").items, function(i, j) {
 				if(j.get("health") > 0) {
 					_.each(j.getAggregateAdjustments(), function(value, stat) {
 						if(!i.hasOwnProperty(stat)) {
@@ -392,10 +386,18 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				}
 				return i;
 			}, {});
-			return Math.round(1000 * (this.get("raw")[attribute] + _.get(adjustments, attribute, 0))) / 1000;
+		},
+		getCombinedRoundedRating: function() {
+			return Math.round(500 * (this.get("data").batting + this.get("data").pitching + this.get("data").baserunning + this.get("data").defense)) / 100;
+		},
+		getRoundedRating: function(rating) {
+			return Math.round(500 * this.get("data")[rating]) / 100;
+		},
+		getRoundedAttribute: function(attribute) {
+			return Math.round(1000 * (this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0))) / 1000;
 		},
 		getScaleClass: function(attribute) {
-			var rating = this.get("raw")[attribute];
+			var rating = this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0);
 			if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
 				rating = 1 - rating;
 			}

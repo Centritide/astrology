@@ -907,4 +907,8 @@ a[data-toggle-spacing]:hover {
 	.card .player-items div {
 		margin: 5px;
 	}
+	
+	.advanced .player-timestamp {
+		position: relative;
+	}
 }
