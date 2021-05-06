@@ -166,13 +166,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		calculateBatting: function() {
 			var adjustments = this.getStatAdjustments();
 			return (
-				Math.pow(1 - Math.max(this.get("tragicness") + _.get(adjustments, "tragicness", 0), 0.001), 0.01) *
+				Math.pow(Math.max(1 - this.get("tragicness") + _.get(adjustments, "tragicness", 0), 0.001), 0.01) *
 				Math.pow(Math.max(this.get("buoyancy") + _.get(adjustments, "buoyancy", 0), 0.001), 0) *
 				Math.pow(Math.max(this.get("thwackability") + _.get(adjustments, "thwackability", 0), 0.001), 0.35) *
 				Math.pow(Math.max(this.get("moxie") + _.get(adjustments, "moxie", 0), 0.001), 0.075) *
 				Math.pow(Math.max(this.get("divinity") + _.get(adjustments, "divinity", 0), 0.001), 0.35) *
 				Math.pow(Math.max(this.get("musclitude") + _.get(adjustments, "musclitude", 0), 0.001), 0.075) *
-				Math.pow(1 - Math.max(this.get("patheticism") + _.get(adjustments, "patheticism", 0.001), 0), 0.05) *
+				Math.pow(Math.max(1 - this.get("patheticism") + _.get(adjustments, "patheticism", 0.001), 0), 0.05) *
 				Math.pow(Math.max(this.get("martyrdom") + _.get(adjustments, "martyrdom", 0), 0.001), 0.02)
 			);
 		},
@@ -394,13 +394,20 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return Math.round(500 * this.get("data")[rating]) / 100;
 		},
 		getRoundedAttribute: function(attribute) {
-			return Math.round(1000 * Math.max(this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0), 0.001)) / 1000;
+			var rating = this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0);
+			if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
+				rating = Math.min(rating, 0.999);
+			} else {
+				rating = Math.max(rating, 0.001);
+			}
+			return Math.round(1000 * rating) / 1000;
 		},
 		getScaleClass: function(attribute) {
-			var rating = Math.max(this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0), 0.001);
+			var rating = this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0);
 			if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
 				rating = 1 - rating;
 			}
+			rating = Math.max(rating, 0.001);
 			if(rating > 0.95) {
 				return "stat-exceptional";
 			} else if(rating > 0.85) {
