@@ -585,18 +585,26 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					return "0x1F3CF";
 				case "Board":
 					return "0x1F6F9";
+				case "Broom":
+					return "0x1F9F9";
+				case "Cannon":
+					return "0x1F52B";
 				case "Cap":
 					return "0x1F9E2";
 				case "Field":
 					return "0x1F535";
 				case "Glove":
 					return "0x1F9E4";
+				case "Helmet":
+					return "0x1FA96";
 				case "Jersey":
 					return "0x1F455";
 				case "Necklace":
 					return "0x1F4FF";
 				case "Ring":
 					return "0x1F48D";
+				case "Socks":
+					return "0x1F9E6";
 				case "Shoes":
 					return "0x1F45F";
 				case "Sunglasses":

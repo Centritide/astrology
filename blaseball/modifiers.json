@@ -717,7 +717,7 @@
 		"id": "DEFECTOR",
 		"emoji": "0x1F47E",
 		"title": "Defector",
-        "description": ""
+        "description": "This Player will switch to the opponent's roster when the game ends."
 	},
 	{
 		"id": "HOMEBODY",
@@ -864,12 +864,6 @@
         "description": "If a home run lands in a Small Bucket, it score 5 extra Runs."
     },
     {
-        "id": "BUMPERS",
-		"emoji": "0x1F3B1",
-        "title": "Bumpers",
-        "description": ""
-    },
-    {
         "id": "BULLPEN",
 		"emoji": "0x1F402",
         "title": "Bull Pen",
@@ -896,8 +890,8 @@
     {
         "id": "TEMP_STOLEN",
 		"emoji": "0x1F90F",
-        "title": "Temp Stolen",
-        "description": "This player has been temporarily stolen."
+        "title": "Stolen",
+        "description": "This Player has been temporarily stolen."
     },
     {
         "id": "REDACTED",
@@ -909,7 +903,7 @@
         "id": "FUGITIVE",
 		"emoji": "0x1F463",
         "title": "Fugitive",
-        "description": ""
+        "description": "This Player is at risk of being caught by Searchlights."
     },
     {
         "id": "BIG_RED_BUTTON",
@@ -970,12 +964,6 @@
 		"emoji": "0x1F440",
         "title": "Patient",
         "description": "This batter will never swing when there are 0 Strikes and are 1 Ball away from a Walk."
-    },
-    {
-        "id": "HUNCH",
-		"emoji": "0x1F50D",
-        "title": "Hunch",
-        "description": "This player has a Hunch."
     },
     {
         "id": "UNCERTAIN",
@@ -1047,7 +1035,7 @@
         "id": "FORCE",
 		"emoji": "0x1FAA2",
         "title": "Force",
-        "description": "This Player is Forced into position. They cannot leave or move within this Team's roster."
+        "description": "This Player is Forced into position. They cannot leave their current location."
     },
     {
         "id": "PSYCHOACOUSTICS",
@@ -1222,5 +1210,17 @@
 		"emoji": "0x1F3C1",
         "title": "Rally",
         "description": "This Team or Player will play 5% better when losing in the 7th inning or later."
+    },
+    {
+        "id": "NIGHT_VISION",
+		"emoji": "0x1F97D",
+        "title": "Night Vision",
+        "description": "This Player will play 50% better in Solar Eclipse weather."
+    },
+    {
+        "id": "NEGATIVE",
+		"emoji": "0x1F4F7",
+        "title": "Negative",
+        "description": "This Player is a Negative."
     }
 ]
