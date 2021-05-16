@@ -833,7 +833,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			});
 		},
 		filterData: function() {
-			var lastChange;
+			var lastChange, collectionLength = this.length;
 			this.sortBy(function(m, n) {
 				return m.start - n.start;
 			});
@@ -842,7 +842,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					model.get("changes").push("first seen");
 					lastChange = model;
 				} else {
-					if(model.get("start").getTime() - lastChange.get("start").getTime() > 6000) {
+					if(model.get("start").getTime() - lastChange.get("start").getTime() > 6000 || index + 1 == collectionLength) {
 						_.each(model.get("data"), function(value, attribute) {
 							switch(attribute) {
 								case "id":
