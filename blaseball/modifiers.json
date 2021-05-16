@@ -1129,7 +1129,7 @@
     },
     {
         "id": "COASTING",
-		"emoji": "0x1F9F1",
+		"emoji": "0x26F5",
         "title": "Coasting",
         "description": "This Team or player will Underperform in the Midseason."
     },
@@ -1222,5 +1222,65 @@
 		"emoji": "0x1F4F7",
         "title": "Negative",
         "description": "This Player is a Negative."
+    },
+    {
+        "id": "OPEN_FLOOR_PLAN",
+		"emoji": "0x1F3DE",
+        "title": "Open Floor Plan",
+        "description": "This Ballpark's Grandiosity is 5% the eDensity of a standard Ballpark."
+    },
+    {
+        "id": "INTUITIVE",
+		"emoji": "0x1F9E0",
+        "title": "Intuitive",
+        "description": "This Player's pitching will be boosted 10% when switching from Lineup to Rotation, and their hitting will be boosted 10% when switching from Rotation to Lineup."
+    },
+    {
+        "id": "UNDEFINED",
+		"emoji": "0x203C",
+        "title": "Undefined",
+        "description": "This Player will play 50-100% better while Scattered."
+    },
+    {
+        "id": "SLOW_BUILD",
+		"emoji": "0x1F3D7",
+        "title": "Slow Build",
+        "description": "This Player will bat 1% better for each subsequent At Bat they have in a game."
+    },
+    {
+        "id": "GRAPHENE",
+		"emoji": "0x1F3DF",
+        "title": "Graphene",
+        "description": "This Ballpark's Fortifications are 5% the eDensity of a standard Ballpark."
+    },
+    {
+        "id": "A",
+		"emoji": "0x1F170",
+        "title": "A Blood Type",
+        "description": "A Team or Player with A Blood Type will play each game with a random Blood type ability."
+    },
+    {
+        "id": "GOOD_RIDDANCE",
+		"emoji": "0x1F44B",
+        "title": "Good Riddance",
+        "description": "This Team will throw a Party when a Roamin' or Super Roamin' player leaves their roster."
+    },
+    {
+        "id": "TURNTABLES",
+		"emoji": "0x1F4BF",
+        "title": "Turntables",
+        "description": "Any Win earned from a non-loss in this Ballpark during the Regular Season will be converted to an Unwin."
+    },
+    {
+        "id": "UNDERTAKER",
+		"emoji": "0x26B0",
+        "title": "Undertaker",
+        "description": "This Player will dive in to Develop a Negative when a teammate goes Elsewhere."
+    },
+    {
+        "id": "SEEKER",
+		"emoji": "0x1F9ED",
+        "title": "Seeker",
+        "description": "The Player has a chance to bring teammates back from Elsewhere."
     }
 ]
