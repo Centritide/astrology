@@ -182,16 +182,18 @@
 						<% } %>
 					<% } %>
 				</div>
-				<% if(get("data").deceased) { %>
+				<% var playerMods = _.union(get("data").modifiers.permanent, get("data").modifiers.seasonal, get("data").modifiers.item);
+				if(get("data").deceased) {
+					playerMods = _.union(playerMods, get("data").modifiers.game); %>
 					<div class="player-deceased">
 						<span class="deceased-icon"><%= emoji(0x1F480) %></span>
 						<span>Deceased</span>
 					</div>
-				<% } %>
-				<% if(get("data").modifiers.permanent.length || get("data").modifiers.seasonal.length || get("data").modifiers.item.length) { %>
+				<% }
+				if(playerMods.length) { %>
 					<div class="player-modifiers">
-						<% _.each(_.union(get("data").modifiers.permanent, get("data").modifiers.seasonal, get("data").modifiers.item), function(modifier) { %>
-							<% modifier = getModifier(modifier) %>
+						<% _.each(playerMods, function(modifier) { 
+							modifier = getModifier(modifier) %>
 							<span title="<%= modifier.title %>"><%= emoji(modifier.emoji) %></span>
 						<% }) %>
 					</div>
@@ -397,6 +399,9 @@
 								</td>
 								<td class="player-stat">
 									<% var playerMods = _.union(model.get("data").modifiers.permanent, model.get("data").modifiers.seasonal, model.get("data").modifiers.item);
+									if(model.get("data").deceased) {
+										playerMods = _.union(playerMods, model.get("data").modifiers.game);
+									}
 									if(playerMods.length) {
 										_.each(playerMods, function(modifier) {
 											modifier = model.getModifier(modifier) %>

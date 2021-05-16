@@ -591,6 +591,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					return "0x1F52B";
 				case "Cap":
 					return "0x1F9E2";
+				case "Cape":
+					return "0x1F9E3";
 				case "Field":
 					return "0x1F535";
 				case "Glove":
@@ -637,7 +639,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				if(player.id == "bc4187fa-459a-4c06-bbf2-4e0e013d27ce") {
 					player.data.name = "Original Sixpack Dogwalker";
 				}
-				if(_.intersection(player.data.permAttr, ["RETIRED", "LEGENDARY"]).length) {
+				if(_.intersection(player.data.permAttr, ["DUST", "RETIRED"]).length || (_.contains(player.data.permAttr, "LEGENDARY") && !_.contains(player.data.permAttr, "REPLICA"))) {
 					player.data.position = "inactive";
 				} else if(player.data.deceased) {
 					player.data.position = "deceased";
@@ -734,6 +736,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 										model.get("changes").push("-" + modifier.replace(/\_/g, " ").toLowerCase());
 									});
 									_.each(_.difference(value.seasonal, prevMods.seasonal), function(modifier) {
+										model.get("changes").push("+" + modifier.replace(/\_/g, " ").toLowerCase());
+									});
+								}
+								if(model.get("data").deceased && prevMods.game.join(",") != value.game.join(",")) {
+									_.each(_.difference(prevMods.game, value.game), function(modifier) {
+										model.get("changes").push("-" + modifier.replace(/\_/g, " ").toLowerCase());
+									});
+									_.each(_.difference(value.game, prevMods.game), function(modifier) {
 										model.get("changes").push("+" + modifier.replace(/\_/g, " ").toLowerCase());
 									});
 								}
