@@ -612,7 +612,7 @@ section.card {
 .card .player-stat-row,
 .card .stadium-stat-row { 
 	display: grid;
-	grid-template-columns: 50% 50%;
+	grid-template-columns: 40% 60%;
 	padding: 10px 20px;
 	align-items: center;
 }

@@ -546,7 +546,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		},
 		weather: function() {
 			return _.map(this.get("weather"), function(modifier, index) {
-				var weatherName = weathers[index].name;
+				var weatherName = weathers ? weathers[index].name : index;
 				for(var i = 0; i < modifier; i++) {
 					weatherName += "+";
 				}
@@ -581,6 +581,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				return "0x274C";
 			}
 			switch(this.get("root").name) {
+				case "Base":
+					return "0x1F539";
 				case "Bat":
 					return "0x1F3CF";
 				case "Board":
@@ -603,6 +605,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					return "0x1F455";
 				case "Necklace":
 					return "0x1F4FF";
+				case "Phone":
+					return "0x260E";
+				case "Pillow":
+					return "0x1F411";
+				case "Potion":
+					return "0x2697";
+				case "Quill":
+					return "0x1FAB6";
 				case "Ring":
 					return "0x1F48D";
 				case "Socks":

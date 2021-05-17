@@ -764,15 +764,15 @@
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Filthiness</strong>
-						<span><%= get("data").filthiness %></span>
+						<span><%= get("data").filthiness %> (<%= Math.round(get("raw").filthiness * 100) / 100 %>)</span>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Luxuriousness</strong>
-						<span><%= get("data").luxuriousness %></span>
+						<span><%= get("data").luxuriousness %> (<%= Math.round(get("raw").luxuriousness * 100) / 100 %>)</span>
 					</div>
 					<div class="stadium-stat-row">
 						<strong>Hype</strong>
-						<span><%= get("data").hype %></span>
+						<span><%= get("data").hype %> (<%= Math.round(get("raw").hype * 100) / 100 %>)</span>
 					</div>
 					<% if(get("data").weather.length) { %>
 						<div class="stadium-stat-row">
