@@ -1,0 +1,139 @@
+<html>
+	<head>
+		<title>Internet League Blaseball H2H Records</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<link rel="icon" href="/favicon-128.png" sizes="128x128">
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<style>
+			* {
+				font-family: Roboto, "sans-serif";
+			}
+			tr:hover {
+				background: #ccc;
+			}
+			td {
+				border: 1px solid #000;
+				text-align: center;
+				padding: 2px 4px;
+			}
+
+			.positive {
+				background: rgba(184, 247, 200, 0.7);
+			}
+			.negative {
+				background: rgba(234, 176, 176, 0.7);
+			}
+			.even {
+				background: rgba(255, 253, 180, 0.7);
+			}
+			.zero {
+				background: rgba(0, 0, 0, 0.2);
+			}
+		</style>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7S24X2FST"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-T7S24X2FST');
+		</script>
+	</head>
+	<body>
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/underscore@1.11.0/underscore-min.js"></script>
+		<script>
+			$(function() {
+				var records = {}, teams = {}, currentSeason = 0;
+					
+				loadGamesForSeason();
+
+				function parseEmoji(value) {
+					return isNaN(value) ? value : String.fromCodePoint(value);
+				}
+
+				function updateTable() {
+					var table = $("<table />");
+					$("body").append("<h1>Head-to-Head Records as of Season " + (currentSeason + 1) + "</h1>");
+					table.append(_.reduce(teams, function(e, f) {
+						return e + "<td title='" + f.name + "'>" + parseEmoji(f.emoji) + "</td>";
+					}, "<tr><td></td>") + "</tr>");
+					_.each(teams, function(awayTeam, awayId) {
+						var newRow = $("<tr><td title='" + awayTeam.name + "'>" + parseEmoji(awayTeam.emoji) + "</td></tr>");
+						_.each(teams, function(homeTeam, homeId) {
+							if(awayId == homeId) {
+								newRow.append("<td></td>");
+							} else {
+								var matchup = records[awayId][homeId], cellClass = "even";
+								if(matchup) {
+									var diff = matchup.wins - matchup.losses;
+									if(diff > 0) {
+										diff = "+" + diff;
+										cellClass = "positive";
+									} else if(diff < 0) {
+										cellClass = "negative";
+									} else {
+										diff = "+/-" + diff;
+									}
+									newRow.append("<td class='" + cellClass + "' title='" + awayTeam.name + " " + diff + "'>" + matchup.wins + " - " + matchup.losses + "</td>");
+								} else {
+									newRow.append("<td class='zero' title='" + awayTeam.name + " +/-0'>0 - 0</td>");
+								}
+							}
+						});
+						table.append(newRow);
+					});
+					$("body").append(table);
+				}
+					
+				function loadGamesForSeason() {
+					$.ajax("https://api.sibr.dev/chronicler/v1/games", {
+						method: "GET",
+						datatype: "json",
+						data: {
+							started: true,
+							season: currentSeason
+						},
+						success: function(data) {
+							if(data.data.length) {
+								_.each(data.data, function(game) {
+									var awayId = game.data.awayTeam, homeId = game.data.homeTeam;
+									if(!records.hasOwnProperty(awayId)) {
+										records[awayId] = {};
+										teams[awayId] = {
+											emoji: game.data.awayTeamEmoji,
+											name: game.data.awayTeamNickname
+										};
+									}
+									if(!records.hasOwnProperty(homeId)) {
+										records[homeId] = {};
+										teams[homeId] = {
+											emoji: game.data.homeTeamEmoji,
+											name: game.data.homeTeamNickname
+										};
+									}
+									if(!records[awayId].hasOwnProperty(homeId)) {
+										records[awayId][homeId] = { "wins": 0, "losses" : 0 };
+									}
+									if(!records[homeId].hasOwnProperty(awayId)) {
+										records[homeId][awayId] = { "wins": 0, "losses" : 0 };
+									}
+									if(game.data.awayScore > game.data.homeScore) {
+										records[awayId][homeId].wins++;
+										records[homeId][awayId].losses++;
+									} else {
+										records[awayId][homeId].losses++;
+										records[homeId][awayId].wins++;
+									}
+								});
+								updateTable();
+								currentSeason++;
+								loadGamesForSeason();
+							}
+						}
+					});
+				}
+			});
+		</script>
+	</body>
+</html>
