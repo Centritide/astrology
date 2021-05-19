@@ -1,0 +1,159 @@
+<html>
+	<head>
+		<title>Blaseball Stadium Staff Logs</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<link rel="icon" href="/favicon-128.png" sizes="128x128">
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<style>
+			html, body { padding:0;margin:0;background:#111;color:#fff;font-family:'Roboto',sans-serif }
+			main { width:80%;max-width:980px;margin:20px auto;display:flex;flex-direction:row;flex-wrap:wrap;gap:20px;justify-content:center }
+            h1, h2, h3 { flex-basis:100% }
+            main h1 { margin:0;text-align:center }
+            section { display:flex;flex-direction:row;flex-wrap:wrap;column-gap:20px;align-items:flex-start;margin:0 0 20px }
+            section h2 { margin:0 0 10px;border-bottom:1px solid #fff }
+            section > div { width:calc(50% - 10px);display:flex;flex-direction:row;flex-wrap:wrap;flex-grow:1;align-items:flex-start;gap:10px }
+            section > div h3 { margin:0 }
+            .event { background:#fff;color:#000;border-radius:10px;padding:10px }
+            .event h4 { border-bottom:1px solid #ddd;margin:0 0 10px }
+            ol { padding:20px;margin:0 }
+		</style>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7S24X2FST"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-T7S24X2FST');
+		</script>
+	</head>
+	<body>
+		<main>
+            <h1>Blaseball Stadium Staff Logs</h1>
+        </main>
+
+        <script type="text/template" id="template-stadium">
+            <section data-id="<%= teamId %>">
+                <h2><%= nickname %></h2>
+                <% if(_.contains(mods, "PEANUT_MISTER")) { %>
+                    <div class="mister">
+                        <h3>Peanut Mister</h3>
+                    </div>
+                <% } 
+                if(_.contains(mods, "SMITHY")) { %>
+                    <div class="smithy">
+                        <h3>Smithy</h3>
+                    </div>
+                <% } %>
+            </section>
+        </script>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/underscore@1.11.0/underscore-min.js"></script>
+		<script>
+			$(function() {
+                loadStadiums();
+
+                function loadStadiums() {
+                    $.ajax("https://api.sibr.dev/chronicler/v1/stadiums", {
+                        method: "GET",
+                        datatype: "json",
+                        success: function(data) {
+                            _.chain(data.data)
+                                .map(function(stadium) { return stadium.data; })
+                                .filter(function(stadium) {
+                                    return _.intersection(stadium.mods, ["PEANUT_MISTER", "SMITHY"]).length;
+                                })
+                                .sortBy("nickname")
+                                .each(function(stadium) {
+                                    $("main").append(_.template($("#template-stadium").html())(stadium));
+                                });
+                                loadCures();
+                                loadRepairs();
+                        },
+                        error: function() {
+                            $("main").append("<h2>Failed to load stadium data.</h2>")
+                        }
+                    });
+                }
+
+                function loadCures() {
+                    loadUpdates("Peanut Mister", null, function() {
+                        _.each($(".mister"), function(mister) {
+                            var numCured = $(mister).find(".event:not(.superallergic)").length, 
+                            numSuperCured = $(mister).find(".superallergic").length, 
+                                playersCured = " (" + numCured + " player" + (numCured != 1 ? "s" : "") + " cured";
+                            if(numSuperCured) {
+                                playersCured += ", " + numSuperCured + " superallerg" + (numSuperCured > 1 ? "ies" : "y") + " removed";
+                            }
+                            playersCured += ")";
+                            $(mister).find("h3").append(playersCured);
+                        });
+                    });
+                }
+
+                function loadRepairs() {
+                    loadUpdates("Smithy", null, function() {
+                        _.each($(".smithy"), function(smithy) {
+                            var numRepairs = $(smithy).find(".event").length;
+                            $(smithy).find("h3").append(" (" + numRepairs + " repair" + (numRepairs != 1 ? "s" : "") + " made)");
+                        });
+                    });
+                }
+
+                function loadUpdates(query, page, callback) {
+                    $.ajax("https://api.sibr.dev/chronicler/v1/games/updates", {
+                        method: "GET",
+                        data: {
+                            "search": query,
+                            "count": 1000,
+                            "order": "asc",
+                            "page": page
+                        },
+                        datatype: "json",
+                        success: function(data) {
+                            _.each(data.data, function(update) {
+                                matcher = update.data.lastUpdate.match(/smithy beckons to (.+)\.\s(.+) is repaired!/i);
+                                if(matcher) {
+                                    logRepair(update.data, matcher[1], matcher[2]);
+                                }
+                                matcher = update.data.lastUpdate.match(/the peanut mister activates!\s(.+) has been cured of their peanut allergy!/i);
+                                if(matcher) {
+                                    logMister(update.data, matcher[1], false);
+                                }
+                                matcher = update.data.lastUpdate.match(/the peanut mister activates!\s(.+) is no longer superallergic!/i);
+                                if(matcher) {
+                                    logMister(update.data, matcher[1], true);
+                                }
+                            });
+                            if(data.nextPage) {
+                                loadUpdates(query, data.nextPage, callback);
+                            } else if(callback) {
+                                callback();
+                            }
+                        },
+                        error: function() {
+                            _.each($("section"), function(stadium) {
+                                switch(query) {
+                                    case "Peanut Mister":
+                                        $(stadium).find(".mister").append("Failed to load data.");
+                                        break;
+                                    case "Smithy":
+                                        $(stadium).find(".smithy").append("Failed to load data.");
+                                        break;
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function logRepair(update, player, item) {
+                    $("[data-id=" + update.homeTeam + "] .smithy").append("<div class='event'><h4>Season " + (update.season + 1)  + " Day " + (update.day + 1) + "</h4><span>Repaired <strong>" + player + "</strong>'" + (player.endsWith("s") ? "" : "s") + " <strong>" + item + "</strong></span></div>");
+                }
+
+                function logMister(update, player, isSuperallergy) {
+                    $("[data-id=" + update.homeTeam + "] .mister").append("<div class='event" + (isSuperallergy ? " superallergic" : "") + "'><h4>Season " + (update.season + 1)  + " Day " + (update.day + 1) + "</h4><span>" + (isSuperallergy ? "Removed <strong>Superallergy</strong> from" : "Cured") + " <strong>" + player + "</strong></span></div>");
+                }
+			});
+		</script>
+	</body>
+</html>
