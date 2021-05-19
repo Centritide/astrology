@@ -78,5 +78,13 @@
 	{
 		"name": "Salmon",
 		"emoji": "0x1F41F"
+	},
+	{
+		"name": "Polarity +",
+		"emoji": "0x23EB"
+	},
+	{
+		"name": "Polarity -",
+		"emoji": "0x23EC"
 	}
 ]

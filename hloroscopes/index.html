@@ -253,7 +253,9 @@
 											_.times(item.get("durability"), function(i) { 
 												print(emoji(i < item.get("health") ? 0x1F534 : 0x2B55));
 											});
-										} else { %>
+										} else if(item.get("durability") > -2) { %>
+											Unbreakable
+										<% } else { %>
 											Legendary Item
 										<% } %>
 									</p>

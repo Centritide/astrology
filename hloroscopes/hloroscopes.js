@@ -574,7 +574,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return adjustments;
 		},
 		getEmoji: function() {
-			if(this.get("durability") < 0) {
+			if(this.get("durability") < -1) {
 				return "0x1F3CF";
 			}
 			if(this.get("health") < 1) {
@@ -2021,8 +2021,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					"attr": null
 				}
 			}
-			item.health = -1;
-			item.durability = -1;
+			item.health = 0;
+			item.durability = -2; // unbreakable items are -1, hacked older legendary items to be -2
 			return item;
 		} else {
 			return null;
