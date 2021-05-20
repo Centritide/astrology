@@ -831,7 +831,7 @@
 		"id": "HOOPS",
 		"emoji": "0x1F3C0",
 		"title": "Hoops",
-        "description": ""
+        "description": "When a Player hits a Home Run, the next batter can go up for an alley oop to score an extra Run."
 	},
 	{
 		"id": "GRIND_RAIL",

@@ -38,6 +38,11 @@
                         <h3><% if(!_.contains(mods, "PEANUT_MISTER")) { %>Illegal <% } %>Peanut Mister</h3>
                     </div>
                 <% } 
+                if(_.contains(mods, "FAX_MACHINE")) { %>
+                    <div class="fax">
+                        <h3>Fax Machine</h3>
+                    </div>
+                <% } 
                 if(_.contains(mods, "SMITHY")) { %>
                     <div class="smithy">
                         <h3>Smithy</h3>
@@ -60,7 +65,7 @@
                             _.chain(data.data)
                                 .map(function(stadium) { return stadium.data; })
                                 .filter(function(stadium) {
-                                    return _.contains(_.keys(stadium.renoLog), "peanut_mister_mod") || _.contains(stadium.mods, "SMITHY");
+                                    return _.contains(_.keys(stadium.renoLog), "peanut_mister_mod") || _.intersection(stadium.mods, ["FAX_MACHINE", "SMITHY"]).length;
                                 })
                                 .sortBy(function(stadium) {
                                     return stadium.nickname.startsWith("The") ? stadium.nickname.substring(4) : stadium.nickname;
@@ -70,6 +75,7 @@
                                 });
                                 loadCures();
                                 loadRepairs();
+                                loadFaxes();
                         },
                         error: function() {
                             $("main").append("<h2>Failed to load stadium data.</h2>")
@@ -101,6 +107,15 @@
                     });
                 }
 
+                function loadFaxes() {
+                    loadUpdates("Shadow Fax", null, function() {
+                        _.each($(".fax"), function(fax) {
+                            var numFaxes = $(fax).find(".event").length;
+                            $(fax).find("h3").append(" (" + numFaxes + " pitcher" + (numFaxes != 1 ? "s" : "") + " faxed)");
+                        });
+                    });
+                }
+
                 function loadUpdates(query, page, callback) {
                     $.ajax("https://api.sibr.dev/chronicler/v1/games/updates", {
                         method: "GET",
@@ -116,6 +131,10 @@
                                 matcher = update.data.lastUpdate.match(/smithy beckons to (.+)\.\s(.+) is repaired!/i);
                                 if(matcher) {
                                     logRepair(update.data, matcher[1], matcher[2]);
+                                }
+                                matcher = update.data.lastUpdate.match(/incoming shadow fax\.+\s(.+) is replaced by (.+)\./i);
+                                if(matcher) {
+                                    logFax(update.data, matcher[1], matcher[2]);
                                 }
                                 matcher = update.data.lastUpdate.match(/the peanut mister activates!\s(.+) has been cured of their peanut allergy!/i);
                                 if(matcher) {
@@ -149,6 +168,10 @@
 
                 function logRepair(update, player, item) {
                     $("[data-id=" + update.homeTeam + "] .smithy").append("<div class='event'><h4>Season " + (update.season + 1)  + " Day " + (update.day + 1) + "</h4><span>Repaired <strong>" + player + "</strong>'" + (player.endsWith("s") ? "" : "s") + " <strong>" + item + "</strong></span></div>");
+                }
+
+                function logFax(update, player1, player2) {
+                    $("[data-id=" + update.homeTeam + "] .fax").append("<div class='event'><h4>Season " + (update.season + 1)  + " Day " + (update.day + 1) + "</h4><span><strong>" + player1 + "</strong> was replaced by <strong>" + player2 + "</strong></span></div>");
                 }
 
                 function logMister(update, player, isSuperallergy) {
