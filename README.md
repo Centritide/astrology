@@ -10,6 +10,9 @@ A visualization of Blaseball teams wins over .500 over the course of a season al
 ## [Hloroscopes](https://teagrrl.github.io/astrology/hloroscopes/)
 A tool to see how a player (or team or stadium) has changed over the course of their existence.
 
+## [Ballparks](https://teagrrl.github.io/astrology/ballparks/)
+A tool to mess with ballpark dimensions with sliders
+
 ## [Live Laugh Leach](https://teagrrl.github.io/astrology/livelaughleach/)
 A count of how many days since Leach Ingram walked a batter.
 
