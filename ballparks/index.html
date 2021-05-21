@@ -1,16 +1,16 @@
 <html>
 	<head>
-		<title>Astrology</title>
+		<title>Build-a-Ballpark</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 		<meta name="description" content="Mess around with ballparks.">
 		<meta property="og:type" content="website">
 		<meta property="og:url" content="http://yoori.space/ballparks/">
-		<meta property="og:title" content="Ballparks">
+		<meta property="og:title" content="Build-a-Ballpark">
 		<meta property="og:description" content="Mess around with ballparks.">
 		<meta property="og:image" content="http://yoori.space/favicon-128.png">
 		<meta property="twitter:card" content="summary">
-		<meta name="twitter:title" content="Ballparks">
+		<meta name="twitter:title" content="Build-a-Ballpark">
 		<meta name="twitter:description" content="Mess around with ballparks.">
 		<meta name="twitter:image" content="http://yoori.space/favicon-128.png">
 		<link rel="icon" href="/favicon-128.png" sizes="128x128">
@@ -31,20 +31,34 @@
 		<script type="text/template" id="template-canvas">
 			<canvas>Default message for those without canvas support or whatever</canvas>
 			<section class="controls">
-				<% _.each(fields, function(field) { %>
-					<div class="input-group" data-control="<%= field %>">	
-						<span class="input-label"><%= field %></span>
-						<input class="input-slider" type="range" min="0" max="1000" value="500" />
-						<input class="input-number" type="number" step="0.001" value="0.5" />
+				<div class="controls-container">
+					<div class="modifications-group">
+					<% _.each(modifications, function(mod) { %>
+						<label data-control="<%= mod.replace(/\s+/, "_").toUpperCase() %>">
+							<input class="input-checkbox" type="checkbox" />
+							<span class="input-label"><%= mod %></span>
+						</label>
+					<% }) %>
 					</div>
-				<% }) %>
-				<div class="stadium-selector">
-					<select>
-						<option value="none" selected disabled>Select a stadium...</option>
-						<% _.each(stadiums.models, function(stadium) { %>
-							<option value="<%= stadium.get("id") %>"><%= stadium.get("name") %> (<%= stadium.get("nickname") %>)</option>
-						<% }) %>
-					</select>
+					<% _.each(fields, function(field) { %>
+						<div class="input-group" data-control="<%= field %>">	
+							<span class="input-label"><%= field %></span>
+							<input class="input-slider" type="range" min="0" max="1000" value="500" />
+							<input class="input-number" type="number" step="0.001" value="0.5" />
+						</div>
+					<% }) %>
+					<div class="stadium-selector">
+						<select>
+							<option value="none" selected disabled>Select a stadium...</option>
+							<% _.each(stadiums.models, function(stadium) { %>
+								<option value="<%= stadium.get("id") %>"><%= stadium.get("name") %> (<%= stadium.get("nickname") %>)</option>
+							<% }) %>
+						</select>
+					</div>
+				</div>
+				<div class="controls-toggles">
+					<a data-toggle="controls" href="#">Toggle controls</a>
+					<a data-toggle="lights" href="#">Toggle lights</a>
 				</div>
 			</section>
 		</script>
