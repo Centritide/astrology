@@ -27,9 +27,87 @@ img.emoji {
 	vertical-align:-0.1em;
 }
 
+main {
+	background: #111;
+	color: #fff;
+}
+
 section.controls {
+	max-width: 30vw;
 	position: absolute;
-	top: 0;
+	bottom: 0;
 	left: 0;
 	padding: 20px;
+}
+
+.input-group {
+	display: grid;
+	grid-template-columns: 100px auto 60px;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+.input-group .input-slider {
+	background: transparent;
+	height: 20px;
+	-webkit-appearance: none;
+}
+
+.input-group .input-slider:focus {
+	outline: none;
+}
+
+.input-group .input-slider::-webkit-slider-runnable-track {
+	width: 100%;
+	height: 5px;
+	cursor: pointer;
+	background: #aaa;
+	border-radius: 5px;
+}
+
+.input-group .input-slider::-webkit-slider-thumb {
+	height: 14px;
+	width: 14px;
+	border-radius: 50%;
+	background: #fff;
+	cursor: pointer;
+	margin-top: -4px;
+	-webkit-appearance: none;
+}
+
+.input-group .input-slider:focus::-webkit-slider-runnable-track {
+	background: #aaa;
+}
+
+.input-group .input-number {
+	height: 25px;
+	background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+	padding: 5px;
+    border: 0;
+	border-radius: 5px;
+}
+
+.stadium-selector {
+	border-top: 1px solid #eee;
+	padding-top: 10px;
+}
+
+.stadium-selector select {
+	height: 30px;
+	width: 100%;
+	background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+	padding: 5px;
+    border: 0;
+	border-radius: 5px;
+	font-family: Roboto, "sans-serif";
+	font-weight: bold;
+    text-overflow: ellipsis;
+}
+
+.stadium-selector option {
+	background: #222;
+	color: #fff;
 }

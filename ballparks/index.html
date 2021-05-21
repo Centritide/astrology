@@ -38,6 +38,14 @@
 						<input class="input-number" type="number" step="0.001" value="0.5" />
 					</div>
 				<% }) %>
+				<div class="stadium-selector">
+					<select>
+						<option value="none" selected disabled>Select a stadium...</option>
+						<% _.each(stadiums.models, function(stadium) { %>
+							<option value="<%= stadium.get("id") %>"><%= stadium.get("name") %> (<%= stadium.get("nickname") %>)</option>
+						<% }) %>
+					</select>
+				</div>
 			</section>
 		</script>
 

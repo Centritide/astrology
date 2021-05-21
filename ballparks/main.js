@@ -55,6 +55,10 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 	App.Collections.Stadiums = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v1/stadiums",
 		model: App.Models.Stadium,
+		comparator: function(model) {
+			var stadiumName = model.get("name");
+			return stadiumName.startsWith("The") ? stadiumName.substring(4) : stadiumName;
+		},
 		parse: function(data) {
 			return data.data;
 		}
@@ -69,16 +73,20 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 			var thisView = this;
 			this.collection.fetch({
 				success: function() {
+					thisView.collection.sort("name");
 					thisView.render();
 				}
 			});
 		},
 		render: function() {
 			this.$el.html(this.template({ 
-				fields: ["grandiosity", "fortification", "obtuseness", "forwardness", "elongation"], 
-				stadiums: this.collection 
+				fields: this.getFields(), 
+				stadiums: this.collection
 			}));
 			this.resize();
+		},
+		getFields: function() {
+			return ["grandiosity", "fortification", "obtuseness", "forwardness", "elongation"];
 		},
 		draw: function() {
 			this.$el.find("canvas").clearCanvas();
@@ -102,10 +110,12 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 		},
 		events: {
 			"input .input-slider": "changeSlider",
-			"input .input-number": "changeNumber"
+			"input .input-number": "changeNumber",
+			"change .stadium-selector select": "loadStadiumStats"
 		},
 		changeSlider: function(e) {
 			$(e.currentTarget).siblings(".input-number").val($(e.currentTarget).val() / 1000);
+			this.$el.find("select").val("none");
 			this.draw();
 		},
 		changeNumber: function(e) {
@@ -118,7 +128,19 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 			}
 			$(e.currentTarget).val(currentVal);
 			$(e.currentTarget).siblings(".input-slider").val(currentVal * 1000);
+			this.$el.find("select").val("none");
 			this.draw();
+		},
+		loadStadiumStats: function(e) {
+			var thisView = this, foundStadium = this.collection.get($(e.currentTarget).val());
+			if(foundStadium) {
+				_.each(this.getFields(), function(field) {
+					var fieldValue = Math.round(foundStadium.get(field) * 1000);
+					thisView.$el.find("[data-control=" + field + "] .input-slider").val(fieldValue);
+					thisView.$el.find("[data-control=" + field + "] .input-number").val(fieldValue / 1000);
+				});
+				thisView.draw();
+			}
 		}
 	});
 	//-- END VIEWS --
@@ -314,7 +336,8 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 			strokeWidth: width,
 			x1: x - grandiosityX, y1: y - grandiosityY + elongationY,
 			x2: x, y2: y + elongationY,
-			x3: x + grandiosityX, y3: y - grandiosityY + elongationY
+			x3: x + grandiosityX, y3: y - grandiosityY + elongationY,
+			rounded: true
 		});
 	}
 
