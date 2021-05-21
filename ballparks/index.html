@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<title>Astrology</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<meta name="description" content="Mess around with ballparks.">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://yoori.space/ballparks/">
+		<meta property="og:title" content="Ballparks">
+		<meta property="og:description" content="Mess around with ballparks.">
+		<meta property="og:image" content="http://yoori.space/favicon-128.png">
+		<meta property="twitter:card" content="summary">
+		<meta name="twitter:title" content="Ballparks">
+		<meta name="twitter:description" content="Mess around with ballparks.">
+		<meta name="twitter:image" content="http://yoori.space/favicon-128.png">
+		<link rel="icon" href="/favicon-128.png" sizes="128x128">
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<link href="style.css" rel="stylesheet">
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7S24X2FST"></script>
+		<script>
+			var GA_TRACKING_ID = 'G-T7S24X2FST';
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', GA_TRACKING_ID);
+		</script>
+	</head>
+	<body>
+		<main></main>
+
+		<script type="text/template" id="template-canvas">
+			<canvas>Default message for those without canvas support or whatever</canvas>
+			<section class="controls">
+				<% _.each(fields, function(field) { %>
+					<div class="input-group" data-control="<%= field %>">	
+						<span class="input-label"><%= field %></span>
+						<input class="input-slider" type="range" min="0" max="1000" value="500" />
+						<input class="input-number" type="number" step="0.001" value="0.5" />
+					</div>
+				<% }) %>
+			</section>
+		</script>
+
+		<script data-main="main.js" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+	</body>
+</html>
