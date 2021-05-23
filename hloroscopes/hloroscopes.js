@@ -2007,7 +2007,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	function loadPageView() {
 		var title = "Hloroscopes", path = "/";
 		if(activePlayer) {
-			title += " - " + activePlayer.get("name");
+			title += " - " + activePlayer.canonicalName();
 			path += activePlayer.slug();
 		} else if(activeTeam) {
 			title += " - " + activeTeam.get("fullName");
