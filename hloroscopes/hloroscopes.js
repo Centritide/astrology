@@ -403,7 +403,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			var rating = this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0);
 			if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
 				rating = Math.min(rating, 0.999);
-			} else {
+			} else if(!_.contains(["eDensity"], attribute)) {
 				rating = Math.max(rating, 0.001);
 			}
 			return Math.round(1000 * rating) / 1000;

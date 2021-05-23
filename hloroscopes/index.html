@@ -385,7 +385,9 @@
 					<tbody>
 						<% _.each(models, function(model) { %>
 							<tr>
-								<td class="player-timestamp"><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></td>
+								<td class="player-timestamp">
+									<span title="Changes seen at <%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %>: <%= _.reduce(model.get("changes"), function(c, d) { return c + ", " + d; }) %>"><%= model.get("start").toLocaleDateString() %> <%= model.get("start").toLocaleTimeString() %></span>
+								</td>
 								<td>
 									<% if(model.get("data").deceased) { %>
 										<span title="Deceased"><%= emoji(0x1F480) %></span>
