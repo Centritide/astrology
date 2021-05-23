@@ -222,7 +222,7 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 		
 		drawGrass(x, y, backstopOffset, elongationY, grandiosityX, grandiosityY);
 		drawDirt(scale, x, y, y + forwardnessY, y + elongationY, x + elongationX, y - elongationY, x - elongationX, x - 2 * elongationX, elongationY / 2, obtusenessAngle / 2, 2 * scale, modifications);
-		drawFoulLine(x, y, elongationY, grandiosityX, grandiosityY, stroke);
+		drawFoulLine(x, y, elongationY, grandiosityX - backstopOffset * Math.sin(obtusenessAngle / 2), grandiosityY - backstopOffset * Math.cos(obtusenessAngle / 2), stroke);
 		drawHomePlate(x, y + elongationY, scale * 17 / 15, stroke);
 		drawBase(x + elongationX, y, scale, stroke, "right");
 		drawBase(x, y - elongationY, scale, stroke);
