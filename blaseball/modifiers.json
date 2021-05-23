@@ -243,7 +243,7 @@
 	},
 	{
 		"id": "DOUBLE_PAYOUTS",
-		"emoji": "0x1F4B0",
+		"emoji": "0x1F4B8",
 		"title": "Super Idol",
         "description": "This player will earn Fans double the rewards from all Idol Snacks."
 	},
@@ -1465,7 +1465,7 @@
 	},
 	{
 		"id": "UNDERACHIEVER",
-		"emoji": "0x1F381",
+		"emoji": "0x1F9A5",
 		"title": "Underachiever",
 		"description": "When this Player hits a Home Run, the polarity of the Runs or Unruns will be flipped (Runs become Unruns, Unruns become Runs)."
 	},
