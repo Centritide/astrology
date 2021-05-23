@@ -57,13 +57,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return getTeamType(this.id);
 		},
 		players: function(position) {
-			var teamPlayers = this.get("players");
+			var teamPlayers = this.get("filtered") ? this.get("filtered") : this.get("players");
 			return _.template($("#template-players").html())({
 				emoji: parseEmoji,
 				position: position, 
-				players: teamPlayers ? _.map(this.get(position.toLowerCase()), function(id) {
+				players: teamPlayers ? _.chain(this.get(position.toLowerCase())).map(function(id) {
 					return teamPlayers.findWhere({ id: id });
-				}) : []
+				}).compact().value() : []
 			});
 		},
 		modifiers: function() {
@@ -160,8 +160,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	App.Models.Tribute = Backbone.Model.extend({});
 	App.Models.Name = Backbone.Model.extend({});
 	App.Models.Player = Backbone.Model.extend({
+		canonicalName: function() {
+			if(!_.isEmpty(this.get("state")) && _.has(this.get("state"), "unscatteredName")) {
+				return this.get("state").unscatteredName;
+			}
+			return this.get("name");
+		},
 		slug: function() {
-			return (activeTeam ? activeTeam.slug() + "/" : "") + this.get("name").toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
+			return (activeTeam ? activeTeam.slug() + "/" : "") + this.canonicalName().toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		calculateBatting: function() {
 			var adjustments = this.getStatAdjustments();
@@ -673,7 +679,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					}
 				}
 				return player.data;
-			}).sortBy("name").value();
+			}).sortBy(function(player) {
+				return !_.isEmpty(player.state) & _.has(player.state, "unscatteredName") ? player.state.unscatteredName : player.name;
+			}).value();
 		}
 	});
 	App.Collections.Players = Backbone.Collection.extend({
@@ -720,6 +728,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					_.each(model.get("data"), function(value, attribute) {
 						var prevData = thisCollection.at(index - 1).get("data");
 						switch(attribute) {
+							case "canonical":
 							case "edensity":
 							case "id":
 								break;
@@ -1134,10 +1143,23 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			this.$el.html(this.template(this.model));
 		},
 		events: {
+			"input .team-player-search input[type=search]": "searchPlayer",
 			"click .team-players a:not(.player-link)": "selectPlayer",
 			"click a[data-toggle-knowledge]": "toggleKnowledge",
 			"click a[data-toggle-spacing]": "toggleSpacing",
 			"click a[data-toggle-lights]": "toggleLights"
+		},
+		searchPlayer: function(e) {
+			var searchValue = $(e.currentTarget).val();
+			if(searchValue) {
+				var PlayersCollection = new App.Collections.AllPlayers(this.model.get("players").filter(function(model) {
+					return model.canonicalName().toLowerCase().indexOf(searchValue.toLowerCase()) > -1;
+				}));
+				this.model.set("filtered", PlayersCollection);
+			} else {
+				this.model.unset("filtered");
+			}
+			this.$el.find(".team-players").replaceWith($(this.template(this.model)).find(".team-players"));
 		},
 		selectPlayer: function(e) {
 			e.preventDefault();
@@ -1251,7 +1273,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					width: width,
 					innerHeight: height - margin - titleOffset,
 					innerWidth: width - 2 * margin,
-					title: _.last(changes).get("data").name,
+					title: _.last(changes).get("data").canonical,
 					titleOffset: titleOffset,
 					padding: padding,
 					margin: margin,
@@ -2112,6 +2134,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			baserunning: model.calculateBaserunning(),
 			batting: model.calculateBatting(),
 			blood: model.blood(),
+			canonical: model.canonicalName(),
 			coffee: model.coffee(),
 			deceased: model.get("deceased"),
 			defense: model.calculateDefense(),

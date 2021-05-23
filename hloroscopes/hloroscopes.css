@@ -7,6 +7,7 @@
 	--header-text: #666;
 	--player-alt-bg: #ddd;
 	--player-hover-bg: #aaa;
+	--input-bg: #ddd;
 	--modifiers-bg: #f7f7f7;
 	--table-hover: #ddd;
 	--vibe-most-excellent: #000;
@@ -47,6 +48,7 @@
 	--header-text: #999;
 	--player-alt-bg: #333;
 	--player-hover-bg: #666;
+	--input-bg: #fff;
 	--modifiers-bg: #222;
 	--table-hover: #444;
 	--vibe-most-excellent: #15d400;
@@ -313,6 +315,26 @@ a.team-history {
 	border-bottom: 1px solid var(--body-border);
 	font-size: 1.2em;
 	transition: all 0.4s ease-out;
+}
+
+.team-player-search {
+	background: var(--modifiers-bg);
+	padding: 10px 20px;
+	border-bottom: 1px solid var(--body-border);
+	transition: all 0.4s ease-out;
+}
+
+.team-player-search input[type=search] {
+	width: 100%;
+	background: var(--input-bg);
+	padding: 5px 10px;
+	border: 0;
+	border-radius: 5px;
+}
+
+.team-player-search input[type=search]:focus {
+	outline: 0;
+	box-shadow: 0px 0px 5px var(--input-bg);
 }
 
 .team-players {
