@@ -77,7 +77,7 @@
 					<div class="team-modifiers">
 						<% _.each(_.union(get("permAttr"), get("seasAttr")), function(modifier) { %>
 							<% modifier = getModifier(modifier) %>
-							<span title="<%= modifier.title + (modifier.description ? (" - " + modifier.description) : "") %>"><%= emoji(modifier.emoji) %></span>
+							<span title="<%= modifier.title + (modifer.descriptions && modifier.descriptions.team ? (" - " + modifer.descriptions.team) : (modifier.description ? (" - " + modifier.description) : "")) %>"><%= emoji(modifier.emoji) %></span>
 						<% }) %>
 					</div>
 				<% } %>
@@ -415,7 +415,7 @@
 									if(playerMods.length) {
 										_.each(playerMods, function(modifier) {
 											modifier = model.getModifier(modifier) %>
-											<span title="<%= modifier.title + (modifier.description ? (" - " + modifier.description) : "") %>"><%= emoji(modifier.emoji) %></span>
+											<span title="<%= modifier.title + (modifer.descriptions && modifier.descriptions.player ? (" - " + modifer.descriptions.player) : (modifier.description ? (" - " + modifier.description) : "")) %>"><%= emoji(modifier.emoji) %></span>
 										<% });
 									} else {
 										print("-")
