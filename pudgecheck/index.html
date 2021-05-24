@@ -106,7 +106,7 @@
 					datatype: "json",
 					data: {
 						order: "desc",
-						search: "Pudge"
+						search: "Pudge Nakamoto"
 					},
 					success: function(data) {
 						var updates = _.chain(data.data).map(function(update) {
@@ -140,8 +140,8 @@
 				});
 				
 				function getRelevantUpdate(update) {
-					var data = { gameId: update.gameId, hash: update.hash, message: update.data.lastUpdate, ghost: false }, message = data.message.replace(/[\r\n]+/g, " "), matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) hit a flyout to (.+)\. (.+) tags up and scores!$/i);
-					if(update.data.season > 16 || (update.data.season == 16 && update.data.day > 11)) {
+					var data = { gameId: update.gameId, hash: update.hash, message: update.data.lastUpdate, ghost: false }, message = data.message.replace(/[\r\n]+/g, " "), matcher = message.match(/Pudge Nakamoto hit a flyout to (.+)\. (.+) tags up and scores!/i);
+					if(update.data.season > 16 && update.data.season < 19 || (update.data.season == 16 && update.data.day > 11)) {
 						data.ghost = true;
 					}
 					if(matcher) {
@@ -149,55 +149,55 @@
 						data.message = matcher[2] + " scored off of their sacrfice fly!";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) hit a ground out to (.+)\. (.+) advances on the sacrifice.$/i);
+					matcher = message.match(/Pudge Nakamoto hit a ground out to (.+)\. (.+) advances on the sacrifice./i);
 					if(matcher) {
 						data.good = true;
 						data.message = matcher[2] + " scored off of their sacrfice bunt!";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) hit a (.+) to (.+)\.$/i);
+					matcher = message.match(/Pudge Nakamoto hit a (.+) to (.+)\./i);
 					if(matcher) {
 						data.good = false;
 						data.message = "they hit a " + matcher[1] + " to " + matcher[2] + ".";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) (struck|strikes) out (swinging|looking).$/i);
+					matcher = message.match(/Pudge Nakamoto (struck|strikes) out (swinging|looking|thinking)\.(\sPudge Nakamoto uses a Mind Trick!\sThe umpire sends them to first base\.)?/i);
 					if(matcher) {
-						data.good = false;
-						data.message = "they struck out " + matcher[2] + ".";
+						data.good = !!matcher[3];
+						data.message = "they " + (matcher[3] ? "used a Mind Trick to draw a walk": "struck out " + matcher[2]) + ".";
 						return data;
 					}
-					matcher = message.match(/^(.+) charmed Pudge (?:Nakamoto|Nakatamo)! Pudge (?:Nakamoto|Nakatamo) swings 3 times to strike out willingly!$/i);
+					matcher = message.match(/(.+) charmed Pudge Nakamoto! Pudge Nakamoto swings 3 times to strike out willingly!$/i);
 					if(matcher) {
 						data.good = false;
 						data.message = "they were charmed by " + matcher[1] + " and struck out willingly!";
 						return data;
 					}
-					matcher = message.match(/^A murder of Crows ambush Pudge (?:Nakamoto|Nakatamo)! They run to safety, resulting in an out.$/i);
+					matcher = message.match(/A murder of Crows ambush Pudge Nakamoto! They run to safety, resulting in an out.$/i);
 					if(matcher) {
 						data.good = false;
 						data.message = "they were attacked by birds!";
 						return data;
 					}
-					matcher = message.match(/(.+) siphoned some of Pudge (?:Nakamoto|Nakatamo)'s (.+) ability!/i);
+					matcher = message.match(/(.+) siphoned some of Pudge Nakamoto's (.+) ability!/i);
 					if(matcher) {
 						data.good = false;
 						data.message = matcher[1] + " gurgied their " + matcher[2] + " ability!";
 						return data;
 					}
-					matcher = message.match(/Pudge (?:Nakamoto|Nakatamo) siphoned some of (.+)'s (.+) ability!/i);
+					matcher = message.match(/Pudge Nakamoto siphoned some of (.+)'s (.+) ability!/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "they gurgied " + matcher[1] + "'s " + matcher[2] + " ability!";
 						return data;
 					}
-					matcher = message.match(/^A Big Peanut crashes into the field, encasing Pudge (?:Nakamoto|Nakatamo)!$/i);
+					matcher = message.match(/A Big Peanut crashes into the field, encasing Pudge Nakamoto!$/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "a Big Peanut encased them!";
 						return data;
 					}
-					matcher = message.match(/^(.+) tastes the infinite! Pudge (?:Nakamoto|Nakatamo) is Shelled!$/i);
+					matcher = message.match(/(.+) tastes the infinite! Pudge Nakamoto is Shelled!$/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "they were Shelled by " + matcher[1] + "!";
@@ -209,72 +209,85 @@
 						data.message = "they replaced incinerated hitter Boyfriend Monreal!";
 						return data;
 					}
-					matcher = message.match(/^(.+) hits Pudge (?:Nakamoto|Nakatamo) with a pitch! Pudge (?:Nakamoto|Nakatamo) is now (.+)!$/i);
+					matcher = message.match(/(.+) hits Pudge Nakamoto with a pitch! Pudge Nakamoto is now (.+)!$/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "they were hit by a pitch!";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) gets caught stealing (.+)\.$/i);
+					matcher = message.match(/Pudge Nakamoto gets caught stealing (.+)\.$/i);
 					if(matcher) {
 						data.good = false;
 						data.message = "they were caught stealing " + matcher[1] + ".";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) hit into a double play!/i);
+					matcher = message.match(/Pudge Nakamoto hit into a double play!/i);
 					if(matcher) {
 						data.good = false;
 						data.message = "they hit into a double play.";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) draws a walk\.$/i);
+					matcher = message.match(/Pudge Nakamoto draws a walk\.$/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "they drew a walk.";
 						return data;
 					}
-					matcher = message.match(/^(.+) hit a (.+) to Pudge (?:Nakamoto|Nakatamo)(\'s Shell)?\.$/i);
+					matcher = message.match(/(.+) hit a (.+) to Pudge Nakamoto(\'s Shell)?\./i);
 					if(matcher) {
 						data.good = true;
 						data.message = (matcher[3] ? "their Shell" : "they") + " caught a " + matcher[2] + " from " + matcher[1] + ".";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatomo) hits a ([^!]+)!(.*)$/i);
+					matcher = message.match(/Pudge Nakamoto hits a ([^!]+)!(\sThe ball lands in a Big Bucket\. An extra Run scores!)?(\s(.+) went up for the alley oop\.+\s\.+they slammed it down for an extra Run!)?(.*)$/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "they hit a " + matcher[1];
 						if(matcher[2]) {
-							var scorers = matcher[2].trim().split("scores!");
+							data.message += " that landed in the Big Bucket";
+						}
+						if(matcher[3]) {
+							data.message += " and " + matcher[4] + " slammed down the alley oop";
+						}
+						if(matcher[5]) {
+							var scorers = _.compact(matcher[5].trim().split("scores!"));
 							data.message += " and " + (scorers.length > 1 ? (scorers.length + " runners") : scorers[0].trim()) + " scored";
 						}
 						data.message += "!";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) steals (.+)(?:\.|!)$/i);
+					matcher = message.match(/(.+) hits a .+ home run!\sPudge Nakamoto went up for the alley oop\.+\s\.+(?:(but they can't connect\.)|(they slammed it down for an extra Run!))/i);
+					if(matcher) {
+						console.log(matcher);
+						data.good = !matcher[2] & !!matcher[3];
+						data.message = " they " + (data.good ? "slammed down " : "failed to connect on ") + matcher[1] + "'" + (matcher[1].endsWith("s") ? "" : "s") + " alley oop" + (data.good ? " for an extra Run!" : ".");
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto steals (.+)(?:\.|!)$/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "they stole " + matcher[1] + "!";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) hops on the Grind Rail toward third base. They do a (.+) \((\d+)\)! ... but lose their balance and bail! Out!$/);
+					matcher = message.match(/Pudge Nakamoto hops on the Grind Rail toward third base. They do a (.+) \((\d+)\)! ... but lose their balance and bail! Out!$/);
 					if(matcher) {
 						data.good = false;
 						data.message = "they couldn't land their " + matcher[1] + " (" + matcher[2] + ") and bailed.";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) hops on the Grind Rail toward third base. They do a (.+) \((\d+)\)! They're tagged out doing a (.+) \((\d+)\)!$/);
+					matcher = message.match(/Pudge Nakamoto hops on the Grind Rail toward third base. They do a (.+) \((\d+)\)! They're tagged out doing a (.+) \((\d+)\)!$/);
 					if(matcher) {
 						data.good = false;
 						data.message = "they got tagged out landing a " + matcher[1] + " + " + matcher[3] + " combo for " + (parseInt(matcher[2]) + parseInt(matcher[4])) + " points!";
 						return data;
 					}
-					matcher = message.match(/^Pudge (?:Nakamoto|Nakatamo) hops on the Grind Rail toward third base. They do a (.+) \((\d+)\)! They land a (.+) \((\d+)\)! Safe!$/);
+					matcher = message.match(/Pudge Nakamoto hops on the Grind Rail toward third base. They do a (.+) \((\d+)\)! They land a (.+) \((\d+)\)! Safe!$/);
 					if(matcher) {
 						data.good = true;
 						data.message = "they landed a " + matcher[1] + " + " + matcher[3] + " combo for " + (parseInt(matcher[2]) + parseInt(matcher[4])) + " points!";
 						return data;
 					}
-					matcher = message.match(/^Rogue Umpire incinerated Pudge Nakamoto!/);
+					matcher = message.match(/Rogue Umpire incinerated Pudge Nakamoto!/);
 					if(matcher) {
 						data.good = true;
 						data.message = "they were incinerated by a Rogue Umpire. Rest in Violence, our wonderful friend.";
