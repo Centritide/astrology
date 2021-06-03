@@ -90,7 +90,7 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 			return ["elongation", "forwardness", "obtuseness", "grandiosity", "fortification"];
 		},
 		getModifications: function() {
-			return ["fifth base", "grind rail", "secret base"];
+			return ["extra base", "grind rail", "secret base"];
 		},
 		draw: function() {
 			this.$el.find("canvas").clearCanvas();
@@ -231,7 +231,7 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 		drawFortifications(x, y, grandiosityX, elongationY + backstopOffset - grandiosityY, 2 * grandiosityY - backstopOffset, fortificationH);
 		_.each(modifications, function(mod) {
 			switch(mod) {
-				case "FIFTH_BASE":
+				case "EXTRA_BASE":
 					drawBase(x - 2 * elongationX, y - elongationY, scale, stroke);
 					break;
 				case "GRIND_RAIL":
@@ -329,7 +329,7 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 			x5: thirdX, y5: centerY,
 			closed: false
 		};
-		if(_.contains(modifications, "FIFTH_BASE")) {
+		if(_.contains(modifications, "EXTRA_BASE")) {
 			baseLineAttrs.x6 = fifthX;
 			baseLineAttrs.y6 = secondY;
 			$("canvas").drawArc({
