@@ -438,35 +438,29 @@
 								</td>
 								<td class="player-stat"><%= model.getCombinedRoundedRating() %></td>
 								<td class="player-stat"><%= model.getRoundedRating("batting") %></td>
-								<td class="player-stat <%= model.getScaleClass("buoyancy") %>"><%= model.getRoundedAttribute("buoyancy") %></td>
-								<td class="player-stat <%= model.getScaleClass("divinity") %>"><%= model.getRoundedAttribute("divinity") %></td>
-								<td class="player-stat <%= model.getScaleClass("martyrdom") %>"><%= model.getRoundedAttribute("martyrdom") %></td>
-								<td class="player-stat <%= model.getScaleClass("moxie") %>"><%= model.getRoundedAttribute("moxie") %></td>
-								<td class="player-stat <%= model.getScaleClass("musclitude") %>"><%= model.getRoundedAttribute("musclitude") %></td>
-								<td class="player-stat <%= model.getScaleClass("patheticism") %>"><%= model.getRoundedAttribute("patheticism") %></td>
-								<td class="player-stat <%= model.getScaleClass("thwackability") %>"><%= model.getRoundedAttribute("thwackability") %></td>
-								<td class="player-stat <%= model.getScaleClass("tragicness") %>"><%= model.getRoundedAttribute("tragicness") %></td>
+								<% _.each(["buoyancy", "divinity", "martyrdom", "moxie", "musclitude", "patheticism", "thwackability", "tragicness"], function(attribute) { %>
+									<td class="player-stat <%= model.getScaleClass(attribute) %>">
+										<%= model.getRoundedAttribute(attribute) %>
+									</td>
+								<% }) %>
 								<td class="player-stat"><%= model.getRoundedRating("pitching") %></td>
-								<td class="player-stat <%= model.getScaleClass("coldness") %>"><%= model.getRoundedAttribute("coldness") %></td>
-								<td class="player-stat <%= model.getScaleClass("overpowerment") %>"><%= model.getRoundedAttribute("overpowerment") %></td>
-								<td class="player-stat <%= model.getScaleClass("ruthlessness") %>"><%= model.getRoundedAttribute("ruthlessness") %></td>
-								<td class="player-stat <%= model.getScaleClass("shakespearianism") %>"><%= model.getRoundedAttribute("shakespearianism") %></td>
-								<td class="player-stat <%= model.getScaleClass("suppression") %>"><%= model.getRoundedAttribute("suppression") %></td>
-								<td class="player-stat <%= model.getScaleClass("unthwackability") %>"><%= model.getRoundedAttribute("unthwackability") %></td>
+								<% _.each(["coldness", "overpowerment", "ruthlessness", "shakespearianism", "suppression", "unthwackability"], function(attribute) { %>
+									<td class="player-stat <%= model.getScaleClass(attribute) %>">
+										<%= model.getRoundedAttribute(attribute) %>
+									</td>
+								<% }) %>
 								<td class="player-stat"><%= model.getRoundedRating("baserunning") %></td>
-								<td class="player-stat <%= model.getScaleClass("baseThirst") %>"><%= model.getRoundedAttribute("baseThirst") %></td>
-								<td class="player-stat <%= model.getScaleClass("continuation") %>"><%= model.getRoundedAttribute("continuation") %></td>
-								<td class="player-stat <%= model.getScaleClass("groundFriction") %>"><%= model.getRoundedAttribute("groundFriction") %></td>
-								<td class="player-stat <%= model.getScaleClass("indulgence") %>"><%= model.getRoundedAttribute("indulgence") %></td>
-								<td class="player-stat <%= model.getScaleClass("laserlikeness") %>"><%= model.getRoundedAttribute("laserlikeness") %></td>
+								<% _.each(["baseThirst", "continuation", "groundFriction", "indulgence", "laserlikeness"], function(attribute) { %>
+									<td class="player-stat <%= model.getScaleClass(attribute) %>">
+										<%= model.getRoundedAttribute(attribute) %>
+									</td>
+								<% }) %>
 								<td class="player-stat"><%= model.getRoundedRating("defense") %></td>
-								<td class="player-stat <%= model.getScaleClass("anticapitalism") %>"><%= model.getRoundedAttribute("anticapitalism") %></td>
-								<td class="player-stat <%= model.getScaleClass("chasiness") %>"><%= model.getRoundedAttribute("chasiness") %></td>
-								<td class="player-stat <%= model.getScaleClass("omniscience") %>"><%= model.getRoundedAttribute("omniscience") %></td>
-								<td class="player-stat <%= model.getScaleClass("tenaciousness") %>"><%= model.getRoundedAttribute("tenaciousness") %></td>
-								<td class="player-stat <%= model.getScaleClass("watchfulness") %>"><%= model.getRoundedAttribute("watchfulness") %></td>
-								<td class="player-stat <%= model.getScaleClass("pressurization") %>"><%= model.getRoundedAttribute("pressurization") %></td>
-								<td class="player-stat <%= model.getScaleClass("cinnamon") %>"><%= model.get("raw").cinnamon ? model.getRoundedAttribute("cinnamon") : "-" %></td>
+								<% _.each(["anticapitalism", "chasiness", "omniscience", "tenaciousness", "watchfulness", "pressurization", "cinnamon"], function(attribute) { %>
+									<td class="player-stat <%= model.getScaleClass(attribute) %>">
+										<%= model.getRoundedAttribute(attribute) %>
+									</td>
+								<% }) %>
 								<td class="player-stat"><%= model.get("raw").soul %></td>
 								<td class="player-stat"><%= model.get("raw").fate ? model.get("raw").fate : "-" %></td>
 								<td class="player-stat"><%= model.get("raw").totalFingers %></td>
@@ -477,7 +471,7 @@
 										<span title="Not Allergic"><%= emoji(0x1F60B) %></span>
 									<% } %>
 								</td>
-								<td class="player-stat"><%= model.get("raw").eDensity ? model.getRoundedAttribute("eDensity") : "-" %></td>
+								<td class="player-stat"><%= model.get("raw").eDensity ? Math.round(1000 * model.get("raw").eDensity) / 1000 : "-" %></td>
 							</tr>
 						<% }) %>
 					</tbody>

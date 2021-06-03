@@ -812,6 +812,18 @@ i.half-star {
 	text-align: center;
 }
 
+.advanced .player-stat em {
+	margin-left: -.2em;
+}
+
+.stat-super-elite {
+	background: rgba(239, 169, 233, .6);
+}
+
+.stat-elite {
+	background: rgba(169, 178, 224, .6);
+}
+
 .stat-exceptional {
 	background: rgba(127, 220, 255, .6);
 }

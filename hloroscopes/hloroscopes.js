@@ -400,13 +400,28 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return Math.round(500 * this.get("data")[rating]) / 100;
 		},
 		getRoundedAttribute: function(attribute) {
-			var rating = this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0);
-			if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
-				rating = Math.min(rating, 0.999);
-			} else if(!_.contains(["eDensity"], attribute)) {
-				rating = Math.max(rating, 0.001);
+			var rating = this.get("raw")[attribute], 
+				adjustment = _.get(this.getStatAdjustments(), attribute, 0),
+				tag = "span", 
+				hover = attribute + ": ";
+			if(rating) {
+				hover += Math.round(1000 * rating) / 1000;
+				rating += adjustment;
+				if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
+					rating = Math.min(Math.max(rating, 0.001), 0.999);
+				} else if(!_.contains(["eDensity"], attribute)) {
+					rating = Math.max(rating, 0.001);
+				}
+				rating = Math.round(1000 * rating) / 1000;
+				if(adjustment) {
+					tag = "em";
+					hover += (adjustment > 0 ? " + " : " - ") + Math.abs(Math.round(1000 * adjustment) / 1000);
+				}
+			} else {
+				hover += "-";
+				rating = "-";
 			}
-			return Math.round(1000 * rating) / 1000;
+			return "<" + tag + " title='" + hover + "'>" + rating + "</" + tag + ">";
 		},
 		getScaleClass: function(attribute) {
 			var rating = this.get("raw")[attribute] + _.get(this.getStatAdjustments(), attribute, 0);
@@ -414,7 +429,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				rating = 1 - rating;
 			}
 			rating = Math.max(rating, 0.001);
-			if(rating > 0.95) {
+			if(rating > 1.45) {
+				return "stat-super-elite";
+			} else if(rating > 1.15) {
+				return "stat-elite";
+			} else if(rating > 0.95) {
 				return "stat-exceptional";
 			} else if(rating > 0.85) {
 				return "stat-great";
@@ -1140,6 +1159,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			}
 		},
 		render: function() {
+			this.model.unset("filtered");
 			this.$el.html(this.template(this.model));
 		},
 		events: {
