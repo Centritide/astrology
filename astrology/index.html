@@ -46,6 +46,7 @@
 				<p>Each player has a significant number of hidden properties (often called <em>"stlats"</em>) which are not visible through the public interface directly and thus are considered <em>forbidden knowledge</em>. Visible star ratings are calculated based on a weighted combination of these stlats but individual stlats seem to affect player performance in different game scenarios. Research on what these stlats mean is ongoing inside the <a href="https://discord.gg/XKppCuj">SIBR discord</a>.</p>
 				<h1>Is there a minimum or maximum to these stlats?</h1>
 				<p>Most stlats range between zero and one, however there's no known upper limit to most of them. Most stlats seem to have a lower limit of <code>0.01</code> and "negative stlats" an upper limit of <code>0.99</code>, presumably to prevent star calculations from breaking. Sometimes players may get slowly below the lower limit or slightly above the upper limit on initial stlat generation but any changes to those stlats "clamp" to their respective limits.</p>
+
 				<h1>The Batting Stlats</h1>
 				<div class="faq-stlats">
 					<div class="faq-stlats-header">
@@ -266,6 +267,9 @@
 						<div>Unknown effect. Ranges between 1 and 99. Directly visible on the player page, unlike other stlats. Seems to change sometimes when a player changes teams.</div>
 					</div>
 				</div>
+
+				<h1>The Sibrmetric Stlats</h1>
+				<p>The <code>wOBABR</code>, <code>SLGBR</code>, and <code>ERPR</code> ratings are a fan attempt to make better star rankings for players by doing statistical analysis each season of player performance verses different relevent attributes to see how positively or negatively correlated certain attributes with actual performance metrics such as wOBA, Slugging Percentage, and Earned Runs. <a href="https://twitter.com/ErrantlyErin">ErrantlyErin</a> (also ErrantlyErin#0805 on discord) runs a linear regression in Excel using the <a href="https://support.microsoft.com/en-us/office/linest-function-84d7d0d9-6e50-4101-977a-fa7abf772b6d">LINEST function</a> to give slopes for each attribute and turns those into the percent weights used in these formulas. More information on this can be found in the <a href="https://discord.gg/XKppCuj">SIBR discord</a>.</p>
 			</section>
 		</script>
 		
@@ -296,6 +300,8 @@
 					<span class="stlat-good">Good</span>
 					<span class="stlat-great">Great</span>
 					<span class="stlat-exceptional">Exceptional</span>
+					<span class="stlat-elite">Elite</span>
+					<span class="stlat-super-elite">Super Elite</span>
 				</div>
 			<% } %>
 		</script>
@@ -395,9 +401,21 @@
 					<div class="stlats-general" data-sort="name">
 						<span>Name</span>
 					</div>
+					<div class="stlats-general" data-sort="wobaRating">
+						<span class="stlat-truncated">wOBABR</span>
+						<span class="stlat-full">wOBA Rating</span>
+					</div>
+					<div class="stlats-general" data-sort="sluggingRating">
+						<span class="stlat-truncated">SLGBR</span>
+						<span class="stlat-full">Slugging Rating</span>
+					</div>
+					<div class="stlats-general" data-sort="earnedRunsRating">
+						<span class="stlat-truncated">ERPR</span>
+						<span class="stlat-full">Earned Runs Rating</span>
+					</div>
 					<div class="stlats-general" data-sort="totalRating">
 						<span class="stlat-truncated">stars</span>
-						<span class="stlat-full">Total Stars</span>
+						<span class="stlat-full">Combined Stars</span>
 					</div>
 					
 					<div class="stlats-batting" data-sort="hittingRating">
@@ -465,10 +483,6 @@
 						<span class="stlat-truncated">unthwk</span>
 						<span class="stlat-full">Unthwackability</span>
 					</div>
-					<div class="stlats-pitching" data-sort="totalFingers">
-						<span class="stlat-truncated">fingers</span>
-						<span class="stlat-full">Total Fingers</span>
-					</div>
 					
 					<div class="stlats-baserunning" data-sort="baserunningRating">
 						<span class="stlat-truncated">stars</span>
@@ -520,31 +534,51 @@
 						<span class="stlat-full">Watchfulness</span>
 					</div>
 					
+					<div class="stlats-extra" data-sort="pressurization">
+						<span class="stlat-truncated">prssr</span>
+						<span class="stlat-full">Pressurization</span>
+					</div>
 					<div class="stlats-extra" data-sort="cinnamon">
 						<span class="stlat-truncated">cinnm</span>
 						<span class="stlat-full">Cinnamon</span>
+					</div>
+					<div class="stlats-extra" data-sort="soul">
+						<span class="stlat-truncated">soul</span>
+						<span class="stlat-full">Soul</span>
 					</div>
 					<div class="stlats-extra" data-sort="fate">
 						<span class="stlat-truncated">fate</span>
 						<span class="stlat-full">Fate</span>
 					</div>
+					<div class="stlats-extra" data-sort="totalFingers">
+						<span class="stlat-truncated">fingers</span>
+						<span class="stlat-full">Total Fingers</span>
+					</div>
 					<div class="stlats-extra" data-sort="peanutAllergy">
 						<span class="stlat-truncated">allergy</span>
 						<span class="stlat-full">Peanut Allergy</span>
 					</div>
-					<div class="stlats-extra" data-sort="pressurization">
-						<span class="stlat-truncated">prssr</span>
-						<span class="stlat-full">Pressurization</span>
-					</div>
-					<div class="stlats-extra" data-sort="soul">
-						<span class="stlat-truncated">soul</span>
-						<span class="stlat-full">Soul</span>
+					<div class="stlats-extra" data-sort="eDensity">
+						<span class="stlat-truncated">density</span>
+						<span class="stlat-full">eDensity</span>
 					</div>
 				</div>
 				<% _.each(players, function(player) { %>
 					<div class="stlats-row">
 						<div class="stlat-player-name">
 							<a href="https://www.blaseball.com/player/<%= player.id %>"><%= player.get("name") %></a>
+						</div>
+						<div <%= scale(player.calculateWobaRating()) %>>
+							<span class="stlat-truncated"><%= round(5 * player.calculateWobaRating()) %></span>
+							<span class="stlat-full"><%= 5 * player.calculateWobaRating() %></span>
+						</div>
+						<div <%= scale(player.calculateSluggingRating()) %>>
+							<span class="stlat-truncated"><%= round(5 * player.calculateSluggingRating()) %></span>
+							<span class="stlat-full"><%= 5 * player.calculateSluggingRating() %></span>
+						</div>
+						<div <%= scale(player.calculateEarnedRunsRating()) %>>
+							<span class="stlat-truncated"><%= round(5 * player.calculateEarnedRunsRating()) %></span>
+							<span class="stlat-full"><%= 5 * player.calculateEarnedRunsRating() %></span>
 						</div>
 						<div <%= scale(player.calculateTotalRating() / 4) %>>
 							<span class="stlat-truncated"><%= round(5 * player.calculateTotalRating()) %></span>
@@ -555,26 +589,12 @@
 							<span class="stlat-truncated"><%= round(5 * player.calculateBatting()) %></span>
 							<span class="stlat-full"><%= 5 * player.calculateBatting() %></span>
 						</div>
-						<div <%= scale(player.get("buoyancy")) %>>
-							<span class="stlat-truncated"><%= round(player.get("buoyancy")) %></span>
-							<span class="stlat-full"><%= player.get("buoyancy") %></span>
-						</div>
-						<div <%= scale(player.get("divinity")) %>>
-							<span class="stlat-truncated"><%= round(player.get("divinity")) %></span>
-							<span class="stlat-full"><%= player.get("divinity") %></span>
-						</div>
-						<div <%= scale(player.get("martyrdom")) %>>
-							<span class="stlat-truncated"><%= round(player.get("martyrdom")) %></span>
-							<span class="stlat-full"><%= player.get("martyrdom") %></span>
-						</div>
-						<div <%= scale(player.get("moxie")) %>>
-							<span class="stlat-truncated"><%= round(player.get("moxie")) %></span>
-							<span class="stlat-full"><%= player.get("moxie") %></span>
-						</div>
-						<div <%= scale(player.get("musclitude")) %>>
-							<span class="stlat-truncated"><%= round(player.get("musclitude")) %></span>
-							<span class="stlat-full"><%= player.get("musclitude") %></span>
-						</div>
+						<% _.each(["buoyancy", "divinity", "martyrdom", "moxie", "musclitude"], function(attribute) { %>
+							<div <%= scale(player.get(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
+								<span class="stlat-full"><%= player.get(attribute) %></span>
+							</div>
+						<% }) %>
 						<div <%= scaleInverse(player.get("patheticism")) %>>
 							<span class="stlat-truncated"><%= round(player.get("patheticism")) %></span>
 							<span class="stlat-full"><%= player.get("patheticism") %></span>
@@ -592,107 +612,77 @@
 							<span class="stlat-truncated"><%= round(5 * player.calculatePitching()) %></span>
 							<span class="stlat-full"><%= 5 * player.calculatePitching() %></span>
 						</div>
-						<div <%= scale(player.get("coldness")) %>>
-							<span class="stlat-truncated"><%= round(player.get("coldness")) %></span>
-							<span class="stlat-full"><%= player.get("coldness") %></span>
-						</div>
-						<div <%= scale(player.get("overpowerment")) %>>
-							<span class="stlat-truncated"><%= round(player.get("overpowerment")) %></span>
-							<span class="stlat-full"><%= player.get("overpowerment") %></span>
-						</div>
-						<div <%= scale(player.get("ruthlessness")) %>>
-							<span class="stlat-truncated"><%= round(player.get("ruthlessness")) %></span>
-							<span class="stlat-full"><%= player.get("ruthlessness") %></span>
-						</div>
-						<div <%= scale(player.get("shakespearianism")) %>>
-							<span class="stlat-truncated"><%= round(player.get("shakespearianism")) %></span>
-							<span class="stlat-full"><%= player.get("shakespearianism") %></span>
-						</div>
-						<div <%= scale(player.get("suppression")) %>>
-							<span class="stlat-truncated"><%= round(player.get("suppression")) %></span>
-							<span class="stlat-full"><%= player.get("suppression") %></span>
-						</div>
-						<div <%= scale(player.get("unthwackability")) %>>
-							<span class="stlat-truncated"><%= round(player.get("unthwackability")) %></span>
-							<span class="stlat-full"><%= player.get("unthwackability") %></span>
-						</div>
-						<div>
-							<span><%= player.get("totalFingers") %></span>
-						</div>
+						<% _.each(["coldness", "overpowerment", "ruthlessness", "shakespearianism", "suppression", "unthwackability"], function(attribute) { %>
+							<div <%= scale(player.get(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
+								<span class="stlat-full"><%= player.get(attribute) %></span>
+							</div>
+						<% }) %>
 						
 						<div <%= scale(player.calculateBaserunning()) %>>
 							<span class="stlat-truncated"><%= round(5 * player.calculateBaserunning()) %></span>
 							<span class="stlat-full"><%= 5 * player.calculateBaserunning() %></span>
 						</div>
-						<div <%= scale(player.get("baseThirst")) %>>
-							<span class="stlat-truncated"><%= round(player.get("baseThirst")) %></span>
-							<span class="stlat-full"><%= player.get("baseThirst") %></span>
-						</div>
-						<div <%= scale(player.get("continuation")) %>>
-							<span class="stlat-truncated"><%= round(player.get("continuation")) %></span>
-							<span class="stlat-full"><%= player.get("continuation") %></span>
-						</div>
-						<div <%= scale(player.get("groundFriction")) %>>
-							<span class="stlat-truncated"><%= round(player.get("groundFriction")) %></span>
-							<span class="stlat-full"><%= player.get("groundFriction") %></span>
-						</div>
-						<div <%= scale(player.get("indulgence")) %>>
-							<span class="stlat-truncated"><%= round(player.get("indulgence")) %></span>
-							<span class="stlat-full"><%= player.get("indulgence") %></span>
-						</div>
-						<div <%= scale(player.get("laserlikeness")) %>>
-							<span class="stlat-truncated"><%= round(player.get("laserlikeness")) %></span>
-							<span class="stlat-full"><%= player.get("laserlikeness") %></span>
-						</div>
+						<% _.each(["baseThirst", "continuation", "groundFriction", "indulgence", "laserlikeness"], function(attribute) { %>
+							<div <%= scale(player.get(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
+								<span class="stlat-full"><%= player.get(attribute) %></span>
+							</div>
+						<% }) %>
 						
 						<div <%= scale(player.calculateDefense()) %>>
 							<span class="stlat-truncated"><%= round(5 * player.calculateDefense()) %></span>
 							<span class="stlat-full"><%= 5 * player.calculateDefense() %></span>
 						</div>
-						<div <%= scale(player.get("anticapitalism")) %>>
-							<span class="stlat-truncated"><%= round(player.get("anticapitalism")) %></span>
-							<span class="stlat-full"><%= player.get("anticapitalism") %></span>
-						</div>
-						<div <%= scale(player.get("chasiness")) %>>
-							<span class="stlat-truncated"><%= round(player.get("chasiness")) %></span>
-							<span class="stlat-full"><%= player.get("chasiness") %></span>
-						</div>
-						<div <%= scale(player.get("omniscience")) %>>
-							<span class="stlat-truncated"><%= round(player.get("omniscience")) %></span>
-							<span class="stlat-full"><%= player.get("omniscience") %></span>
-						</div>
-						<div <%= scale(player.get("tenaciousness")) %>>
-							<span class="stlat-truncated"><%= round(player.get("tenaciousness")) %></span>
-							<span class="stlat-full"><%= player.get("tenaciousness") %></span>
-						</div>
-						<div <%= scale(player.get("watchfulness")) %>>
-							<span class="stlat-truncated"><%= round(player.get("watchfulness")) %></span>
-							<span class="stlat-full"><%= player.get("watchfulness") %></span>
-						</div>
+						<% _.each(["anticapitalism", "chasiness", "omniscience", "tenaciousness", "watchfulness"], function(attribute) { %>
+							<div <%= scale(player.get(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
+								<span class="stlat-full"><%= player.get(attribute) %></span>
+							</div>
+						<% }) %>
 						
+						<div <%= scaleInverse(player.get("pressurization")) %>>
+							<span class="stlat-truncated"><%= round(player.get("pressurization")) %></span>
+							<span class="stlat-full"><%= player.get("pressurization") %></span>
+						</div>
 						<div <%= scale(player.get("cinnamon")) %>>
 							<span class="stlat-truncated"><%= round(player.get("cinnamon")) %></span>
 							<span class="stlat-full"><%= player.get("cinnamon") %></span>
 						</div>
 						<div>
+							<span><%= player.get("soul") %></span>
+						</div>
+						<div>
 							<span><%= player.get("fate") %></span>
+						</div>
+						<div>
+							<span><%= player.get("totalFingers") %></span>
 						</div>
 						<div class="<%= player.get("peanutAllergy") ? "stlat-terrible" : "stlat-exceptional" %>">
 							<span><%= player.get("peanutAllergy") ? emoji(0x1f922) : emoji(0x1f60b) %></span>
 						</div>
-						<div <%= scaleInverse(player.get("pressurization")) %>>
-							<span class="stlat-truncated"><%= round(player.get("pressurization")) %></span>
-							<span class="stlat-full"><%= player.get("pressurization") %></span>
-						</div>
 						<div>
-							<span><%= player.get("soul") %></span>
+							<span class="stlat-truncated"><%= round(player.get("eDensity")) %></span>
+							<span class="stlat-full"><%= player.get("eDensity") %></span>
 						</div>
 					</div>
 				<% }); %>
 				<div class="stlats-row">
 					<div class="stlat-player-name">Average Stlats</div>
-					<div><span class="stlat-truncated">
-						<%= round(5 * average(players, "totalRating")) %></span>
+					<div <%= scale(average(players, "wobaRating")) %>>
+						<span class="stlat-truncated"><%= round(5 * average(players, "wobaRating")) %></span>
+						<span class="stlat-full"><%= 5 * average(players, "wobaRating") %></span>
+					</div>
+					<div <%= scale(average(players, "sluggingRating")) %>>
+						<span class="stlat-truncated"><%= round(5 * average(players, "sluggingRating")) %></span>
+						<span class="stlat-full"><%= 5 * average(players, "sluggingRating") %></span>
+					</div>
+					<div <%= scale(average(players, "earnedRunsRating")) %>>
+						<span class="stlat-truncated"><%= round(5 * average(players, "earnedRunsRating")) %></span>
+						<span class="stlat-full"><%= 5 * average(players, "earnedRunsRating") %></span>
+					</div>
+					<div>
+						<span class="stlat-truncated"><%= round(5 * average(players, "totalRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "totalRating") %></span>
 					</div>
 					
@@ -700,26 +690,12 @@
 						<span class="stlat-truncated"><%= round(5 * average(players, "hittingRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "hittingRating") %></span>
 					</div>
-					<div <%= scale(average(players, "buoyancy")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "buoyancy")) %></span>
-						<span class="stlat-full"><%= average(players, "buoyancy") %></span>
-					</div>
-					<div <%= scale(average(players, "divinity")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "divinity")) %></span>
-						<span class="stlat-full"><%= average(players, "divinity") %></span>
-					</div>
-					<div <%= scale(average(players, "martyrdom")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "martyrdom")) %></span>
-						<span class="stlat-full"><%= average(players, "martyrdom") %></span>
-					</div>
-					<div <%= scale(average(players, "moxie")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "moxie")) %></span>
-						<span class="stlat-full"><%= average(players, "moxie") %></span>
-					</div>
-					<div <%= scale(average(players, "musclitude")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "musclitude")) %></span>
-						<span class="stlat-full"><%= average(players, "musclitude") %></span>
-					</div>
+					<% _.each(["buoyancy", "divinity", "martyrdom", "moxie", "musclitude"], function(attribute) { %>
+						<div <%= scale(average(players, attribute)) %>>
+							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
+							<span class="stlat-full"><%= average(players, attribute) %></span>
+						</div>
+					<% }) %>
 					<div <%= scaleInverse(average(players, "patheticism")) %>>
 						<span class="stlat-truncated"><%= round(average(players, "patheticism")) %></span>
 						<span class="stlat-full"><%= average(players, "patheticism") %></span>
@@ -737,103 +713,61 @@
 						<span class="stlat-truncated"><%= round(5 * average(players, "pitchingRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "pitchingRating") %></span>
 					</div>
-					<div <%= scale(average(players, "coldness")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "coldness")) %></span>
-						<span class="stlat-full"><%= average(players, "coldness") %></span>
-					</div>
-					<div <%= scale(average(players, "overpowerment")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "overpowerment")) %></span>
-						<span class="stlat-full"><%= average(players, "overpowerment") %></span>
-					</div>
-					<div <%= scale(average(players, "ruthlessness")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "ruthlessness")) %></span>
-						<span class="stlat-full"><%= average(players, "ruthlessness") %></span>
-					</div>
-					<div <%= scale(average(players, "shakespearianism")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "shakespearianism")) %></span>
-						<span class="stlat-full"><%= average(players, "shakespearianism") %></span>
-					</div>
-					<div <%= scale(average(players, "suppression")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "suppression")) %></span>
-						<span class="stlat-full"><%= average(players, "suppression") %></span>
-					</div>
-					<div <%= scale(average(players, "unthwackability")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "unthwackability")) %></span>
-						<span class="stlat-full"><%= average(players, "unthwackability") %></span>
-					</div>
-					<div>
-						<span class="stlat-truncated"><%= round(average(players, "totalFingers")) %></span>
-						<span class="stlat-full"><%= average(players, "totalFingers") %></span>
-					</div>
+					<% _.each(["coldness", "overpowerment", "ruthlessness", "shakespearianism", "suppression", "unthwackability"], function(attribute) { %>
+						<div <%= scale(average(players, attribute)) %>>
+							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
+							<span class="stlat-full"><%= average(players, attribute) %></span>
+						</div>
+					<% }) %>
 					
 					<div <%= scale(average(players, "baserunningRating")) %>>
 						<span class="stlat-truncated"><%= round(5 * average(players, "baserunningRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "baserunningRating") %></span>
 					</div>
-					<div <%= scale(average(players, "baseThirst")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "baseThirst")) %></span>
-						<span class="stlat-full"><%= average(players, "baseThirst") %></span>
-					</div>
-					<div <%= scale(average(players, "continuation")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "continuation")) %></span>
-						<span class="stlat-full"><%= average(players, "continuation") %></span>
-					</div>
-					<div <%= scale(average(players, "groundFriction")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "groundFriction")) %></span>
-						<span class="stlat-full"><%= average(players, "groundFriction") %></span>
-					</div>
-					<div <%= scale(average(players, "indulgence")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "indulgence")) %></span>
-						<span class="stlat-full"><%= average(players, "indulgence") %></span>
-					</div>
-					<div <%= scale(average(players, "laserlikeness")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "laserlikeness")) %></span>
-						<span class="stlat-full"><%= average(players, "laserlikeness") %></span>
-					</div>
+					<% _.each(["baseThirst", "continuation", "groundFriction", "indulgence", "laserlikeness"], function(attribute) { %>
+						<div <%= scale(average(players, attribute)) %>>
+							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
+							<span class="stlat-full"><%= average(players, attribute) %></span>
+						</div>
+					<% }) %>
 					
-					<div>
+					<div <%= scale(average(players, "defenseRating")) %>>
 						<span class="stlat-truncated"><%= round(5 * average(players, "defenseRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "defenseRating") %></span>
 					</div>
-					<div <%= scale(average(players, "anticapitalism")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "anticapitalism")) %></span>
-						<span class="stlat-full"><%= average(players, "anticapitalism") %></span>
-					</div>
-					<div <%= scale(average(players, "chasiness")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "chasiness")) %></span>
-						<span class="stlat-full"><%= average(players, "chasiness") %></span>
-					</div>
-					<div <%= scale(average(players, "omniscience")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "omniscience")) %></span>
-						<span class="stlat-full"><%= average(players, "omniscience") %></span>
-					</div>
-					<div <%= scale(average(players, "tenaciousness")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "tenaciousness")) %></span>
-						<span class="stlat-full"><%= average(players, "tenaciousness") %></span>
-					</div>
-					<div <%= scale(average(players, "watchfulness")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "watchfulness")) %></span>
-						<span class="stlat-full"><%= average(players, "watchfulness") %></span>
-					</div>
+					<% _.each(["anticapitalism", "chasiness", "omniscience", "tenaciousness", "watchfulness"], function(attribute) { %>
+						<div <%= scale(average(players, attribute)) %>>
+							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
+							<span class="stlat-full"><%= average(players, attribute) %></span>
+						</div>
+					<% }) %>
 					
+					<div <%= scaleInverse(average(players, "pressurization")) %>>
+						<span class="stlat-truncated"><%= round(average(players, "pressurization")) %></span>
+						<span class="stlat-full"><%= average(players, "pressurization") %></span>
+					</div>
 					<div <%= scale(average(players, "cinnamon")) %>>
 						<span class="stlat-truncated"><%= round(average(players, "cinnamon")) %></span>
 						<span class="stlat-full"><%= average(players, "cinnamon") %></span>
 					</div>
 					<div>
+						<span class="stlat-truncated"><%= Math.round(100 * average(players, "soul")) / 100 %></span>
+						<span class="stlat-full"><%= average(players, "soul") %></span>
+					</div>
+					<div>
 						<span class="stlat-truncated"><%= Math.round(100 * average(players, "fate")) / 100 %></span>
 						<span class="stlat-full"><%= average(players, "fate") %></span>
+					</div>
+					<div>
+						<span class="stlat-truncated"><%= round(average(players, "totalFingers")) %></span>
+						<span class="stlat-full"><%= average(players, "totalFingers") %></span>
 					</div>
 					<div <%= scaleInverse(average(players, "peanutAllergy")) %>>
 						<span><%= Math.round(100 * average(players, "peanutAllergy")) %>%</span>
 					</div>
-					<div <%= scaleInverse(average(players, "pressurization")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "pressurization")) %></span>
-						<span class="stlat-full"><%= average(players, "pressurization") %></span>
-					</div>
 					<div>
-						<span class="stlat-truncated"><%= Math.round(100 * average(players, "soul")) / 100 %></span>
-						<span class="stlat-full"><%= average(players, "soul") %></span>
+						<span class="stlat-truncated"><%= round(average(players, "eDensity")) %></span>
+						<span class="stlat-full"><%= average(players, "eDensity") %></span>
 					</div>
 				</div>
 			</div>

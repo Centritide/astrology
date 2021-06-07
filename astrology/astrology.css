@@ -353,7 +353,7 @@ section.players {
 
 .stlats-categories {
 	display: grid;
-	grid-template-columns: 16.5em 40.5em 36em 27em 27em 20.5em;
+	grid-template-columns: 31em 40.5em 31.5em 27em 27em 29.5em;
 	font-weight: bold;
 }
 
@@ -368,7 +368,7 @@ section.players {
 .stlats-header, 
 .stlats-row {
 	display: grid;
-	grid-template-columns: 12em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 3.5em 4.5em 4.5em 3.5em;
+	grid-template-columns: 12em 5.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 3.5em 3.5em 4.5em 4em 5em;
 }
 
 .stlats-header,
@@ -497,6 +497,22 @@ section.players {
 
 .stlat-full {
 	background: #ffffff;
+}
+
+.stlat-super-elite {
+	background: rgba(239, 169, 233, .6);
+}
+
+.stlat-super-elite .stlat-full {
+	background: rgba(245, 203, 242, 1);
+}
+
+.stlat-elite {
+	background: rgba(169, 178, 224, .6);
+}
+
+.stlat-elite .stlat-full {
+	background: rgba(203, 209, 236, 1);
 }
 
 .stlat-exceptional {
@@ -690,6 +706,14 @@ i.half-star {
 .dark .stlats-row:hover, 
 .dark .stlat-full {
 	background: #333333;
+}
+
+.dark .stlat-super-elite .stlat-full {
+	background: rgba(150, 108, 147, 1);
+}
+
+.dark .stlat-elite .stlat-full {
+	background: rgba(108, 114, 141, 1);
 }
 
 .dark .stlat-exceptional {

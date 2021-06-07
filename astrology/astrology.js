@@ -120,6 +120,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 								return p + q.calculateDefense();
 							case "totalRating":
 								return p + q.calculateTotalRating();
+							case "wobaRating":
+								return p + q.calculateWobaRating();
+							case "sluggingRating":
+								return p + q.calculateSluggingRating();
+							case "earnedRunsRating":
+								return p + q.calculateEarnedRunsRating();
 							default:
 								return p + q.get(stlat);
 						}
@@ -161,6 +167,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 									return player.calculateDefense();
 								case "totalRating":
 									return player.calculateTotalRating();
+								case "wobaRating":
+									return player.calculateWobaRating();
+								case "sluggingRating":
+									return player.calculateSluggingRating();
+								case "earnedRunsRating":
+									return player.calculateEarnedRunsRating();
 								default:
 									return player.get(sortColumn);
 							}
@@ -253,6 +265,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				+ this.calculatePitching() 
 				+ this.calculateBaserunning() 
 				+ this.calculateDefense();
+		},
+		calculateWobaRating: function() {
+			return this.get("divinity") * 0.21 + this.get("martyrdom") * 0.07 + this.get("moxie") * 0.09 + this.get("musclitude") * 0.04 + (1 - this.get("patheticism")) * 0.17 + this.get("thwackability") * 0.35 + this.get("groundFriction") * 0.06;
+		},
+		calculateSluggingRating: function() {
+			return this.get("divinity") * 0.25 + this.get("musclitude") * 0.13 + (1 - this.get("patheticism")) * 0.11 + this.get("thwackability") * 0.37 + this.get("groundFriction") * 0.14;
+		},
+		calculateEarnedRunsRating: function() {
+			return this.get("overpowerment") * 0.13 + this.get("ruthlessness") * 0.47 + this.get("unthwackability") * 0.40;
 		}
 	});
 	//-- END MODELS --
@@ -672,7 +693,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 	}
 	
 	function scaleColorForRating(rating) {
-		if(rating > 0.95) {
+		if(rating > 1.45) {
+			return "class='stlat-super-elite'";
+		} else if(rating > 1.15) {
+			return "class='stlat-elite'";
+		} else if(rating > 0.95) {
 			return " class='stlat-exceptional'";
 		} else if(rating > 0.85) {
 			return " class='stlat-great'";
