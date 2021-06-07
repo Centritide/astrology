@@ -283,6 +283,7 @@
 		
 		<script type="text/template" id="template-footer">
 			<div class="footer-toggles">
+				<a data-toggle-items="<%= isEquipped() ? "true" : "false" %>" href="javascript:;"><%= isEquipped() ? "Exclude" : "Include" %> Items</a>
 				<a data-toggle-positions="<%= isCombined() ? "true" : "false" %>" href="javascript:;"><%= isCombined() ? "Separate" : "Combine" %> Positions</a>
 				<a data-toggle-shadows="<%= isShadows() ? "true" : "false" %>" href="javascript:;"><%= isShadows() ? "Hide" : "Peer into" %> the Shadows</a>
 				<a data-toggle-knowledge="<%= isForbidden() ? "true" : "false" %>" href="javascript:;">Forbidden Knowledge <%= isForbidden() ? "Visible" : "Hidden" %></a>
@@ -564,6 +565,7 @@
 					</div>
 				</div>
 				<% _.each(players, function(player) { %>
+					<% player.getItemAdjustments() %>
 					<div class="stlats-row">
 						<div class="stlat-player-name">
 							<a href="https://www.blaseball.com/player/<%= player.id %>"><%= player.get("name") %></a>
@@ -590,22 +592,22 @@
 							<span class="stlat-full"><%= 5 * player.calculateBatting() %></span>
 						</div>
 						<% _.each(["buoyancy", "divinity", "martyrdom", "moxie", "musclitude"], function(attribute) { %>
-							<div <%= scale(player.get(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
-								<span class="stlat-full"><%= player.get(attribute) %></span>
+							<div <%= scale(player.getValue(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
+								<span class="stlat-full"><%= player.getValue(attribute) %></span>
 							</div>
 						<% }) %>
-						<div <%= scaleInverse(player.get("patheticism")) %>>
-							<span class="stlat-truncated"><%= round(player.get("patheticism")) %></span>
-							<span class="stlat-full"><%= player.get("patheticism") %></span>
+						<div <%= scaleInverse(player.getValue("patheticism")) %>>
+							<span class="stlat-truncated"><%= round(player.getValue("patheticism")) %></span>
+							<span class="stlat-full"><%= player.getValue("patheticism") %></span>
 						</div>
-						<div <%= scale(player.get("thwackability")) %>>
-							<span class="stlat-truncated"><%= round(player.get("thwackability")) %></span>
-							<span class="stlat-full"><%= player.get("thwackability") %></span>
+						<div <%= scale(player.getValue("thwackability")) %>>
+							<span class="stlat-truncated"><%= round(player.getValue("thwackability")) %></span>
+							<span class="stlat-full"><%= player.getValue("thwackability") %></span>
 						</div>
-						<div <%= scaleInverse(player.get("tragicness")) %>>
-							<span class="stlat-truncated"><%= round(player.get("tragicness")) %></span>
-							<span class="stlat-full"><%= player.get("tragicness") %></span>
+						<div <%= scaleInverse(player.getValue("tragicness")) %>>
+							<span class="stlat-truncated"><%= round(player.getValue("tragicness")) %></span>
+							<span class="stlat-full"><%= player.getValue("tragicness") %></span>
 						</div>
 						
 						<div <%= scale(player.calculatePitching()) %>>
@@ -613,9 +615,9 @@
 							<span class="stlat-full"><%= 5 * player.calculatePitching() %></span>
 						</div>
 						<% _.each(["coldness", "overpowerment", "ruthlessness", "shakespearianism", "suppression", "unthwackability"], function(attribute) { %>
-							<div <%= scale(player.get(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
-								<span class="stlat-full"><%= player.get(attribute) %></span>
+							<div <%= scale(player.getValue(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
+								<span class="stlat-full"><%= player.getValue(attribute) %></span>
 							</div>
 						<% }) %>
 						
@@ -624,9 +626,9 @@
 							<span class="stlat-full"><%= 5 * player.calculateBaserunning() %></span>
 						</div>
 						<% _.each(["baseThirst", "continuation", "groundFriction", "indulgence", "laserlikeness"], function(attribute) { %>
-							<div <%= scale(player.get(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
-								<span class="stlat-full"><%= player.get(attribute) %></span>
+							<div <%= scale(player.getValue(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
+								<span class="stlat-full"><%= player.getValue(attribute) %></span>
 							</div>
 						<% }) %>
 						
@@ -635,19 +637,19 @@
 							<span class="stlat-full"><%= 5 * player.calculateDefense() %></span>
 						</div>
 						<% _.each(["anticapitalism", "chasiness", "omniscience", "tenaciousness", "watchfulness"], function(attribute) { %>
-							<div <%= scale(player.get(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.get(attribute)) %></span>
-								<span class="stlat-full"><%= player.get(attribute) %></span>
+							<div <%= scale(player.getValue(attribute)) %>>
+								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
+								<span class="stlat-full"><%= player.getValue(attribute) %></span>
 							</div>
 						<% }) %>
 						
-						<div <%= scaleInverse(player.get("pressurization")) %>>
-							<span class="stlat-truncated"><%= round(player.get("pressurization")) %></span>
-							<span class="stlat-full"><%= player.get("pressurization") %></span>
+						<div <%= scaleInverse(player.getValue("pressurization")) %>>
+							<span class="stlat-truncated"><%= round(player.getValue("pressurization")) %></span>
+							<span class="stlat-full"><%= player.getValue("pressurization") %></span>
 						</div>
-						<div <%= scale(player.get("cinnamon")) %>>
-							<span class="stlat-truncated"><%= round(player.get("cinnamon")) %></span>
-							<span class="stlat-full"><%= player.get("cinnamon") %></span>
+						<div <%= scale(player.getValue("cinnamon")) %>>
+							<span class="stlat-truncated"><%= round(player.getValue("cinnamon")) %></span>
+							<span class="stlat-full"><%= player.getValue("cinnamon") %></span>
 						</div>
 						<div>
 							<span><%= player.get("soul") %></span>

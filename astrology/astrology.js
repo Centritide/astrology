@@ -7,7 +7,7 @@ requirejs.config({
 	paths : {
 		jquery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min",
 		backbone: "https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min",
-		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.11.0/underscore-min",
+		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min",
 		twemoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/12.0.4/2/twemoji.min"
 	},
 	shim : {
@@ -28,7 +28,7 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbone, twemoji) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, teamView, footerView, sortColumn = null, sortDirection = null, lightMode = false, secretsVisible = false, shadowsActive = false, positionsCombined = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, teamView, footerView, sortColumn = null, sortDirection = null, lightMode = false, secretsVisible = false, shadowsActive = false, positionsCombined = false, itemsApplied = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -100,6 +100,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 					positionIds = this.get(position.toLowerCase());
 			}
 			return _.template($("#template-" + (secretsVisible ? "stlats" : "players")).html())({
+				isEquipped: function() {
+					return itemsApplied;
+				},
 				isCombined: function() {
 					return positionsCombined;
 				},
@@ -127,7 +130,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 							case "earnedRunsRating":
 								return p + q.calculateEarnedRunsRating();
 							default:
-								return p + q.get(stlat);
+								return p + q.getValue(stlat);
 						}
 					}, 0) / players.length;
 				}, 
@@ -186,6 +189,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			});
 		},
 		emoji: parseEmoji,
+		isEquipped: function() {
+			return itemsApplied;
+		},
 		isCombined: function() {
 			return positionsCombined;
 		},
@@ -201,6 +207,17 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 	});
 	App.Models.Tribute = Backbone.Model.extend({});
 	App.Models.Player = Backbone.Model.extend({
+		getValue: function(attribute) {
+			var attrVal = this.get(attribute);
+			if(itemsApplied) {
+				attrVal += _.get(this.getItemAdjustments(), attribute, 0);
+				if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
+					attrVal = Math.min(attrVal, 0.999);
+				}
+				attrVal = Math.max(attrVal, 0.001);
+			}
+			return attrVal;
+		},
 		getPosition: function() {
 			if(_.contains(_.union(activeTeam.get("lineup"), activeTeam.get("bench")), this.id)) {
 				return "batter";
@@ -222,42 +239,42 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		},
 		calculateBatting: function() {
 			return (
-				Math.pow(1 - this.get("tragicness"), 0.01) *
-				Math.pow(this.get("buoyancy"), 0) *
-				Math.pow(this.get("thwackability"), 0.35) *
-				Math.pow(this.get("moxie"), 0.075) *
-				Math.pow(this.get("divinity"), 0.35) *
-				Math.pow(this.get("musclitude"), 0.075) *
-				Math.pow(1 - this.get("patheticism"), 0.05) *
-				Math.pow(this.get("martyrdom"), 0.02)
+				Math.pow(1 - this.getValue("tragicness"), 0.01) *
+				Math.pow(this.getValue("buoyancy"), 0) *
+				Math.pow(this.getValue("thwackability"), 0.35) *
+				Math.pow(this.getValue("moxie"), 0.075) *
+				Math.pow(this.getValue("divinity"), 0.35) *
+				Math.pow(this.getValue("musclitude"), 0.075) *
+				Math.pow(1 - this.getValue("patheticism"), 0.05) *
+				Math.pow(this.getValue("martyrdom"), 0.02)
 			);
 		},
 		calculatePitching: function() {
 			return (
-				Math.pow(this.get("shakespearianism"), 0.1) *
-				Math.pow(this.get("suppression"), 0) *
-				Math.pow(this.get("unthwackability"), 0.5) *
-				Math.pow(this.get("coldness"), 0.025) *
-				Math.pow(this.get("overpowerment"), 0.15) *
-				Math.pow(this.get("ruthlessness"), 0.4)
+				Math.pow(this.getValue("shakespearianism"), 0.1) *
+				Math.pow(this.getValue("suppression"), 0) *
+				Math.pow(this.getValue("unthwackability"), 0.5) *
+				Math.pow(this.getValue("coldness"), 0.025) *
+				Math.pow(this.getValue("overpowerment"), 0.15) *
+				Math.pow(this.getValue("ruthlessness"), 0.4)
 			);
 		},
 		calculateBaserunning: function() {
 			return (
-				Math.pow(this.get("laserlikeness"), 0.5) *
-				Math.pow(this.get("continuation"), 0.1) *
-				Math.pow(this.get("baseThirst"), 0.1) *
-				Math.pow(this.get("indulgence"), 0.1) *
-				Math.pow(this.get("groundFriction"), 0.1)
+				Math.pow(this.getValue("laserlikeness"), 0.5) *
+				Math.pow(this.getValue("continuation"), 0.1) *
+				Math.pow(this.getValue("baseThirst"), 0.1) *
+				Math.pow(this.getValue("indulgence"), 0.1) *
+				Math.pow(this.getValue("groundFriction"), 0.1)
 			);
 		},
 		calculateDefense: function() {
 			return (
-				Math.pow(this.get("omniscience"), 0.2) *
-				Math.pow(this.get("tenaciousness"), 0.2) *
-				Math.pow(this.get("watchfulness"), 0.1) *
-				Math.pow(this.get("anticapitalism"), 0.1) *
-				Math.pow(this.get("chasiness"), 0.1)
+				Math.pow(this.getValue("omniscience"), 0.2) *
+				Math.pow(this.getValue("tenaciousness"), 0.2) *
+				Math.pow(this.getValue("watchfulness"), 0.1) *
+				Math.pow(this.getValue("anticapitalism"), 0.1) *
+				Math.pow(this.getValue("chasiness"), 0.1)
 			);
 		},
 		calculateTotalRating: function() {
@@ -267,13 +284,53 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				+ this.calculateDefense();
 		},
 		calculateWobaRating: function() {
-			return this.get("divinity") * 0.21 + this.get("martyrdom") * 0.07 + this.get("moxie") * 0.09 + this.get("musclitude") * 0.04 + (1 - this.get("patheticism")) * 0.17 + this.get("thwackability") * 0.35 + this.get("groundFriction") * 0.06;
+			return (
+				this.getValue("divinity") * 0.21 + 
+				this.getValue("martyrdom") * 0.07 + 
+				this.getValue("moxie") * 0.09 + 
+				this.getValue("musclitude") * 0.04 + 
+				(1 - this.getValue("patheticism")) * 0.17 + 
+				this.getValue("thwackability") * 0.35 + 
+				this.getValue("groundFriction") * 0.06
+			);
 		},
 		calculateSluggingRating: function() {
-			return this.get("divinity") * 0.25 + this.get("musclitude") * 0.13 + (1 - this.get("patheticism")) * 0.11 + this.get("thwackability") * 0.37 + this.get("groundFriction") * 0.14;
+			return (
+				this.getValue("divinity") * 0.25 + 
+				this.getValue("musclitude") * 0.13 + 
+				(1 - this.getValue("patheticism")) * 0.11 + 
+				this.getValue("thwackability") * 0.37 + 
+				this.getValue("groundFriction") * 0.14
+			);
 		},
 		calculateEarnedRunsRating: function() {
-			return this.get("overpowerment") * 0.13 + this.get("ruthlessness") * 0.47 + this.get("unthwackability") * 0.40;
+			return (
+				this.getValue("overpowerment") * 0.13 + 
+				this.getValue("ruthlessness") * 0.47 + 
+				this.getValue("unthwackability") * 0.40
+			);
+		},
+		getItemAdjustments: function() {
+			var stats = ["tragicness", "buoyancy", "thwackability", "moxie", "divinity", "musclitude", "patheticism", "martyrdom", "cinnamon", "baseThirst", "laserlikeness", "continuation", "indulgence", "groundFriction", "shakespearianism", "suppression", "unthwackability", "coldness", "overpowerment", "ruthlessness", "pressurization", "omniscience", "tenaciousness", "watchfulness", "anticapitalism", "chasiness"], adjustments = {};
+			_.each(this.get("items"), function(item) {
+				if(item.health >= item.durability) {
+					_.chain([item.prePrefix, item.postPrefix, item.root, item.suffix])
+						.union(item.prefixes)
+						.compact()
+						.each(function(affix) {
+							_.each(affix.adjustments, function(adjustment) {
+								if(adjustment.type === 1) {
+									var statName = stats[adjustment.stat];
+									if(!adjustments.hasOwnProperty(statName)) {
+										adjustments[statName] = 0;
+									}
+									adjustments[statName] += adjustment.value;
+								}
+							});
+						});
+				}
+			});
+			return adjustments;
 		}
 	});
 	//-- END MODELS --
@@ -360,6 +417,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		render: function() {
 			this.$el.html(this.template({
 				emoji: parseEmoji,
+				isEquipped: function() {
+					return itemsApplied;
+				},
 				isCombined: function() {
 					return positionsCombined;
 				},
@@ -378,6 +438,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			"click a[data-toggle-knowledge]": "toggleKnowledge",
 			"click a[data-toggle-shadows]": "toggleShadows",
 			"click a[data-toggle-positions]": "togglePositions",
+			"click a[data-toggle-items]": "toggleItems",
 			"click a[data-toggle-faq]": "toggleFaq",
 			"click a[data-toggle-lights]": "toggleLights"
 		},
@@ -417,6 +478,19 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				localStorage.setItem("positionsState", positionsCombined);
 			}
 			gtag('event', 'toggle_shadows');
+		},
+		toggleItems: function(e) {
+			e.preventDefault();
+			itemsApplied = !$(e.currentTarget).data("toggle-items");
+			$(e.currentTarget).data("toggle-items", itemsApplied);
+			$(e.currentTarget).html((itemsApplied ? "Exclude" : "Include") + " Items");
+			if(teamView) {
+				teamView.render();
+			}
+			if(localStorageExists()) {
+				localStorage.setItem("itemsState", itemsApplied);
+			}
+			gtag('event', 'toggle_items');
 		},
 		toggleFaq: function(e) {
 			e.preventDefault();
@@ -588,6 +662,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		}
 		if(localStorage.getItem("positionsState") !== null) {
 			positionsCombined = localStorage.getItem("positionsState") == "true";
+		}
+		if(localStorage.getItem("itemsState") !== null) {
+			itemsApplied = localStorage.getItem("itemsState") == "true";
 		}
 	}
 	//-- CHECKED FOR SAVED DATA --

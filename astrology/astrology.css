@@ -347,7 +347,7 @@ section.players {
 .stlats-categories, 
 .stlats-header, 
 .stlats-row {
-	width: 167.5em;
+	width: 186.5em;
 	font-size: 0.9em;
 }
 
@@ -808,6 +808,8 @@ a[data-toggle-shadows]:hover {
     color: #a899e4;
 }
 
+a[data-toggle-items]:hover,
+a[data-toggle-positions]:hover,
 a[data-toggle-faq]:hover {
     background: #555555;
 }
