@@ -188,7 +188,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 								case "bsrRating":
 									return player.calculateBsrRating();
 								default:
-									return player.get(sortColumn);
+									return player.getValue(sortColumn);
 							}
 						});
 					}
