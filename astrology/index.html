@@ -269,7 +269,7 @@
 				</div>
 
 				<h1>The Sibrmetric Stlats</h1>
-				<p>The <code>wOBABR</code>, <code>SLGBR</code>, and <code>ERPR</code> ratings are a fan attempt to make better star rankings for players by doing statistical analysis each season of player performance verses different relevent attributes to see how positively or negatively correlated certain attributes with actual performance metrics such as wOBA, Slugging Percentage, and Earned Runs. <a href="https://twitter.com/ErrantlyErin">ErrantlyErin</a> (also ErrantlyErin#0805 on discord) runs a linear regression in Excel using the <a href="https://support.microsoft.com/en-us/office/linest-function-84d7d0d9-6e50-4101-977a-fa7abf772b6d">LINEST function</a> to give slopes for each attribute and turns those into the percent weights used in these formulas. More information on this can be found in the <a href="https://discord.gg/XKppCuj">SIBR discord</a>.</p>
+				<p>The <code>wOBABR</code>, <code>SLGBR</code>, <code>BsRR</code>, and <code>ERPR</code> ratings are a fan attempt to make better star rankings for players by doing statistical analysis each season of player performance verses different relevent attributes to see how positively or negatively correlated certain attributes with actual performance metrics such as <a href="https://library.fangraphs.com/offense/woba/">wOBA</a>, <a href="https://www.mlb.com/glossary/standard-stats/slugging-percentage">Slugging Percentage</a>, <a href="https://library.fangraphs.com/offense/bsr/">Base Running</a>, and <a href="https://www.mlb.com/glossary/standard-stats/earned-run">Earned Runs</a>. <a href="https://twitter.com/ErrantlyErin">ErrantlyErin</a> (also ErrantlyErin#0805 on discord) runs a linear regression in Excel using the <a href="https://support.microsoft.com/en-us/office/linest-function-84d7d0d9-6e50-4101-977a-fa7abf772b6d">LINEST function</a> to give slopes for each attribute and turns those into the percent weights used in these formulas. More information on this can be found in the <a href="https://discord.gg/XKppCuj">SIBR discord</a>.</p>
 			</section>
 		</script>
 		
@@ -284,7 +284,8 @@
 		<script type="text/template" id="template-footer">
 			<div class="footer-toggles">
 				<a data-toggle-items="<%= isEquipped() ? "true" : "false" %>" href="javascript:;"><%= isEquipped() ? "Exclude" : "Include" %> Items</a>
-				<a data-toggle-positions="<%= isCombined() ? "true" : "false" %>" href="javascript:;"><%= isCombined() ? "Separate" : "Combine" %> Positions</a>
+				<a data-toggle-group-active="<%= isRosterCombined() ? "true" : "false" %>" href="javascript:;"><%= isRosterCombined() ? "Separate" : "Combine" %> Roster</a>
+				<a "<%= isShadows() ? "" : " style='display:none'" %> data-toggle-group-shadows="<%= isShadowsCombined() ? "true" : "false" %>" href="javascript:;"><%= isShadowsCombined() ? "Separate" : "Combine" %> Shadows</a>
 				<a data-toggle-shadows="<%= isShadows() ? "true" : "false" %>" href="javascript:;"><%= isShadows() ? "Hide" : "Peer into" %> the Shadows</a>
 				<a data-toggle-knowledge="<%= isForbidden() ? "true" : "false" %>" href="javascript:;">Forbidden Knowledge <%= isForbidden() ? "Visible" : "Hidden" %></a>
 				<% if(isForbidden()) { %>
@@ -318,25 +319,28 @@
 				</div>
 			</section>
 			<section class="players">
-				<% if(isCombined()) { %>
-					<%= players("Team") %>
-					<% if(isShadows() && (_.size(get("bench")) || _.size(get("bullpen")) || _.size(get("percolated")))) { %>
-						<%= players("Shadows") %>
-					<% } %>
-				<% } else if(_.size(get("tributes"))) { %>
+				<% if(_.size(get("tributes"))) { %>
 					<%= players("Tributes") %>
 				<% } else { %>
-					<%= players("Lineup") %>
-					<%= players("Rotation") %>
+					<% if(isRosterCombined()) { %>
+						<%= players("Team") %>
+					<% } else { %> 
+						<%= players("Lineup") %>
+						<%= players("Rotation") %>
+					<% } %>
 					<% if(isShadows()) { %>
-						<% if(_.size(get("bench"))) { %>
-							<%= players("Bench") %>
-						<% } %>
-						<% if(_.size(get("bullpen"))) { %>
-							<%= players("Bullpen") %>
-						<% } %>
-						<% if(_.size(get("percolated"))) { %>
-							<%= players("Percolated") %>
+						<% if(isShadowsCombined()) { %>
+							<%= players("Shadows") %>
+						<% } else if(_.size(get("bench")) || _.size(get("bullpen")) || _.size(get("percolated"))) { %>
+							<% if(_.size(get("bench"))) { %>
+								<%= players("Bench") %>
+							<% } %>
+							<% if(_.size(get("bullpen"))) { %>
+								<%= players("Bullpen") %>
+							<% } %>
+							<% if(_.size(get("percolated"))) { %>
+								<%= players("Percolated") %>
+							<% } %>
 						<% } %>
 					<% } %>
 				<% } %>
@@ -344,11 +348,12 @@
 		</script>
 		
 		<script type="text/template" id="template-players">
-			<div class="player-summary <%= isCombined() ? "with-overall" : "" %>">
+			<% var isCombined = (isRosterCombined() && position == "Team") || (isShadowsCombined() && position == "Shadows") %>
+			<div class="player-summary <%= isCombined ? "with-overall" : "" %>">
 				<div class="players-header"><%= position %></div>
 				<div class="summary-header">
 					<div class="summary-general" data-sort="name">Name</div>
-					<% if(isCombined()) { %>
+					<% if(isCombined) { %>
 						<div class="summary-general" data-sort="overallRating">Overall</div>
 					<% } %>
 					<div class="summary-batting" data-sort="hittingRating">Batting</div>
@@ -362,7 +367,7 @@
 						<div class="summary-player-name">
 							<a href="https://www.blaseball.com/player/<%= player.id %>"><%= player.get("name") %></a>
 						</div>
-						<% if(isCombined()) { %>
+						<% if(isCombined) { %>
 							<div><%= stars(player.calculateOverallRating()) %></div>
 						<% } %>
 						<div><%= stars(player.calculateBatting()) %></div>
@@ -375,7 +380,7 @@
 				<% }) %>
 				<div class="summary-row">
 					<div class="summary-player-name">Average Stars</div>
-					<% if(isCombined()) { %>
+					<% if(isCombined) { %>
 						<div><%= Math.round(100 * average(players, "overallRating")) / 20 %></div>
 					<% } %>
 					<div><%= Math.round(100 * average(players, "hittingRating")) / 20 %></div>
@@ -409,6 +414,10 @@
 					<div class="stlats-general" data-sort="sluggingRating">
 						<span class="stlat-truncated">SLGBR</span>
 						<span class="stlat-full">Slugging Rating</span>
+					</div>
+					<div class="stlats-general" data-sort="bsrRating">
+						<span class="stlat-truncated">BsRR</span>
+						<span class="stlat-full">Base Running Rating</span>
 					</div>
 					<div class="stlats-general" data-sort="earnedRunsRating">
 						<span class="stlat-truncated">ERPR</span>
@@ -578,6 +587,10 @@
 							<span class="stlat-truncated"><%= round(5 * player.calculateSluggingRating()) %></span>
 							<span class="stlat-full"><%= 5 * player.calculateSluggingRating() %></span>
 						</div>
+						<div <%= scale(player.calculateBsrRating()) %>>
+							<span class="stlat-truncated"><%= round(5 * player.calculateBsrRating()) %></span>
+							<span class="stlat-full"><%= 5 * player.calculateBsrRating() %></span>
+						</div>
 						<div <%= scale(player.calculateEarnedRunsRating()) %>>
 							<span class="stlat-truncated"><%= round(5 * player.calculateEarnedRunsRating()) %></span>
 							<span class="stlat-full"><%= 5 * player.calculateEarnedRunsRating() %></span>
@@ -679,6 +692,10 @@
 						<span class="stlat-truncated"><%= round(5 * average(players, "sluggingRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "sluggingRating") %></span>
 					</div>
+					<div <%= scale(average(players, "bsrRating")) %>>
+						<span class="stlat-truncated"><%= round(5 * average(players, "bsrRating")) %></span>
+						<span class="stlat-full"><%= 5 * average(players, "bsrRating") %></span>
+					</div>
 					<div <%= scale(average(players, "earnedRunsRating")) %>>
 						<span class="stlat-truncated"><%= round(5 * average(players, "earnedRunsRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "earnedRunsRating") %></span>
@@ -778,26 +795,26 @@
 		<script type="text/template" id="template-squeezer">
 			<section class="squeezer">
 				<div class="squeezer-charts">
-					<svg id="chart-woba-laser" viewBox="0 0 <%= model.get("svg").size %> <%= model.get("svg").size %>" width="<%= model.get("svg").size %>" height="<%= model.get("svg").size %>">
-						<% var svgSize = model.get("svg").size - 2 * model.get("svg").padding, wobaMin = Math.floor(model.get("mins").wobabr * 10), wobaMax = Math.ceil(model.get("maxes").wobabr * 10), wobaLength = wobaMax - wobaMin , wobaSize = svgSize / wobaLength, laserMin = Math.floor(model.get("mins").laser * 10), laserMax = Math.ceil(model.get("maxes").laser * 10), laserLength = laserMax - laserMin, laserSize = svgSize / laserLength;
+					<svg id="chart-woba-bsrr" viewBox="0 0 <%= model.get("svg").size %> <%= model.get("svg").size %>" width="<%= model.get("svg").size %>" height="<%= model.get("svg").size %>">
+						<% var svgSize = model.get("svg").size - 2 * model.get("svg").padding, wobaMin = Math.floor(model.get("mins").wobabr * 10), wobaMax = Math.ceil(model.get("maxes").wobabr * 10), wobaLength = wobaMax - wobaMin , wobaSize = svgSize / wobaLength, bsrrMin = Math.floor(model.get("mins").bsrr * 10), bsrrMax = Math.ceil(model.get("maxes").bsrr * 10), bsrrLength = bsrrMax - bsrrMin, bsrrSize = svgSize / bsrrLength;
 						for(var i = 1; i < wobaLength; i++) { %>
 							<line class="axis-x-guide" x1="<%= model.get("svg").padding + wobaSize * i %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding + wobaSize * i %>" y2="<%= model.get("svg").padding + svgSize %>" />
 							<text class="axis-x-label" text-anchor="middle" dominant-baseline="hanging" x="<%= model.get("svg").padding + wobaSize * i %>" y="<%= model.get("svg").padding * 1.1 + svgSize %>"><%= (i + wobaMin) / 2 %></text>
 						<% }
-						for(var i = 1; i < laserLength; i++) { %>
-							<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + laserSize * i %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + laserSize * i %>" />
-							<text class="axis-y-label" text-anchor="end" dominant-baseline="middle" x="<%= model.get("svg").padding * 0.9 %>" y="<%= model.get("svg").padding + laserSize * i %>"><%= (laserMax - i) / 2 %></text>
+						for(var i = 1; i < bsrrLength; i++) { %>
+							<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + bsrrSize * i %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + bsrrSize * i %>" />
+							<text class="axis-y-label" text-anchor="end" dominant-baseline="middle" x="<%= model.get("svg").padding * 0.9 %>" y="<%= model.get("svg").padding + bsrrSize * i %>"><%= (bsrrMax - i) / 2 %></text>
 						<% } %>
 						<text class="title" text-anchor="middle" dominant-baseline="middle" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").padding / 2 %>">Key Offensive Averages</text>
 						<line class="axis-x-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding %>" y2="<%= model.get("svg").padding + svgSize %>" />
 						<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + svgSize %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + svgSize %>" />
 						<text class="axis-title" text-anchor="middle" dominant-baseline="baseline" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").size - model.get("svg").padding * 0.1 %>">Average wOBABR</text>
 						<g transform="translate(<%= model.get("svg").padding * 0.1 %> <%= model.get("svg").size / 2 %>) rotate(-90)">
-							<text class="axis-title" text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average Laserlikeness</text>
+							<text class="axis-title" text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average BsRR</text>
 						</g>
 						<% _.each(model.get("teams"), function(team) { 
-							var teamX = model.get("svg").padding + (team.wobabr * 10 - wobaMin) / wobaLength * svgSize, teamY = model.get("svg").padding + (laserMax - team.laser * 10) / laserLength * svgSize; %>
-							<circle data-id="<%= team.id %>" data-woba="<%= team.wobabr * 5 %>" data-laser="<%= team.laser * 5 %>" fill="<%= team.color %>" cx="<%= teamX %>" cy="<%= teamY %>" r="<%= model.get("svg").icon %>" />
+							var teamX = model.get("svg").padding + (team.wobabr * 10 - wobaMin) / wobaLength * svgSize, teamY = model.get("svg").padding + (bsrrMax - team.bsrr * 10) / bsrrLength * svgSize; %>
+							<circle data-id="<%= team.id %>" fill="<%= team.color %>" cx="<%= teamX %>" cy="<%= teamY %>" r="<%= model.get("svg").icon %>" />
 							<image data-id="<%= team.id %>" href="<%= emojiSvg(team.emoji) %>" x="<%= teamX - model.get("svg").icon / 2 %>" y="<%= teamY - model.get("svg").icon / 2 %>" height="<%= model.get("svg").icon %>" width="<%= model.get("svg").icon %>" />
 						<% }) %>
 					</svg>
@@ -830,7 +847,7 @@
 						<div class="squeezer-general">General</div>
 						<div class="squeezer-batting">Batting</div>
 						<div class="squeezer-pitching">Pitching</div>
-						<div class="squeezer-others">Others</div>
+						<div class="squeezer-others">False Idol</div>
 					</div>
 					<div class="squeezer-header">
 						<div class="squeezer-general" data-sort="name">
@@ -839,6 +856,10 @@
 						<div class="squeezer-general" data-sort="wobabr">
 							<span class="stlat-truncated">wOBABR</span>
 							<span class="stlat-full">wOBA Rating</span>
+						</div>
+						<div class="squeezer-general" data-sort="bsrr">
+							<span class="stlat-truncated">BsRR</span>
+							<span class="stlat-full">Base Running Rating</span>
 						</div>
 						<div class="squeezer-general" data-sort="erpr">
 							<span class="stlat-truncated">ERPR</span>
@@ -884,10 +905,6 @@
 							<span class="stlat-truncated">op</span>
 							<span class="stlat-full">Overpowerment</span>
 						</div>
-						<div class="squeezer-others" data-sort="laserlikeness">
-							<span class="stlat-truncated">laser</span>
-							<span class="stlat-full">Laserlikeness</span>
-						</div>
 						<div class="squeezer-others" data-sort="omniscience">
 							<span class="stlat-truncated">omni</span>
 							<span class="stlat-full">Omniscience</span>
@@ -895,10 +912,14 @@
 					</div>
 					<% _.each(model.get("sorted") ? model.get("sorted") : model.get("teams"), function(team) { %>
 						<div class="squeezer-row">
-							<div class="squeezer-team"><strong><%= team.name %></strong></div>
+							<div class="squeezer-team"><a href="#<%= team.slug %>/forbidden-knowledge"><%= team.name %></a></div>
 							<div <%= scale(team.wobabr) %>>
 								<span class="stlat-truncated"><%= round(5 * team.wobabr) %></span>
 								<span class="stlat-full"><%= 5 * team.wobabr %></span>
+							</div>
+							<div <%= scale(team.bsrr) %>>
+								<span class="stlat-truncated"><%= round(5 * team.bsrr) %></span>
+								<span class="stlat-full"><%= 5 * team.bsrr %></span>
 							</div>
 							<div <%= scale(team.erpr) %>>
 								<span class="stlat-truncated"><%= round(5 * team.erpr) %></span>
@@ -914,10 +935,6 @@
 									<span class="stlat-full"><%= team.attributes[attribute] %></span>
 								</div>
 							<% }) %>
-							<div <%= scale(team.laser) %>>
-								<span class="stlat-truncated"><%= round(team.laser) %></span>
-								<span class="stlat-full"><%= team.laser %></span>
-							</div>
 							<div <%= scale(team.omni) %>>
 								<span class="stlat-truncated"><%= round(team.omni) %></span>
 								<span class="stlat-full"><%= team.omni %></span>
@@ -929,6 +946,10 @@
 						<div <%= scale(model.get("league").wobabr) %>>
 							<span class="stlat-truncated"><%= round(5 * model.get("league").wobabr) %></span>
 							<span class="stlat-full"><%= 5 * model.get("league").wobabr %></span>
+						</div>
+						<div <%= scale(model.get("league").bsrr) %>>
+							<span class="stlat-truncated"><%= round(5 * model.get("league").bsrr) %></span>
+							<span class="stlat-full"><%= 5 * model.get("league").bsrr %></span>
 						</div>
 						<div <%= scale(model.get("league").erpr) %>>
 							<span class="stlat-truncated"><%= round(5 * model.get("league").erpr) %></span>
@@ -944,10 +965,6 @@
 								<span class="stlat-full"><%= model.get("league").attributes[attribute] %></span>
 							</div>
 						<% }) %>
-						<div <%= scale(model.get("league").laser) %>>
-							<span class="stlat-truncated"><%= round(model.get("league").laser) %></span>
-							<span class="stlat-full"><%= model.get("league").laser %></span>
-						</div>
 						<div <%= scale(model.get("league").omni) %>>
 							<span class="stlat-truncated"><%= round(model.get("league").omni) %></span>
 							<span class="stlat-full"><%= model.get("league").omni %></span>

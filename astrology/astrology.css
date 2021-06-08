@@ -349,13 +349,13 @@ section.players {
 .stlats-categories, 
 .stlats-header, 
 .stlats-row {
-	width: 186.5em;
+	width: 191em;
 	font-size: 0.9em;
 }
 
 .stlats-categories {
 	display: grid;
-	grid-template-columns: 31em 40.5em 31.5em 27em 27em 29.5em;
+	grid-template-columns: 35.5em 40.5em 31.5em 27em 27em 29.5em;
 	font-weight: bold;
 }
 
@@ -370,26 +370,26 @@ section.players {
 .stlats-header, 
 .stlats-row {
 	display: grid;
-	grid-template-columns: 12em 5.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 3.5em 3.5em 4.5em 4em 5em;
+	grid-template-columns: 12em 5.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 3.5em 3.5em 4.5em 4em 5em;
 }
 
 .squeezer-categories,
 .squeezer-header, 
 .squeezer-row {
-	width: 74em;
+	width: 74.5em;
 	font-size: 0.9em;
 }
 
 .squeezer-categories {
 	display: grid;
-	grid-template-columns: 20em 31.5em 13.5em 9em;
+	grid-template-columns: 24.5em 31.5em 13.5em 5em;
 	font-weight: bold;
 }
 
 .squeezer-header, 
 .squeezer-row {
 	display: grid;
-	grid-template-columns: 10em 5.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em;
+	grid-template-columns: 10em 5.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 5em;
 }
 
 .stlats-header,
@@ -518,14 +518,16 @@ section.players {
 }
 
 .summary-player-name a, 
-.stlat-player-name a {
+.stlat-player-name a, 
+.squeezer-team a {
 	display: block;
 	color: #1d4a46;
 	font-weight: bold;
 }
 
 .summary-player-name a:hover, 
-.stlat-player-name a:hover {
+.stlat-player-name a:hover, 
+.squeezer-team a:hover {
 	color: #9a6ec1;
 }
 
@@ -614,6 +616,7 @@ footer {
 	flex-direction: row;
     flex-grow: 1;
 	gap: 5px;
+	align-items: center;
 }
 
 .color-reference span {
@@ -626,6 +629,7 @@ footer {
 	display: flex;
 	flex-direction: row;
 	gap: 5px;
+	align-items: center;
 }
 
 .footer-toggles a {
@@ -748,13 +752,15 @@ i.half-star {
 
 .dark section.faq a,
 .dark .summary-player-name a, 
-.dark .stlat-player-name a {
+.dark .stlat-player-name a, 
+.dark .squeezer-team a {
 	color: #79b6e2;
 }
 
 .dark section.faq a:hover,
 .dark .summary-player-name a:hover, 
-.dark .stlat-player-name a:hover {
+.dark .stlat-player-name a:hover, 
+.dark .squeezer-team a:hover {
 	color: #9a6ec1;
 }
 
@@ -867,7 +873,8 @@ a[data-toggle-shadows]:hover {
 }
 
 a[data-toggle-items]:hover,
-a[data-toggle-positions]:hover,
+a[data-toggle-group-active]:hover,
+a[data-toggle-group-shadows]:hover,
 a[data-toggle-faq]:hover {
     background: #555555;
 }

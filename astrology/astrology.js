@@ -28,7 +28,7 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbone, twemoji) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, teamView, chartView, footerView, sortColumn = null, sortDirection = null, lightMode = false, secretsVisible = false, shadowsActive = false, positionsCombined = false, itemsApplied = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, teamView, chartView, footerView, sortColumn = null, sortDirection = null, lightMode = false, secretsVisible = false, shadowsActive = false, rosterCombined = false, shadowsCombined = false, itemsApplied = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -107,8 +107,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				isEquipped: function() {
 					return itemsApplied;
 				},
-				isCombined: function() {
-					return positionsCombined;
+				isRosterCombined: function() {
+					return rosterCombined;
+				},
+				isShadowsCombined: function() {
+					return shadowsCombined;
 				},
 				emoji: parseEmoji,
 				position: position,
@@ -133,6 +136,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 								return p + q.calculateSluggingRating();
 							case "earnedRunsRating":
 								return p + q.calculateEarnedRunsRating();
+							case "bsrRating":
+								return p + q.calculateBsrRating();
 							default:
 								return p + q.getValue(stlat);
 						}
@@ -180,6 +185,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 									return player.calculateSluggingRating();
 								case "earnedRunsRating":
 									return player.calculateEarnedRunsRating();
+								case "bsrRating":
+									return player.calculateBsrRating();
 								default:
 									return player.get(sortColumn);
 							}
@@ -196,8 +203,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		isEquipped: function() {
 			return itemsApplied;
 		},
-		isCombined: function() {
-			return positionsCombined;
+		isRosterCombined: function() {
+			return rosterCombined;
+		},
+		isShadowsCombined: function() {
+			return shadowsCombined;
 		},
 		isForbidden: function() {
 			return secretsVisible;
@@ -314,10 +324,18 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				this.getValue("unthwackability") * 0.40
 			);
 		},
+		calculateBsrRating: function() {
+			return (
+				this.getValue("laserlikeness") * 0.58 + 
+				this.getValue("indulgence") * 0.06 + 
+				this.getValue("continuation") * 0.21 + 
+				this.getValue("baseThirst") * 0.16
+			);
+		},
 		getItemAdjustments: function() {
 			var stats = ["tragicness", "buoyancy", "thwackability", "moxie", "divinity", "musclitude", "patheticism", "martyrdom", "cinnamon", "baseThirst", "laserlikeness", "continuation", "indulgence", "groundFriction", "shakespearianism", "suppression", "unthwackability", "coldness", "overpowerment", "ruthlessness", "pressurization", "omniscience", "tenaciousness", "watchfulness", "anticapitalism", "chasiness"], adjustments = {};
 			_.each(this.get("items"), function(item) {
-				if(item.health >= item.durability) {
+				if(item.health > 0) {
 					_.chain([item.prePrefix, item.postPrefix, item.root, item.suffix])
 						.union(item.prefixes)
 						.compact()
@@ -428,8 +446,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				isEquipped: function() {
 					return itemsApplied;
 				},
-				isCombined: function() {
-					return positionsCombined;
+				isRosterCombined: function() {
+					return rosterCombined;
+				},
+				isShadowsCombined: function() {
+					return shadowsCombined;
 				},
 				isForbidden: function() {
 					return secretsVisible;
@@ -445,7 +466,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		events: {
 			"click a[data-toggle-knowledge]": "toggleKnowledge",
 			"click a[data-toggle-shadows]": "toggleShadows",
-			"click a[data-toggle-positions]": "togglePositions",
+			"click a[data-toggle-group-active]": "toggleGroupActive",
+			"click a[data-toggle-group-shadows]": "toggleGroupShadows",
 			"click a[data-toggle-items]": "toggleItems",
 			"click a[data-toggle-faq]": "toggleFaq",
 			"click a[data-toggle-lights]": "toggleLights"
@@ -466,6 +488,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			shadowsActive = !$(e.currentTarget).data("toggle-shadows");
 			$(e.currentTarget).data("toggle-shadows", shadowsActive);
 			$(e.currentTarget).html((shadowsActive ? "Hide" : "Peer into") + " the Shadows");
+			$("a[data-toggle-group-shadows]").toggle(shadowsActive);
 			if(teamView) {
 				teamView.render();
 			}
@@ -474,18 +497,31 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			}
 			gtag('event', 'toggle_shadows');
 		},
-		togglePositions: function(e) {
+		toggleGroupActive: function(e) {
 			e.preventDefault();
-			positionsCombined = !$(e.currentTarget).data("toggle-positions");
-			$(e.currentTarget).data("toggle-positions", positionsCombined);
-			$(e.currentTarget).html((positionsCombined ? "Separate" : "Combine") + " Positions");
+			rosterCombined = !$(e.currentTarget).data("toggle-group-active");
+			$(e.currentTarget).data("toggle-group-active", rosterCombined);
+			$(e.currentTarget).html((rosterCombined ? "Separate" : "Combine") + "  Roster");
 			if(teamView) {
 				teamView.render();
 			}
 			if(localStorageExists()) {
-				localStorage.setItem("positionsState", positionsCombined);
+				localStorage.setItem("groupActiveState", rosterCombined);
 			}
-			gtag('event', 'toggle_shadows');
+			gtag('event', 'toggle_group_active');
+		},
+		toggleGroupShadows: function(e) {
+			e.preventDefault();
+			shadowsCombined = !$(e.currentTarget).data("toggle-group-shadows");
+			$(e.currentTarget).data("toggle-group-shadows", shadowsCombined);
+			$(e.currentTarget).html((shadowsCombined ? "Separate" : "Combine") + " Shadows");
+			if(teamView) {
+				teamView.render();
+			}
+			if(localStorageExists()) {
+				localStorage.setItem("groupShadowsState", shadowsCombined);
+			}
+			gtag('event', 'toggle_group_shadows');
 		},
 		toggleItems: function(e) {
 			e.preventDefault();
@@ -675,15 +711,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			});
 		},
 		filterData: function() {
-			var batterAttrs = ["patheticism", "thwackability", "divinity", "musclitude", "martyrdom", "moxie", "groundFriction"], pitcherAttrs = ["ruthlessness", "unthwackability", "overpowerment"], league = { wobabr: 0, erpr: 0, laser: 0, omni: 0, lineup: 0, rotation: 0, attributes: {} }, data = navView.collection.filter(function(model) {
+			var batterAttrs = ["patheticism", "thwackability", "divinity", "musclitude", "martyrdom", "moxie", "groundFriction"], pitcherAttrs = ["ruthlessness", "unthwackability", "overpowerment"], league = { wobabr: 0, erpr: 0, bsrr: 0, omni: 0, lineup: 0, rotation: 0, attributes: {} }, data = navView.collection.filter(function(model) {
 				return _.contains(["ilb"], model.type());
 			}).map(function(team) {
-				var averages = { id: team.id, emoji: team.get("emoji"), name: team.get("nickname"), color: team.get("mainColor"), wobabr: 0, erpr: 0, laser: 0, omni: 0, lineup: 0, rotation: 0, attributes: {} };
+				var averages = { id: team.id, emoji: team.get("emoji"), name: team.get("nickname"), color: team.get("mainColor"), slug: team.slug(), wobabr: 0, erpr: 0, bsrr: 0, omni: 0, lineup: 0, rotation: 0, attributes: {} };
 				_.each(team.get("lineup"), function(id) {
 					var foundPlayer = team.get("players").findWhere({ id: id });
 					if(foundPlayer) {
 						averages.wobabr += foundPlayer.calculateWobaRating();
-						averages.laser += foundPlayer.getValue("laserlikeness");
+						averages.bsrr += foundPlayer.calculateBsrRating();
 						averages.omni += foundPlayer.getValue("omniscience");
 						_.each(batterAttrs, function(attribute) {
 							if(!_.has(averages.attributes, attribute)) {
@@ -710,7 +746,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				});
 				league.wobabr += averages.wobabr;
 				league.erpr += averages.erpr;
-				league.laser += averages.laser;
+				league.bsrr += averages.bsrr;
 				league.omni += averages.omni;
 				league.lineup += averages.lineup;
 				league.rotation += averages.rotation;
@@ -727,14 +763,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 					averages.attributes[attribute] /= averages.rotation;
 				});
 				averages.wobabr /= averages.lineup;
-				averages.laser /= averages.lineup;
+				averages.bsrr /= averages.lineup;
 				averages.erpr /= averages.rotation;
 				averages.omni /= (averages.lineup + averages.rotation);
 				return averages;
 			});
 			league.wobabr /= league.lineup;
 			league.erpr /= league.rotation;
-			league.laser /= league.lineup;
+			league.bsrr /= league.lineup;
 			league.omni /= (league.lineup + league.rotation);
 			_.each(batterAttrs, function(attribute) {
 				league.attributes[attribute] /= league.lineup;
@@ -753,13 +789,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				mins: {
 					wobabr: _.min(data, "wobabr").wobabr,
 					erpr: _.min(data, "erpr").erpr,
-					laser: _.min(data, "laser").laser,
+					bsrr: _.min(data, "bsrr").bsrr,
 					omni: _.min(data, "omni") .omni
 				},
 				maxes: {
 					wobabr: _.max(data, "wobabr").wobabr,
 					erpr: _.max(data, "erpr").erpr,
-					laser: _.max(data, "laser").laser,
+					bsrr: _.max(data, "bsrr").bsrr,
 					omni: _.max(data, "omni").omni
 				}
 			});
@@ -771,10 +807,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 					switch(sortColumn) {
 						case "name":
 						case "wobabr":
+						case "bsrr":
 						case "erpr":
 							return team[sortColumn];
-						case "laserlikeness":
-							return team.laser;
 						case "omniscience":
 							return team.omni;
 						default:
@@ -797,10 +832,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 					switch(sortColumn) {
 						case "name":
 						case "wobabr":
+						case "bsrr":
 						case "erpr":
 							return team[sortColumn];
-						case "laserlikeness":
-							return team.laser;
 						case "omniscience":
 							return team.omni;
 						default:
@@ -845,17 +879,17 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			var id = $(e.currentTarget).data("id");
 			if(id) {
 				var foundTeam = _.findWhere(this.model.get("teams"), { id : id }),
-					wobaLaserEl = $("<div class='chart-hover'><p><strong>" + foundTeam.name + "</strong></p><p>" + (Math.round(foundTeam.wobabr * 5000) / 1000) + " wOBABR</p><p>" + (Math.round(foundTeam.laser * 5000) / 1000) + " laser</p></div>"),
-					wobaLaserPos = $("#chart-woba-laser [data-id=" + id + "]").position(),
+					wobaBsrrEl = $("<div class='chart-hover'><p><strong>" + foundTeam.name + "</strong></p><p>" + (Math.round(foundTeam.wobabr * 5000) / 1000) + " wOBABR</p><p>" + (Math.round(foundTeam.bsrr * 5000) / 1000) + " BsRR</p></div>"),
+					wobaBsrrPos = $("#chart-woba-bsrr [data-id=" + id + "]").position(),
 					erOmniEl = $("<div class='chart-hover'><p><strong>" + foundTeam.name + "</strong></p><p>" + (Math.round(foundTeam.erpr * 5000) / 1000) + " ERPR</p><p>" + (Math.round(foundTeam.omni * 5000) / 1000) + " omni</p></div>"),
 					erOmniPos = $("#chart-er-omni [data-id=" + id + "]").position();
 				$("[data-id=" + id + "]").addClass("active");
 				$(".chart-hover").remove();
-				$("#chart-woba-laser").append($("#chart-woba-laser [data-id=" + id + "]").remove());
-				wobaLaserPos.top += this.model.get("svg").icon * 2.5;
-				wobaLaserPos.left += this.model.get("svg").icon;
-				wobaLaserEl.css(wobaLaserPos);
-				$(".squeezer-charts").append(wobaLaserEl);
+				$("#chart-woba-bsrr").append($("#chart-woba-bsrr [data-id=" + id + "]").remove());
+				wobaBsrrPos.top += this.model.get("svg").icon * 2.5;
+				wobaBsrrPos.left += this.model.get("svg").icon;
+				wobaBsrrEl.css(wobaBsrrPos);
+				$(".squeezer-charts").append(wobaBsrrEl);
 				$("#chart-er-omni").append($("#chart-er-omni [data-id=" + id + "]").remove());
 				erOmniPos.top += this.model.get("svg").icon * 2.5;
 				erOmniPos.left += this.model.get("svg").icon;
@@ -899,8 +933,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		if(localStorage.getItem("shadowsState") !== null) {
 			shadowsActive = localStorage.getItem("shadowsState") == "true";
 		}
-		if(localStorage.getItem("positionsState") !== null) {
-			positionsCombined = localStorage.getItem("positionsState") == "true";
+		if(localStorage.getItem("groupActiveState") !== null) {
+			rosterCombined = localStorage.getItem("groupActiveState") == "true";
+		}
+		if(localStorage.getItem("groupShadowsState") !== null) {
+			shadowsCombined = localStorage.getItem("groupShadowsState") == "true";
 		}
 		if(localStorage.getItem("itemsState") !== null) {
 			itemsApplied = localStorage.getItem("itemsState") == "true";
@@ -996,6 +1033,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 	
 	function loadPageView() {
 		var title = "Astrology", path = "/";
+		if(activePage == "squeezer") {
+			title += " - Stat Squeezer";
+			path += "squeezer";
+		}
 		if(activeTeam) {
 			title += " - " + activeTeam.get("fullName");
 			path += activeTeam.slug();
