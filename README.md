@@ -1,8 +1,8 @@
 # astrology
 A couple Blaseball tools.
 
-## Astrology
-A player stats viewer -- essentially a clone of abslve with maybe better loading times and a more user friendly layout. No longer in development as better tools have appeared.
+## [Astrology](https://teagrrl.github.io/astrology/astrology/)
+A player stats viewer -- essentially a clone of abslve with maybe better loading times and a more user friendly layout and some extra stats columns.
 
 ## [Chart Party / Chlart Party](https://teagrrl.github.io/astrology/chlartparty/)
 A visualization of Blaseball teams wins over .500 over the course of a season along with the consequences they may have accrued.
