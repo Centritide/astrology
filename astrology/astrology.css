@@ -333,13 +333,15 @@ section.players {
 }
 
 .summary-header > div[data-direction=desc]::after, 
-.stlats-header > div[data-direction=desc] > span::after {
+.stlats-header > div[data-direction=desc] > span::after, 
+.squeezer-header > div[data-direction=desc] > span::after {
     content: "\25BC";
     margin-left: .1em;
 }
 
 .summary-header > div[data-direction=asc]::after, 
-.stlats-header > div[data-direction=asc] > span::after {
+.stlats-header > div[data-direction=asc] > span::after, 
+.squeezer-header > div[data-direction=asc] > span::after {
     content: "\25B2";
     margin-left: .1em;
 }
@@ -371,8 +373,28 @@ section.players {
 	grid-template-columns: 12em 5.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 3.5em 3.5em 4.5em 4em 5em;
 }
 
+.squeezer-categories,
+.squeezer-header, 
+.squeezer-row {
+	width: 74em;
+	font-size: 0.9em;
+}
+
+.squeezer-categories {
+	display: grid;
+	grid-template-columns: 20em 31.5em 13.5em 9em;
+	font-weight: bold;
+}
+
+.squeezer-header, 
+.squeezer-row {
+	display: grid;
+	grid-template-columns: 10em 5.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em 4.5em;
+}
+
 .stlats-header,
-.summary-header {
+.summary-header,
+.squeezer-header {
     position: -webkit-sticky;
 	position: sticky;
 	top: 0;
@@ -381,7 +403,10 @@ section.players {
 
 .stlats-categories > div, 
 .stlats-header > div, 
-.stlats-row > div {
+.stlats-row > div,
+.squeezer-categories > div, 
+.squeezer-header > div, 
+.squeezer-row > div {
 	position: relative;
 	border: 1px solid #666666;
 	padding: .1em .2em;
@@ -389,19 +414,25 @@ section.players {
 }
 
 .stlats-header > div, 
-.stlats-row > div {
+.stlats-row > div,
+.squeezer-header > div, 
+.squeezer-row > div {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
 .stlats-header > div:hover .stlat-truncated, 
-.stlats-row > div:hover .stlat-truncated {
+.stlats-row > div:hover .stlat-truncated,
+.squeezer-header > div:hover .stlat-truncated, 
+.squeezer-row > div:hover .stlat-truncated {
 	display: none;
 }
 
 .stlats-header > div:hover .stlat-full, 
-.stlats-row > div:hover .stlat-full {
+.stlats-row > div:hover .stlat-full,
+.squeezer-header > div:hover .stlat-full, 
+.squeezer-row > div:hover .stlat-full {
 	display: block;
 	position: absolute;
 	top: 0;
@@ -416,20 +447,23 @@ section.players {
 }
 
 .summary-general, 
-.stlats-general, 
-.stlats-general .stlat-full {
+.stlats-general,
+.stlats-general .stlat-full,
+.squeezer-general {
 	background: #aed0cd;
 }
 
 .summary-batting, 
 .stlats-batting, 
-.stlats-batting .stlat-full {
+.stlats-batting .stlat-full,
+.squeezer-batting {
 	background: #7cb6e8;
 }
 
 .summary-pitching, 
 .stlats-pitching, 
-.stlats-pitching .stlat-full {
+.stlats-pitching .stlat-full,
+.squeezer-pitching {
 	background: #ffc107;
 }
 
@@ -447,7 +481,8 @@ section.players {
 
 .summary-extra, 
 .stlats-extra, 
-.stlats-extra .stlat-full {
+.stlats-extra .stlat-full,
+.squeezer-others {
 	background: #be9ed2;
 }
 
@@ -455,7 +490,8 @@ section.players {
 	background: #aed0cd80;
 }
 
-.stlat-player-name {
+.stlat-player-name,
+.squeezer-team {
     position: -webkit-sticky !important;
 	position: sticky !important;
 	left: 0;
@@ -464,17 +500,20 @@ section.players {
 }
 
 .summary-row:nth-child(odd) .summary-player-name,
-.stlats-row:nth-child(odd) .stlat-player-name {
+.stlats-row:nth-child(odd) .stlat-player-name,
+.squeezer-row:nth-child(odd) .squeezer-team {
 	background: #d6e7e6;
 }
 
 .summary-row:hover .summary-player-name,
-.stlats-row:hover .stlat-player-name {
+.stlats-row:hover .stlat-player-name,
+.squeezer-row:hover .squeezer-team {
 	background: #ffff99;
 }
 
 .summary-row:hover:nth-child(odd) .summary-player-name,
-.stlats-row:nth-child(odd):hover .stlat-player-name {
+.stlats-row:nth-child(odd):hover .stlat-player-name,
+.squeezer-row:nth-child(odd):hover .squeezer-team {
 	background: #c2dbda;
 }
 
@@ -491,7 +530,8 @@ section.players {
 }
 
 .summary-row:hover, 
-.stlats-row:hover {
+.stlats-row:hover,
+.squeezer-row:hover {
 	background: #ffff99;
 }
 
@@ -626,7 +666,12 @@ i.half-star {
 .dark .stlats-header > div, 
 .dark .stlats-row > div,
 .dark .stlats-header > div:hover .stlat-full, 
-.dark .stlats-row > div:hover .stlat-full  {
+.dark .stlats-row > div:hover .stlat-full,
+.dark .squeezer-categories > div, 
+.dark .squeezer-header > div, 
+.dark .squeezer-row > div,
+.dark .squeezer-header > div:hover .stlat-full, 
+.dark .squeezer-row > div:hover .stlat-full  {
 	border-color: #000000;
 }
 
@@ -637,19 +682,25 @@ i.half-star {
 
 .dark .summary-general, 
 .dark .stlats-general, 
-.dark .stlats-general .stlat-full {
+.dark .stlats-general .stlat-full,
+.dark .squeezer-general, 
+.dark .squeezer-general .stlat-full {
 	background: #5b6f84;
 }
 
 .dark .summary-batting, 
 .dark .stlats-batting, 
-.dark .stlats-batting .stlat-full {
+.dark .stlats-batting .stlat-full,
+.dark .squeezer-batting, 
+.dark .squeezer-batting .stlat-full {
 	background: #2d5373;
 }
 
 .dark .summary-pitching, 
 .dark .stlats-pitching, 
-.dark .stlats-pitching .stlat-full {
+.dark .stlats-pitching .stlat-full,
+.dark .squeezer-pitching, 
+.dark .squeezer-pitching .stlat-full {
 	background: #926844;
 }
 
@@ -667,7 +718,9 @@ i.half-star {
 
 .dark .summary-extra, 
 .dark .stlats-extra, 
-.dark .stlats-extra .stlat-full {
+.dark .stlats-extra .stlat-full,
+.dark .squeezer-others, 
+.dark .squeezer-others .stlat-full {
 	background: #674d77;
 }
 
@@ -676,17 +729,20 @@ i.half-star {
 }
 
 .dark .summary-row:nth-child(odd) .summary-player-name,
-.dark .stlats-row:nth-child(odd) .stlat-player-name {
+.dark .stlats-row:nth-child(odd) .stlat-player-name,
+.dark .squeezer-row:nth-child(odd) .squeezer-team {
 	background: #233231;
 }
 
 .dark .summary-row:hover .summary-player-name,
-.dark .stlats-row:hover .stlat-player-name {
+.dark .stlats-row:hover .stlat-player-name,
+.dark .squeezer-row:hover .squeezer-team {
 	background: #333333;
 }
 
 .dark .summary-row:hover:nth-child(odd) .summary-player-name,
-.dark .stlats-row:nth-child(odd):hover .stlat-player-name {
+.dark .stlats-row:nth-child(odd):hover .stlat-player-name,
+.dark .squeezer-row:nth-child(odd):hover .squeezer-team {
 	background: #3c4b4a;
 }
 
@@ -704,7 +760,8 @@ i.half-star {
 
 .dark .summary-row:hover, 
 .dark .stlats-row:hover, 
-.dark .stlat-full {
+.dark .stlat-full, 
+.dark .squeezer-row:hover {
 	background: #333333;
 }
 
@@ -767,7 +824,8 @@ i.half-star {
 #root.dark,
 .dark section.faq,
 .dark .summary-player-name,
-.dark .stlat-player-name {
+.dark .stlat-player-name,
+.dark .squeezer-team {
 	background: #111111;
 	color: #ffffff;
 }
@@ -816,6 +874,79 @@ a[data-toggle-faq]:hover {
 
 a[data-toggle-lights]:hover {
 	background: #292746;
+}
+
+section.squeezer {
+	overflow-y: auto;
+}
+
+.squeezer-charts {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.squeezer-tables {
+    margin: 20px;
+}
+
+.squeezer-charts line {
+	stroke: #aaa;
+	stroke-width: 1;
+}
+
+.squeezer-charts text {
+	fill: #000;
+	font-size: 0.9em;
+}
+
+.squeezer-charts text.title {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.squeezer-charts circle,
+.squeezer-charts image {
+	transition: all 0.4s ease-out;
+	cursor: pointer;
+}
+
+.chart-hover {
+	position: absolute;
+	background: rgba(0, 0, 0, 0.6);
+	color: #fff;
+	padding: 5px;
+	border-radius: 5px;
+	transform: translate(-50%, 0);
+	text-align: center;
+	z-index: 3;
+}
+
+.chart-hover p {
+	margin: 0;
+	padding: 0;
+}
+
+.dark .squeezer-charts line {
+	stroke: #777;
+}
+
+.dark .squeezer-charts text {
+	fill: #fff;
+}
+
+.dark .chart-hover {
+	background: #fff;
+	color: #000;
+}
+
+.dark .squeezer-charts circle {
+	stroke-width: 0;
+	stroke: rgba(255, 255, 255, 0.4);
+}
+
+.dark .squeezer-charts circle.active {
+	stroke-width: 4;
 }
 
 @media screen and (max-width: 700px) {	

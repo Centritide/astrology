@@ -8,7 +8,7 @@ requirejs.config({
 		jquery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min",
 		backbone: "https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min",
 		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min",
-		twemoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/12.0.4/2/twemoji.min"
+		twemoji: "https://twemoji.maxcdn.com/v/latest/twemoji.min"
 	},
 	shim : {
 		jquery: {
@@ -28,17 +28,21 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbone, twemoji) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, teamView, footerView, sortColumn = null, sortDirection = null, lightMode = false, secretsVisible = false, shadowsActive = false, positionsCombined = false, itemsApplied = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, teamView, chartView, footerView, sortColumn = null, sortDirection = null, lightMode = false, secretsVisible = false, shadowsActive = false, positionsCombined = false, itemsApplied = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
 		routes: {
 			"": "index",
+			"squeezer": "squeezer",
 			":team": "team",
 			":team/forbidden-knowledge": "teamSecrets"
 		},
 		index: function() {
 			loadPage();
+		},
+		squeezer: function() {
+			loadPage("squeezer");
 		},
 		team: function(team) {
 			secretsVisible = false;
@@ -133,7 +137,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 								return p + q.getValue(stlat);
 						}
 					}, 0) / players.length;
-				}, 
+				},
 				round: function(value) {
 					return Math.round(value * 10000) / 10000;
 				},
@@ -390,7 +394,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 					}), { at: 0 });
 					thisView.render();
 					if(activePage) {
-						loadTeam(activePage);
+						if(activePage == "squeezer") {
+							loadChart();
+						} else {
+							loadTeam(activePage);
+						}
 					}
 				},
 				error: console.log
@@ -484,6 +492,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			itemsApplied = !$(e.currentTarget).data("toggle-items");
 			$(e.currentTarget).data("toggle-items", itemsApplied);
 			$(e.currentTarget).html((itemsApplied ? "Exclude" : "Include") + " Items");
+			if(chartView) {
+				chartView.filterData();
+				chartView.render();
+			}
 			if(teamView) {
 				teamView.render();
 			}
@@ -529,7 +541,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 				this.render();
 			} else if(this.model.id == "players") {
 				var thisModel = this.model;
-				loadAllPlayers(function() {
+				loadAllPlayers(["ilb", "coffee2"], function() {
 					navView.collection.each(function(model) {
 						if(_.contains(["ilb", "coffee2"], model.type())) {
 							if(!thisModel.has("lineup")) {
@@ -632,7 +644,234 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			"click .summary-header > div, .stlats-header > div": "sortPlayers"
 		},
 		sortPlayers: function(e) {
-			var sort = $(e.currentTarget).data("sort"), isReversed = _.contains(["name", "patheticism", "pressurization", "tragicness"], sort), scrollPos = { x: $("section.players").scrollLeft(), y: $("section.players").scrollTop() };
+			var sort = $(e.currentTarget).data("sort"), isReversed = _.contains(["name", "patheticism", "pressurization", "tragicness"], sort);
+			e.preventDefault();
+			if(sort) {
+				switch($(e.currentTarget).data("direction")) {
+					case "asc":
+						sortDirection = isReversed ? "desc" : null;
+						break;
+					case "desc":
+						sortDirection = isReversed ? null : "asc";
+						break;
+					default:
+						sortDirection = isReversed ? "asc" : "desc";
+						break;
+				}
+				sortColumn = sortDirection ? sort : null;
+				this.render();
+			}
+		}
+	});
+	App.Views.Squeezer = Backbone.View.extend({
+		template: _.template($("#template-squeezer").html()),
+		el: "main",
+		initialize: function() {
+			var thisView = this;
+			loadAllPlayers(["ilb"], function() {
+				thisView.model = new (Backbone.Model.extend({}))();
+				thisView.filterData();
+				thisView.render();
+			});
+		},
+		filterData: function() {
+			var batterAttrs = ["patheticism", "thwackability", "divinity", "musclitude", "martyrdom", "moxie", "groundFriction"], pitcherAttrs = ["ruthlessness", "unthwackability", "overpowerment"], league = { wobabr: 0, erpr: 0, laser: 0, omni: 0, lineup: 0, rotation: 0, attributes: {} }, data = navView.collection.filter(function(model) {
+				return _.contains(["ilb"], model.type());
+			}).map(function(team) {
+				var averages = { id: team.id, emoji: team.get("emoji"), name: team.get("nickname"), color: team.get("mainColor"), wobabr: 0, erpr: 0, laser: 0, omni: 0, lineup: 0, rotation: 0, attributes: {} };
+				_.each(team.get("lineup"), function(id) {
+					var foundPlayer = team.get("players").findWhere({ id: id });
+					if(foundPlayer) {
+						averages.wobabr += foundPlayer.calculateWobaRating();
+						averages.laser += foundPlayer.getValue("laserlikeness");
+						averages.omni += foundPlayer.getValue("omniscience");
+						_.each(batterAttrs, function(attribute) {
+							if(!_.has(averages.attributes, attribute)) {
+								averages.attributes[attribute] = 0;
+							}
+							averages.attributes[attribute] += foundPlayer.getValue(attribute);
+						});
+						averages.lineup++;
+					}
+				});
+				_.each(team.get("rotation"), function(id) {
+					var foundPlayer = team.get("players").findWhere({ id: id });
+					if(foundPlayer) {
+						averages.erpr += foundPlayer.calculateEarnedRunsRating();
+						averages.omni += foundPlayer.getValue("omniscience");
+						_.each(pitcherAttrs, function(attribute) {
+							if(!_.has(averages.attributes, attribute)) {
+								averages.attributes[attribute] = 0;
+							}
+							averages.attributes[attribute] += foundPlayer.getValue(attribute);
+						});
+						averages.rotation++;
+					}
+				});
+				league.wobabr += averages.wobabr;
+				league.erpr += averages.erpr;
+				league.laser += averages.laser;
+				league.omni += averages.omni;
+				league.lineup += averages.lineup;
+				league.rotation += averages.rotation;
+				_.each(_.union(batterAttrs, pitcherAttrs), function(attribute) {
+					if(!_.has(league.attributes, attribute)) {
+						league.attributes[attribute] = 0;
+					}
+					league.attributes[attribute] += averages.attributes[attribute];
+				});
+				_.each(batterAttrs, function(attribute) {
+					averages.attributes[attribute] /= averages.lineup;
+				});
+				_.each(pitcherAttrs, function(attribute) {
+					averages.attributes[attribute] /= averages.rotation;
+				});
+				averages.wobabr /= averages.lineup;
+				averages.laser /= averages.lineup;
+				averages.erpr /= averages.rotation;
+				averages.omni /= (averages.lineup + averages.rotation);
+				return averages;
+			});
+			league.wobabr /= league.lineup;
+			league.erpr /= league.rotation;
+			league.laser /= league.lineup;
+			league.omni /= (league.lineup + league.rotation);
+			_.each(batterAttrs, function(attribute) {
+				league.attributes[attribute] /= league.lineup;
+			});
+			_.each(pitcherAttrs, function(attribute) {
+				league.attributes[attribute] /= league.rotation;
+			});
+			this.model.set({
+				teams: data,
+				league: league,
+				svg: {
+					size: $(window).height() > $(window).width() ? $("main").innerWidth() : Math.min($("main").innerHeight(), $("main").innerWidth() / 2),
+					padding: 40,
+					icon: 15
+				},
+				mins: {
+					wobabr: _.min(data, "wobabr").wobabr,
+					erpr: _.min(data, "erpr").erpr,
+					laser: _.min(data, "laser").laser,
+					omni: _.min(data, "omni") .omni
+				},
+				maxes: {
+					wobabr: _.max(data, "wobabr").wobabr,
+					erpr: _.max(data, "erpr").erpr,
+					laser: _.max(data, "laser").laser,
+					omni: _.max(data, "omni").omni
+				}
+			});
+		},
+		sortedData: function() {
+			var chain = _.chain(this.model.get("teams"));
+			if(sortColumn) {
+				chain = chain.sortBy(function(team) {
+					switch(sortColumn) {
+						case "name":
+						case "wobabr":
+						case "erpr":
+							return team[sortColumn];
+						case "laserlikeness":
+							return team.laser;
+						case "omniscience":
+							return team.omni;
+						default:
+							return team.attributes[sortColumn];
+					}
+				});
+			}
+			if(sortDirection == "desc") {
+				chain = chain.reverse();
+			}
+			return chain.value();
+		},
+		render: function() {
+			var scrollPos;
+			if($("section.squeezer").length) {
+				scrollPos = { x: $("section.squeezer").scrollLeft(), y: $("section.squeezer").scrollTop() };
+			}
+			if(sortColumn) {
+				var chain = _.chain(this.model.get("teams")).sortBy(function(team) {
+					switch(sortColumn) {
+						case "name":
+						case "wobabr":
+						case "erpr":
+							return team[sortColumn];
+						case "laserlikeness":
+							return team.laser;
+						case "omniscience":
+							return team.omni;
+						default:
+							return team.attributes[sortColumn];
+					}
+				});
+				if(sortDirection == "desc") {
+					chain = chain.reverse();
+				}
+				this.model.set("sorted", chain.value());
+			} else {
+				this.model.unset("sorted");
+			}
+			this.$el.html(this.template({
+				emoji: parseEmoji,
+				emojiSvg: function(emoji) {
+					return $(parseEmoji(emoji, { "folder": "svg", "ext": ".svg" })).attr("src");
+				},
+				round: function(value) {
+					return Math.round(value * 10000) / 10000;
+				},
+				scale: scaleColorForRating,
+				scaleInverse: function(rating) {
+					return scaleColorForRating(1 - rating);
+				},
+				model: this.model
+			}));
+			if(sortColumn) {
+				$("[data-sort=" + sortColumn + "]").attr("data-direction", sortDirection);
+			}
+			if(scrollPos) {
+				$("section.squeezer").scrollLeft(scrollPos.x);
+				$("section.squeezer").scrollTop(scrollPos.y);
+			}
+		},
+		events: {
+			"mouseenter circle, image": "showChartHover",
+			"mouseleave circle, image": "hideChartHover",
+			"click .squeezer-header > div": "sortTeams"
+		},
+		showChartHover: function(e) {
+			var id = $(e.currentTarget).data("id");
+			if(id) {
+				var foundTeam = _.findWhere(this.model.get("teams"), { id : id }),
+					wobaLaserEl = $("<div class='chart-hover'><p><strong>" + foundTeam.name + "</strong></p><p>" + (Math.round(foundTeam.wobabr * 5000) / 1000) + " wOBABR</p><p>" + (Math.round(foundTeam.laser * 5000) / 1000) + " laser</p></div>"),
+					wobaLaserPos = $("#chart-woba-laser [data-id=" + id + "]").position(),
+					erOmniEl = $("<div class='chart-hover'><p><strong>" + foundTeam.name + "</strong></p><p>" + (Math.round(foundTeam.erpr * 5000) / 1000) + " ERPR</p><p>" + (Math.round(foundTeam.omni * 5000) / 1000) + " omni</p></div>"),
+					erOmniPos = $("#chart-er-omni [data-id=" + id + "]").position();
+				$("[data-id=" + id + "]").addClass("active");
+				$(".chart-hover").remove();
+				$("#chart-woba-laser").append($("#chart-woba-laser [data-id=" + id + "]").remove());
+				wobaLaserPos.top += this.model.get("svg").icon * 2.5;
+				wobaLaserPos.left += this.model.get("svg").icon;
+				wobaLaserEl.css(wobaLaserPos);
+				$(".squeezer-charts").append(wobaLaserEl);
+				$("#chart-er-omni").append($("#chart-er-omni [data-id=" + id + "]").remove());
+				erOmniPos.top += this.model.get("svg").icon * 2.5;
+				erOmniPos.left += this.model.get("svg").icon;
+				erOmniEl.css(erOmniPos);
+				$(".squeezer-charts").append(erOmniEl);
+			}
+		},
+		hideChartHover: function(e) {
+			var id = $(e.currentTarget).data("id");
+			if(id) {
+				$("[data-id=" + id + "]").removeClass("active");
+				$(".chart-hover").remove();
+			}
+		},
+		sortTeams: function(e) {
+			var sort = $(e.currentTarget).data("sort"), isReversed = _.contains(["name", "patheticism"], sort);
 			e.preventDefault();
 			if(sort) {
 				switch($(e.currentTarget).data("direction")) {
@@ -674,13 +913,39 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 	activeRouter = new App.Router;
 	Backbone.history.start();
 	
+	window.onresize = function() {
+		if(chartView && chartView.model) {
+			chartView.model.get("svg").size = $(window).height() > $(window).width() ? $("main").innerWidth() : Math.min($("main").innerHeight(), $("main").innerWidth() / 2);
+			chartView.render();
+		}
+	};
+
+	function loadChart() {
+		activePage = "squeezer";
+		activeTeam = null;
+		if(teamView) {
+			teamView.undelegateEvents();
+		}
+		if(navView.collection.length) {
+			chartView = new App.Views.Squeezer({
+				collection: navView.collection
+			});
+			teamView = null;
+		}
+		loadPageView();
+	}
+	
 	function loadPage(team) {
 		if(!navView) {
 			navView = new App.Views.Nav({ collection: new App.Collections.Teams });
 		}
 		if(team) {
 			if(team != activeTeam) {
-				loadTeam(team);
+				if(team == "squeezer") {
+					loadChart();
+				} else {
+					loadTeam(team);
+				}
 				if(!footerView) {
 					footerView = new App.Views.Footer();
 				}
@@ -715,9 +980,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 			activeTeam = navView.collection.find(function(model) {
 				return model.id == id || model.slug() == id;
 			});
+			if(chartView) {
+				chartView.undelegateEvents();
+			}
 			if(teamView) {
 				teamView.undelegateEvents();
 			}
+			chartView = null;
 			teamView = new App.Views.Team({
 				model: activeTeam
 			});
@@ -735,9 +1004,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		gtag('event', 'page_view', { page_title: title, page_location: window.location.href, page_path: path, send_to: GA_TRACKING_ID });
 	}
 	
-	function loadAllPlayers(callback) {
+	function loadAllPlayers(filters, callback) {
 		var numProcessed = 0, filteredTeams = navView.collection.filter(function(model) {
-			return _.contains(["ilb", "coffee2"], model.type());
+			return _.contains(filters, model.type());
 		});
 		_.each(filteredTeams, function(model) {
 			var thisModel = model;
@@ -765,8 +1034,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji"], function($, _, Backbo
 		});
 	}
 	
-	function parseEmoji(emoji) {
-		return twemoji.parse(isNaN(Number(emoji)) ? emoji : twemoji.convert.fromCodePoint(emoji));
+	function parseEmoji(emoji, options) {
+		return twemoji.parse(isNaN(Number(emoji)) ? emoji : twemoji.convert.fromCodePoint(emoji), options);
 	}
 	
 	function scaleColorForRating(rating) {

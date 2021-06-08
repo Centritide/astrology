@@ -227,7 +227,7 @@
 					<div class="faq-stlats-row">
 						<div><code>chasiness</code></div>
 						<div>chase</div>
-						<div>0.01</div>
+						<div>0.1</div>
 						<div>Defends against extra base hits, holding runners to first base.</div>
 					</div>
 				</div>
@@ -683,7 +683,7 @@
 						<span class="stlat-truncated"><%= round(5 * average(players, "earnedRunsRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "earnedRunsRating") %></span>
 					</div>
-					<div>
+					<div <%= scale(average(players, "totalRating") / 4) %>>
 						<span class="stlat-truncated"><%= round(5 * average(players, "totalRating")) %></span>
 						<span class="stlat-full"><%= 5 * average(players, "totalRating") %></span>
 					</div>
@@ -773,6 +773,188 @@
 					</div>
 				</div>
 			</div>
+		</script>
+
+		<script type="text/template" id="template-squeezer">
+			<section class="squeezer">
+				<div class="squeezer-charts">
+					<svg id="chart-woba-laser" viewBox="0 0 <%= model.get("svg").size %> <%= model.get("svg").size %>" width="<%= model.get("svg").size %>" height="<%= model.get("svg").size %>">
+						<% var svgSize = model.get("svg").size - 2 * model.get("svg").padding, wobaMin = Math.floor(model.get("mins").wobabr * 10), wobaMax = Math.ceil(model.get("maxes").wobabr * 10), wobaLength = wobaMax - wobaMin , wobaSize = svgSize / wobaLength, laserMin = Math.floor(model.get("mins").laser * 10), laserMax = Math.ceil(model.get("maxes").laser * 10), laserLength = laserMax - laserMin, laserSize = svgSize / laserLength;
+						for(var i = 1; i < wobaLength; i++) { %>
+							<line class="axis-x-guide" x1="<%= model.get("svg").padding + wobaSize * i %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding + wobaSize * i %>" y2="<%= model.get("svg").padding + svgSize %>" />
+							<text class="axis-x-label" text-anchor="middle" dominant-baseline="hanging" x="<%= model.get("svg").padding + wobaSize * i %>" y="<%= model.get("svg").padding * 1.1 + svgSize %>"><%= (i + wobaMin) / 2 %></text>
+						<% }
+						for(var i = 1; i < laserLength; i++) { %>
+							<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + laserSize * i %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + laserSize * i %>" />
+							<text class="axis-y-label" text-anchor="end" dominant-baseline="middle" x="<%= model.get("svg").padding * 0.9 %>" y="<%= model.get("svg").padding + laserSize * i %>"><%= (laserMax - i) / 2 %></text>
+						<% } %>
+						<text class="title" text-anchor="middle" dominant-baseline="middle" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").padding / 2 %>">Key Offensive Averages</text>
+						<line class="axis-x-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding %>" y2="<%= model.get("svg").padding + svgSize %>" />
+						<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + svgSize %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + svgSize %>" />
+						<text class="axis-title" text-anchor="middle" dominant-baseline="baseline" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").size - model.get("svg").padding * 0.1 %>">Average wOBABR</text>
+						<g transform="translate(<%= model.get("svg").padding * 0.1 %> <%= model.get("svg").size / 2 %>) rotate(-90)">
+							<text class="axis-title" text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average Laserlikeness</text>
+						</g>
+						<% _.each(model.get("teams"), function(team) { 
+							var teamX = model.get("svg").padding + (team.wobabr * 10 - wobaMin) / wobaLength * svgSize, teamY = model.get("svg").padding + (laserMax - team.laser * 10) / laserLength * svgSize; %>
+							<circle data-id="<%= team.id %>" data-woba="<%= team.wobabr * 5 %>" data-laser="<%= team.laser * 5 %>" fill="<%= team.color %>" cx="<%= teamX %>" cy="<%= teamY %>" r="<%= model.get("svg").icon %>" />
+							<image data-id="<%= team.id %>" href="<%= emojiSvg(team.emoji) %>" x="<%= teamX - model.get("svg").icon / 2 %>" y="<%= teamY - model.get("svg").icon / 2 %>" height="<%= model.get("svg").icon %>" width="<%= model.get("svg").icon %>" />
+						<% }) %>
+					</svg>
+					<svg id="chart-er-omni" viewBox="0 0 <%= model.get("svg").size %> <%= model.get("svg").size %>" width="<%= model.get("svg").size %>" height="<%= model.get("svg").size %>">
+						<% var erMin = Math.floor(model.get("mins").erpr * 10), erMax = Math.ceil(model.get("maxes").erpr * 10), erLength = erMax - erMin , erSize = svgSize / erLength, omniMin = Math.floor(model.get("mins").omni * 10), omniMax = Math.ceil(model.get("maxes").omni * 10), omniLength = omniMax - omniMin, omniSize = svgSize / omniLength;
+						for(var i = 1; i < erLength; i++) { %>
+							<line class="axis-x-guide" x1="<%= model.get("svg").padding + erSize * i %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding + erSize * i %>" y2="<%= model.get("svg").padding + svgSize %>" />
+							<text class="axis-x-label" text-anchor="middle" dominant-baseline="hanging" x="<%= model.get("svg").padding + erSize * i %>" y="<%= model.get("svg").padding * 1.1 + svgSize %>"><%= (i + erMin) / 2 %></text>
+						<% }
+						for(var i = 1; i < omniLength; i++) { %>
+							<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + omniSize * i %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + omniSize * i %>" />
+							<text class="axis-y-label" text-anchor="end" dominant-baseline="middle" x="<%= model.get("svg").padding * 0.9 %>" y="<%= model.get("svg").padding + omniSize * i %>"><%= (omniMax - i) / 2 %></text>
+						<% } %>
+						<text class="title" text-anchor="middle" dominant-baseline="middle" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").padding / 2 %>">Key Defensive Averages</text>
+						<line class="axis-x-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding %>" y2="<%= model.get("svg").padding + svgSize %>" />
+						<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + svgSize%>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + svgSize %>" />
+							<text class="axis-title" text-anchor="middle" dominant-baseline="baseline" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").size - model.get("svg").padding * 0.1 %>">Average ERPR</text>
+							<g transform="translate(<%= model.get("svg").padding * 0.1 %> <%= model.get("svg").size / 2 %>) rotate(-90)">
+								<text class="axis-title" text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average Omniscience</text>
+							</g>
+						<% _.each(model.get("teams"), function(team) { 
+							var teamX = model.get("svg").padding + (team.erpr * 10 - erMin) / erLength * svgSize, teamY = model.get("svg").padding + (omniMax - team.omni * 10) / omniLength * svgSize; %>
+							<circle data-id="<%= team.id %>" data-er="<%= team.erpr * 5 %>" data-omni="<%= team.omni * 5 %>" fill="<%= team.color %>" cx="<%= teamX %>" cy="<%= teamY %>" r="<%= model.get("svg").icon %>" />
+							<image data-id="<%= team.id %>" href="<%= emojiSvg(team.emoji) %>" x="<%= teamX - model.get("svg").icon / 2 %>" y="<%= teamY - model.get("svg").icon / 2 %>" height="<%= model.get("svg").icon %>" width="<%= model.get("svg").icon %>" />
+						<% }) %>
+					</svg>
+				</div>
+				<div class="squeezer-tables">
+					<div class="squeezer-categories">
+						<div class="squeezer-general">General</div>
+						<div class="squeezer-batting">Batting</div>
+						<div class="squeezer-pitching">Pitching</div>
+						<div class="squeezer-others">Others</div>
+					</div>
+					<div class="squeezer-header">
+						<div class="squeezer-general" data-sort="name">
+							<span>Name</span>
+						</div>
+						<div class="squeezer-general" data-sort="wobabr">
+							<span class="stlat-truncated">wOBABR</span>
+							<span class="stlat-full">wOBA Rating</span>
+						</div>
+						<div class="squeezer-general" data-sort="erpr">
+							<span class="stlat-truncated">ERPR</span>
+							<span class="stlat-full">Earned Runs Rating</span>
+						</div>
+						<div class="squeezer-batting" data-sort="patheticism">
+							<span class="stlat-truncated">pathtc</span>
+							<span class="stlat-full">Patheticism</span>
+						</div>
+						<div class="squeezer-batting" data-sort="thwackability">
+							<span class="stlat-truncated">thwack</span>
+							<span class="stlat-full">Thwackability</span>
+						</div>
+						<div class="squeezer-batting" data-sort="divinity">
+							<span class="stlat-truncated">divin</span>
+							<span class="stlat-full">Divinity</span>
+						</div>
+						<div class="squeezer-batting" data-sort="musclitude">
+							<span class="stlat-truncated">muscl</span>
+							<span class="stlat-full">Musclitude</span>
+						</div>
+						<div class="squeezer-batting" data-sort="martyrdom">
+							<span class="stlat-truncated">martyr</span>
+							<span class="stlat-full">Martyrdom</span>
+						</div>
+						<div class="squeezer-batting" data-sort="moxie">
+							<span class="stlat-truncated">moxie</span>
+							<span class="stlat-full">Moxie</span>
+						</div>
+						<div class="squeezer-batting" data-sort="groundFriction">
+							<span class="stlat-truncated">fric</span>
+							<span class="stlat-full">Ground Friction</span>
+						</div>
+						<div class="squeezer-pitching" data-sort="ruthlessness">
+							<span class="stlat-truncated">ruth</span>
+							<span class="stlat-full">Ruthlessness</span>
+						</div>
+						<div class="squeezer-pitching" data-sort="unthwackability">
+							<span class="stlat-truncated">unthwk</span>
+							<span class="stlat-full">Unthwackability</span>
+						</div>
+						<div class="squeezer-pitching" data-sort="overpowerment">
+							<span class="stlat-truncated">op</span>
+							<span class="stlat-full">Overpowerment</span>
+						</div>
+						<div class="squeezer-others" data-sort="laserlikeness">
+							<span class="stlat-truncated">laser</span>
+							<span class="stlat-full">Laserlikeness</span>
+						</div>
+						<div class="squeezer-others" data-sort="omniscience">
+							<span class="stlat-truncated">omni</span>
+							<span class="stlat-full">Omniscience</span>
+						</div>
+					</div>
+					<% _.each(model.get("sorted") ? model.get("sorted") : model.get("teams"), function(team) { %>
+						<div class="squeezer-row">
+							<div class="squeezer-team"><strong><%= team.name %></strong></div>
+							<div <%= scale(team.wobabr) %>>
+								<span class="stlat-truncated"><%= round(5 * team.wobabr) %></span>
+								<span class="stlat-full"><%= 5 * team.wobabr %></span>
+							</div>
+							<div <%= scale(team.erpr) %>>
+								<span class="stlat-truncated"><%= round(5 * team.erpr) %></span>
+								<span class="stlat-full"><%= 5 * team.erpr %></span>
+							</div>
+							<div <%= scaleInverse(team.attributes["patheticism"]) %>>
+								<span class="stlat-truncated"><%= round(team.attributes["patheticism"]) %></span>
+								<span class="stlat-full"><%= team.attributes["patheticism"] %></span>
+							</div>
+							<% _.each(["thwackability", "divinity", "musclitude", "martyrdom", "moxie", "groundFriction", "ruthlessness", "unthwackability", "overpowerment"], function(attribute) { %>
+								<div <%= scale(team.attributes[attribute]) %>>
+									<span class="stlat-truncated"><%= round(team.attributes[attribute]) %></span>
+									<span class="stlat-full"><%= team.attributes[attribute] %></span>
+								</div>
+							<% }) %>
+							<div <%= scale(team.laser) %>>
+								<span class="stlat-truncated"><%= round(team.laser) %></span>
+								<span class="stlat-full"><%= team.laser %></span>
+							</div>
+							<div <%= scale(team.omni) %>>
+								<span class="stlat-truncated"><%= round(team.omni) %></span>
+								<span class="stlat-full"><%= team.omni %></span>
+							</div>
+						</div>
+					<% }) %>
+					<div class="squeezer-row">
+						<div class="squeezer-team">League Average</div>
+						<div <%= scale(model.get("league").wobabr) %>>
+							<span class="stlat-truncated"><%= round(5 * model.get("league").wobabr) %></span>
+							<span class="stlat-full"><%= 5 * model.get("league").wobabr %></span>
+						</div>
+						<div <%= scale(model.get("league").erpr) %>>
+							<span class="stlat-truncated"><%= round(5 * model.get("league").erpr) %></span>
+							<span class="stlat-full"><%= 5 * model.get("league").erpr %></span>
+						</div>
+						<div <%= scaleInverse(model.get("league").attributes["patheticism"]) %>>
+							<span class="stlat-truncated"><%= round(model.get("league").attributes["patheticism"]) %></span>
+							<span class="stlat-full"><%= model.get("league").attributes["patheticism"] %></span>
+						</div>
+						<% _.each(["thwackability", "divinity", "musclitude", "martyrdom", "moxie", "groundFriction", "ruthlessness", "unthwackability", "overpowerment"], function(attribute) { %>
+							<div <%= scale(model.get("league").attributes[attribute]) %>>
+								<span class="stlat-truncated"><%= round(model.get("league").attributes[attribute]) %></span>
+								<span class="stlat-full"><%= model.get("league").attributes[attribute] %></span>
+							</div>
+						<% }) %>
+						<div <%= scale(model.get("league").laser) %>>
+							<span class="stlat-truncated"><%= round(model.get("league").laser) %></span>
+							<span class="stlat-full"><%= model.get("league").laser %></span>
+						</div>
+						<div <%= scale(model.get("league").omni) %>>
+							<span class="stlat-truncated"><%= round(model.get("league").omni) %></span>
+							<span class="stlat-full"><%= model.get("league").omni %></span>
+						</div>
+					</div>
+				</div>
+			</section>
 		</script>
 		
 		<script data-main="astrology.js" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
