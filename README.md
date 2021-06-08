@@ -17,4 +17,4 @@ A tool to mess with ballpark dimensions with sliders
 A count of how many days since Leach Ingram walked a batter.
 
 ## [Pudge Check Site](https://teagrrl.github.io/astrology/pudgecheck/)
-Pudge Nakamoto sentimint analysis (RIV)
+Pudge Nakamoto sentimint analysis (RIV (nvm))
