@@ -122,7 +122,7 @@
 		"emoji": "0x274C",
 		"title": "Unstable",
         "description": "Unstable players have a much higher chance of being incinerated in a Solar Eclipse.",
-        "descriptons": {
+        "descriptions": {
             "player": "Unstable Players have a much higher chance of being incinerated in a Solar Eclipse.",
             "team": "Unstable Teams have a chance of being incinerated in a Solar Eclipse."
         }
@@ -975,7 +975,7 @@
         "id": "SECRET_TUNNELS",
 		"emoji": "0x1F687",
         "title": "Secret Tunnels",
-        "description": ""
+        "description": "A network of tunnels underneath this Ballpark."
     },
     {
         "id": "SOLAR_PANELS",
@@ -1533,5 +1533,29 @@
 			"ballpark": "All Wins and Unwins earned in this Ballpark will be Squared.",
 			"team": "All Wins and Unwins earned by this Team will be Squared."
 		}
-	}
+	},
+    {
+        "id": "AIR_BALLOONS",
+		"emoji": "0x1F388",
+        "title": "Air Balloons",
+        "description": "A small, permanent amount of negative eDensity is added for each Run or Win earned in this Ballpark."
+    },
+    {
+        "id": "VERY_FOUL_BALLS",
+		"emoji": "0x1F9A8",
+        "title": "Very Foul Balls",
+        "description": "Every Foul Ball hit in this Ballpark will add 5x the eDensity that it normally would."
+    },
+    {
+        "id": "LIGHT_SWITCH_ON",
+		"emoji": "0x1F53A",
+        "title": "Light Switch ON",
+        "description": "Toggle the polarity of your Stadium's eDensity any time the Light Switch is rebuilt. Currently in the ON position."
+    },
+    {
+        "id": "LIGHT_SWITCH_OFF",
+		"emoji": "0x1F53B",
+        "title": "Light Switch OFF",
+        "description": "Toggle the polarity of your Stadium's eDensity any time the Light Switch is rebuilt. Currently in the OFF position."
+    }
 ]

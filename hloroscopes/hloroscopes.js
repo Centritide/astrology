@@ -514,36 +514,38 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	});
 	App.Models.Stadium = Backbone.Model.extend({
 		filthiness: function() {
-			if(this.get("filthiness") > 0.75) {
-				return "Absolutely Filthy";
-			} else if(this.get("filthiness") > 0.5) {
-				return "Kind of Filthy";
-			} else if(this.get("filthiness") > 0.25) {
-				return "Uncomfortable";
-			} else {
+			if(this.get("filthiness") < 0.25) {
 				return "Getting Uncomfortable";
+			} else if(this.get("filthiness") < 0.5) {
+				return "Uncomfortable";
+			} else if(this.get("filthiness") < 0.75) {
+				return "Kind of Filthy";
+			} else {
+				return "Absolutely Filthy";
 			}
 		},
 		hype: function() {
-			if(this.get("hype") > 0.75) {
-				return "Major";
-			} else if(this.get("hype") > 0.5) {
-				return "Dope";
-			} else if(this.get("hype") > 0.1) {
-				return "Minor";
-			} else {
+			if(this.get("hype") < 0.25) {
 				return "Pedestrian";
+			} else if(this.get("hype") < 0.5) {
+				return "Minor";
+			} else if(this.get("hype") < 0.75) {
+				return "Dope";
+			} else if(this.get("hype") < 0.99) {
+				return "Major";
+			} else {
+				return "Peak";
 			}
 		},
 		luxuriousness: function() {
-			if(this.get("luxuriousness") > 0.75) {
-				return "Very High";
-			} else if(this.get("luxuriousness") > 0.5) {
-				return "High";
-			} else if(this.get("luxuriousness") > 0.25) {
-				return "Medium";
-			} else {
+			if(this.get("luxuriousness") < 0.25) {
 				return "Low";
+			} else if(this.get("luxuriousness") < 0.5) {
+				return "Medium";
+			} else if(this.get("luxuriousness") > 0.75) {
+				return "High";
+			} else {
+				return "Very High";
 			}
 		},
 		prefab: function() {
