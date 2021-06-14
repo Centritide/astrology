@@ -101,9 +101,6 @@
 			<div class="footer-toggles">
 				<label><input data-toggle="items" type="checkbox" <%= model.get("items") ? "checked" : "" %>/><span>Items Adjustments</span></label>
 				<label><input data-toggle="group_active" type="checkbox" <%= model.get("group_active") ? "checked" : "" %>/><span>Combine Roster</span></label>
-				<% if(model.get("shadows")) { %>
-					<label><input data-toggle="group_shadows" type="checkbox" <%= model.get("group_shadows") ? "checked" : "" %>/><span>Combine Shadows</span></label>
-				<% } %>
 				<label><input data-toggle="shadows" type="checkbox" <%= model.get("shadows") ? "checked" : "" %>/><span>Show Shadows</span></label>
 				<label><input data-toggle="forbidden_knowledge" type="checkbox" <%= model.get("forbidden_knowledge") ? "checked" : "" %>/><span>Forbidden Knowledge</span></label>
 			</div>

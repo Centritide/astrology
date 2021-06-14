@@ -54,7 +54,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 	App.Models.Team = Backbone.Model.extend({
 		parse: function(data) {
 			data.roster = _.union(data.lineup, data.rotation);
-			data.shadows = _.union(data.bench, data.bullpen);
 			return data;
 		},
 		emoji: function() {
@@ -172,15 +171,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			if(team) {
 				if(_.contains(team.get("lineup"), this.id)) {
 					return "Lineup";
-				} 
+				}
 				if(_.contains(team.get("rotation"), this.id)) {
 					return "Rotation";
-				} 
-				if(_.contains(team.get("bullpen"), this.id)) {
-					return "Bullpen";
-				} 
-				if(_.contains(team.get("bench"), this.id)) {
-					return "Bench";
+				}
+				if(_.contains(team.get("shadows"), this.id)) {
+					return "Shadows";
 				}
 			}
 			return "-";
@@ -334,9 +330,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				if(localStorage.getItem("group_active_state") !== null) {
 					this.model.set("group_active", localStorage.getItem("group_active_state") == "true");
 				}
-				if(localStorage.getItem("group_shadows_state") !== null) {
-					this.model.set("group_shadows", localStorage.getItem("group_shadows_state") == "true");
-				}
 				if(localStorage.getItem("shadows_state") !== null) {
 					this.model.set("shadows", localStorage.getItem("shadows_state") == "true");
 				}
@@ -372,7 +365,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 					this.render();
 					// falls through
 				case "group_active":
-				case "group_shadows":
 				case "items":
 					if(teamView) {
 						teamView.render();
@@ -447,7 +439,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				default:
 					groups = _.union(groups, isRosterCombined() ? ["roster"] : ["lineup", "rotation"]);
 					if(isShadowsVisible()) {
-						groups = _.union(groups, isShadowsCombined() ? ["shadows"] : ["bench", "bullpen"]);
+						groups = _.union(groups, ["shadows"]);
 					}
 			}
 			if(sortColumn) {
@@ -529,11 +521,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 						rotation: _.union(t.rotation, u.get("rotation"))
 					}
 				}, { "lineup": [], "rotation": [] }).value();
-			_.chain(this.collection)
-				.each(function(team) { team.set("rank", team.getAverage("lineup", "wobabr") + team.getAverage("rotation", "erpr")); })
-				.sortBy(function(team) { return team.get("rank"); })
-				.reverse()
-				.each(function(team, index) { return team.set("rank", index + 1); });
 			this.collection.push(new App.Models.Team({
 				emoji: 0x26BE,
 				id: "all",
@@ -559,6 +546,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			if($("section.team").length) {
 				scrollPos = { x: $("section.team").scrollLeft(), y: $("section.team").scrollTop() };
 			}
+			this.calculateRanks();
 			if(sortColumn) {
 				var chain = _.chain(this.collection);
 				chain = chain.sortBy(function(team) {
@@ -607,6 +595,16 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				$("section.team").scrollLeft(scrollPos.x);
 				$("section.team").scrollTop(scrollPos.y);
 			}
+		},
+		calculateRanks: function() {
+			_.chain(this.collection)
+				.filter(function(team) {
+					return team.type() == "ilb";
+				})
+				.each(function(team) { team.set("rank", team.getAverage("lineup", "wobabr") + team.getAverage("rotation", "erpr")); })
+				.sortBy(function(team) { return team.get("rank"); })
+				.reverse()
+				.each(function(team, index) { return team.set("rank", index + 1); });
 		},
 		events: {
 			"click th": "sortTeams"
@@ -741,7 +739,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 					model: new App.Models.Footer({
 						isItemsApplied: true,
 						isRosterCombined: false,
-						isShadowsCombined: false,
 						isShadowsVisible: false,
 						isKnowledgeVisible: false
 					})
@@ -868,10 +865,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 	
 	function isRosterCombined() {
 		return footerView ? footerView.model.get("group_active") : $("[data-toggle=group_active]").prop("checked");
-	}
-	
-	function isShadowsCombined() {
-		return footerView ? footerView.model.get("group_shadows") : $("[data-toggle=group_shadows]").prop("checked");
 	}
 	
 	function isShadowsVisible() {
