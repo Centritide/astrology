@@ -85,7 +85,7 @@
 					<% if(get("id") == "all") { %>
 						<%= players("Active") %>
 						<%= players("Deceased") %>
-						<div class="shadows">
+						<div class="team-shadows">
 							<%= players("Exhibition") %>
 							<%= players("Inactive") %>
 						</div>
@@ -94,12 +94,9 @@
 					<% } else { %>
 						<%= players("Lineup") %>
 						<%= players("Rotation") %>
-						<div class="shadows">
-							<% if(_.size(get("bench"))) { %>
-								<%= players("Bench") %>
-							<% } %>
-							<% if(_.size(get("bullpen"))) { %>
-								<%= players("Bullpen") %>
+						<div class="team-shadows">
+							<% if(_.size(get("shadows"))) { %>
+								<%= players("Shadows") %>
 							<% } %>
 							<% if(_.size(get("percolated"))) { %>
 								<%= players("Percolated") %>
@@ -120,7 +117,7 @@
 			<ul>
 				<% _.each(players, function(player) { %>
 					<li>
-						<a href="#<%= player.slug() %>"><%= player.canonicalName() %></a><a class="shadows player-link" href="#<%= player.slug() %>/advanced" title="See the history of advanced player stats for <%= player.canonicalName() %>"><%= emoji(0x1F34E) %></a><a class="player-link" href="https://blaseball.com/player/<%= player.id %>" title="Go to official player page for <%= player.canonicalName() %>"><%= emoji(0x1F517) %></a></li>
+						<a href="#<%= player.slug() %>"><%= player.canonicalName() %></a><a class="team-shadows player-link" href="#<%= player.slug() %>/advanced" title="See the history of advanced player stats for <%= player.canonicalName() %>"><%= emoji(0x1F34E) %></a><a class="player-link" href="https://blaseball.com/player/<%= player.id %>" title="Go to official player page for <%= player.canonicalName() %>"><%= emoji(0x1F517) %></a></li>
 				<% }); %>
 			</ul>
 		</script>
@@ -296,11 +293,11 @@
 						<strong>Fate</strong>
 						<span><%= get("data").fate %></span>
 					</div>
-					<div class="player-stat-row shadows">
+					<div class="player-stat-row team-shadows">
 						<strong>Fingers</strong>
 						<span><%= get("data").fingers %></span>
 					</div>
-					<div class="player-stat-row shadows">
+					<div class="player-stat-row team-shadows">
 						<strong>eDensity</strong>
 						<span><%= get("data").edensity ? get("data").edensity : "-" %></span>
 					</div>
@@ -502,10 +499,8 @@
 				<text class="legend lineup" text-anchor="end" dominant-baseline="middle" x="<%= svg.width - svg.margin / 2 - svg.radius * 2 %>" y="<%= svg.margin / 2 %>">lineup</text>
 				<circle class="legend rotation" cx="<%= svg.width - svg.margin / 2 %>" cy="<%= svg.margin / 2 + svg.radius * 3 %>" r="<%= svg.radius %>" />
 				<text class="legend rotation" text-anchor="end" dominant-baseline="middle" x="<%= svg.width - svg.margin / 2 - svg.radius * 2 %>" y="<%= svg.margin / 2 + svg.radius * 3 %>">rotation</text>
-				<circle class="legend bench" cx="<%= svg.width - svg.margin / 2 %>" cy="<%= svg.margin / 2 + svg.radius * 6 %>" r="<%= svg.radius %>" />
-				<text class="legend bench" text-anchor="end" dominant-baseline="middle" x="<%= svg.width - svg.margin / 2 - svg.radius * 2 %>" y="<%= svg.margin / 2 + svg.radius * 6 %>">bench</text>
-				<circle class="legend bullpen" cx="<%= svg.width - svg.margin / 2 %>" cy="<%= svg.margin / 2 + svg.radius * 9 %>" r="<%= svg.radius %>" />
-				<text class="legend bullpen" text-anchor="end" dominant-baseline="middle" x="<%= svg.width - svg.margin / 2 - svg.radius * 2 %>" y="<%= svg.margin / 2 + svg.radius * 9 %>">bullpen</text>
+				<circle class="legend shadows" cx="<%= svg.width - svg.margin / 2 %>" cy="<%= svg.margin / 2 + svg.radius * 6 %>" r="<%= svg.radius %>" />
+				<text class="legend shadows" text-anchor="end" dominant-baseline="middle" x="<%= svg.width - svg.margin / 2 - svg.radius * 2 %>" y="<%= svg.margin / 2 + svg.radius * 6 %>">shadows</text>
 				<% _.each(svg.plots, function(plot, name) { %>
 					<% _.each(plot.paths, function(path) { %>
 						<path class="<%= name %>" data-id="<%= path.id %>" d="<%= path.path.join(" ") %>" stroke-width="<%= svg.radius %>" />
@@ -579,24 +574,13 @@
 									<% }) %>
 								</ul>
 							</div>
-							<div class="players-column shadows">
-								<div class="players-header">Bench</div>
+							<div class="players-column team-shadows">
+								<div class="players-header">Shadows</div>
 								<ul>
-									<% _.each(model.get("data").bench, function(id) { %>
+									<% _.each(model.get("data").shadows, function(id) { %>
 										<% var thisPlayer = model.get("players").find({id : id}) %>
 										<% if(thisPlayer) { %>
 											<li><span><%= thisPlayer.get("name") %></span><span><%= isForbidden() ? Math.round(500 * thisPlayer.get("batting")) / 100 : thisPlayer.getBattingStars() %></span></li>
-										<% } else { %>
-											<li><span>Loading...</span><span><%= id %></span></li>
-										<% } %>
-									<% }) %>
-								</ul>
-								<div class="players-header">Bullpen</div>
-								<ul>
-									<% _.each(model.get("data").bullpen, function(id) { %>
-										<% var thisPlayer = model.get("players").find({id : id}) %>
-										<% if(thisPlayer) { %>
-											<li><span><%= thisPlayer.get("name") %></span><span><%= isForbidden() ? Math.round(500 * thisPlayer.get("pitching")) / 100 : thisPlayer.getPitchingStars() %></span></li>
 										<% } else { %>
 											<li><span>Loading...</span><span><%= id %></span></li>
 										<% } %>
@@ -614,12 +598,8 @@
 							<span><%= _.size(model.get("data").rotation) %> Players</span>
 						</div>
 						<div class="team-stat-row">
-							<strong>Bench</strong>
-							<span><%= _.size(model.get("data").bench) %> Players</span>
-						</div>
-						<div class="team-stat-row">
-							<strong>Bullpen</strong>
-							<span><%= _.size(model.get("data").bullpen) %> Players</span>
+							<strong>Shadows</strong>
+							<span><%= _.size(model.get("data").shadows) %> Players</span>
 						</div>
 					<% } %>
 				</div>

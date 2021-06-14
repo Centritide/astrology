@@ -473,7 +473,6 @@ a[data-toggle-spacing] {
 }
 
 .baserunning,
-.bench,
 .ominousness {
 	background: #33e28f;
 	fill: #33e28f;
@@ -502,7 +501,7 @@ a[data-toggle-spacing] {
 }
 
 .defense,
-.bullpen,
+.shadows,
 .elongation {
 	background: #e43b79;
 	fill: #e43b79;
@@ -724,18 +723,18 @@ i.half-star {
 	overflow: hidden;
 }
 
-.shadows,
-.player-stat-row.shadows,
-.players-column.shadows {
+.team-shadows,
+.player-stat-row.team-shadows,
+.players-column.team-shadows {
 	display: none;
 }
 
-.secrets .players-column.shadows,
-.secrets .team-players .shadows {
+.secrets .players-column.team-shadows,
+.secrets .team-players .team-shadows {
 	display: block;
 }
 
-.secrets .player-stat-row.shadows {
+.secrets .player-stat-row.team-shadows {
 	display: grid;
 }
 

@@ -689,8 +689,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					switch(player.position) {
 						case "lineup":
 						case "rotation":
-						case "bench":
-						case "bullpen":
+						case "shadows":
 							player.data.position = "active";
 							break;
 						default:
@@ -897,10 +896,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 										});
 									}
 									break;
-								case "bench":
-								case "bullpen":
 								case "lineup":
 								case "rotation":
+								case "shadows":
 									if(lastChange.get("data")[attribute].join(",") != value.join(",")) {
 										model.get("changes").push(attribute);
 									}
@@ -1146,7 +1144,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				var PlayersCollection = new App.Collections.Players();
 				PlayersCollection.fetch({
 					data: {
-						ids: _.union(this.model.get("lineup"), this.model.get("rotation"), this.model.get("bench"), this.model.get("bullpen"), this.model.get("percolated")).join(",")
+						ids: _.union(this.model.get("lineup"), this.model.get("rotation"), this.model.get("shadows"), this.model.get("percolated")).join(",")
 					},
 					success: function() {
 						thisView.model.set("players", PlayersCollection);
@@ -1514,10 +1512,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				padding = 20,
 				margin = 40,
 				radius = 4,
-				attributes = ["lineup", "rotation", "bench", "bullpen"],
+				attributes = ["lineup", "rotation", "shadows"],
 				collectionSize = this.collection.size(),
 				numPlayers = this.collection.reduce(function(c, d) {
-					return _.union(c, _.map(attributes, function(attribute) { return d.get("data")[attribute].length; }));
+					return _.union(c, _.map(attributes, function(attribute) { return _.get(d.get("data"), attribute, []).length; }));
 				}, []),
 				svg = { 
 					height: height,
@@ -1562,7 +1560,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					svg.plots[attribute].points.push({
 						id: update.id, 
 						x: xAbsolute, 
-						y: convertRelativeToAbsoluteY((update.get("data")[attribute].length - yMin) / yRange, svg)
+						y: convertRelativeToAbsoluteY((_.get(update.get("data"), attribute, []).length - yMin) / yRange, svg)
 					});
 				});
 				dateLabel = {
@@ -1644,7 +1642,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				$(".card").css({ left: leftOffset, top: topOffset });
 			}
 			if(update && (!update.get("players") || !update.get("players").length)) {
-				_.each(_.union(update.get("data").lineup, update.get("data").rotation, update.get("data").bench, update.get("data").bullpen), function(playerId) {
+				_.each(_.union(update.get("data").lineup, update.get("data").rotation, update.get("data").shadows), function(playerId) {
 					thisView.loadPlayer(playerId, update.get("start"), function(collection) {
 						if(!collection.length) {
 							var foundPlayer = formatPlayerData(activeTeam.get("players").findWhere({ id: playerId }).toJSON());
@@ -2179,8 +2177,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		var model = new App.Models.Team(data);
 		return {
 			arcana: model.arcana(),
-			bench: model.get("bench"),
-			bullpen: model.get("bullpen"),
 			championships: model.get("championships"),
 			emoji: model.get("emoji"),
 			id: model.get("id"),
@@ -2189,6 +2185,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			modifiers: model.modifiers(),
 			name: model.get("fullName"),
 			rotation: model.get("rotation"),
+			shadows: _.union(model.get("shadows"), model.get("bench"), model.get("bullpen")),
 			slogan: model.get("slogan"),
 			stadium: model.get("stadium")
 		}
