@@ -408,8 +408,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				hover += Math.round(1000 * rating) / 1000;
 				rating += adjustment;
 				if(_.contains(["patheticism", "tragicness", "pressurization"], attribute)) {
-					rating = Math.min(Math.max(rating, 0.001), 0.999);
-				} else if(!_.contains(["eDensity"], attribute)) {
+					rating = Math.min(rating, 0.999);
+				}
+				if(!_.contains(["eDensity"], attribute)) {
 					rating = Math.max(rating, 0.001);
 				}
 				rating = Math.round(1000 * rating) / 1000;

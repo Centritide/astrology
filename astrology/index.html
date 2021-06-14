@@ -36,7 +36,7 @@
 			<section class="index">
 				<h1>Astrology</h1>
 				<h2>A quick look at a Blaseball team's star charts. Choose a team above to begin.</h2>
-				<p><span>@yooori#1569</span> &#x2022; <a href="https://twitter.com/yoorilikeglass">twitter</a> &#x2022; <a href="https://www.blaseball.com/team/d2634113-b650-47b9-ad95-673f8e28e687"><%= emoji(0x1F52E) %></a> &#x2022; <a href="https://sibr.dev/">SIBR</a> &#x2022; <a href="javascript:;"><%= emoji(isLightMode() ? 0x1F506 : 0x1F311) %></a></p>
+				<p><span>@yooori#1569</span> &#x2022; <a href="https://twitter.com/yooridotblase">twitter</a> &#x2022; <a href="https://www.blaseball.com/team/d2634113-b650-47b9-ad95-673f8e28e687"><%= emoji(0x1F52E) %></a> &#x2022; <a href="https://sibr.dev/">SIBR</a> &#x2022; <a href="javascript:;"><%= emoji(isLightMode() ? 0x1F506 : 0x1F311) %></a></p>
 			</section>
 		</script>
 		
@@ -45,228 +45,44 @@
 				<h1>What are these numbers and what do they mean?</h1>
 				<p>Each player has a significant number of hidden properties (often called <em>"stlats"</em>) which are not visible through the public interface directly and thus are considered <em>forbidden knowledge</em>. Visible star ratings are calculated based on a weighted combination of these stlats but individual stlats seem to affect player performance in different game scenarios. Research on what these stlats mean is ongoing inside the <a href="https://discord.gg/XKppCuj">SIBR discord</a>.</p>
 				<h1>Is there a minimum or maximum to these stlats?</h1>
-				<p>Most stlats range between zero and one, however there's no known upper limit to most of them. Most stlats seem to have a lower limit of <code>0.01</code> and "negative stlats" an upper limit of <code>0.99</code>, presumably to prevent star calculations from breaking. Sometimes players may get slowly below the lower limit or slightly above the upper limit on initial stlat generation but any changes to those stlats "clamp" to their respective limits.</p>
+				<p>Most stlats range between zero and one, however there's no known upper limit to most of them. Most stlats seem to have a lower limit of <code>0.001</code> and "negative stlats" an upper limit of <code>0.999</code>, presumably to prevent star calculations from breaking. Sometimes players may get slowly below the lower limit or slightly above the upper limit on initial stlat generation but any changes to those stlats "clamp" to their respective limits.</p>
 
-				<h1>The Batting Stlats</h1>
-				<div class="faq-stlats">
-					<div class="faq-stlats-header">
-						<div>Name</div>
-						<div>Abbreviation</div>
-						<div>Star Weight</div>
-						<div>Description</div>
+				<% _.each(columns.categories, function(category) { %>
+					<h1>The <%= ucFirst(category.name) %> Stlats</h1>
+					<% if(category.description) { %>
+						<p><%= category.description %></p>
+					<% } %>
+					<div class="faq-stlats">
+						<% if(category.hasRating) { %> 
+							<div class="faq-stlats-header">
+								<div>Name</div>
+								<div>Abbreviation</div>
+								<div>Star Weight</div>
+								<div>Description</div>
+							</div>
+						<% } else { %>
+							<div class="faq-other-header">
+								<div>Name</div>
+								<div>Description</div>
+							</div>
+						<% }
+						(category.hasRating ? _.chain(category.attributes).sortBy("weight").reverse() : _.chain(category.attributes)).each(function(attribute) { 
+							if(category.hasRating) { %> 
+								<div class="faq-stlats-row">
+									<div><code><%= attribute.id %></code></div>
+									<div><%= attribute.shorthand %></div>
+									<div><%= attribute.direction == "desc" ? "-" : "" %><%= attribute.weight %></div>
+									<div><%= attribute.description %></div>
+								</div>
+							<% } else { %>
+								<div class="faq-other-row">
+									<div><code><%= attribute.id %></code></div>
+									<div><%= attribute.description %></div>
+								</div>
+							<% }
+						}) %>
 					</div>
-					<div class="faq-stlats-row">
-						<div><code>divinity</code></div>
-						<div>divin</div>
-						<div>0.35</div>
-						<div>Ability to hit home runs. This is boosted by "Power" blessings (eg. Ooze, Mushroom)</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>thwackability</code></div>
-						<div>thwack</div>
-						<div>0.35</div>
-						<div>General "quality of contact" with the ball, higher thwackability reduces groundouts and flyouts and increases hits.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>moxie</code></div>
-						<div>moxie</div>
-						<div>0.075</div>
-						<div>Represents "plate discipline" / drawing walks - determines how likely the player is to not swing at balls outside the strike zone.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>musclitude</code></div>
-						<div>muscl</div>
-						<div>0.075</div>
-						<div>
-							<p>Appears to determine if a batter's hit turns into a double instead of a single and is used to determine if a batted ball turns into a foul.</p>
-							<p>Positively correlates to doubles, got a 10% boost on players affected by the +10% boost to Speed in the Season 6 election, as well as 10% from the Power buff, and is boosted by the Mushroom.</p>
-						</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>patheticism</code></div>
-						<div>pathtc</div>
-						<div>-0.05</div>
-						<div>Likelihood of the batter (not) making contact with the ball. Correlates with high strikeout rate, lower batting average, on-base percentage, and similar derived stats.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>martyrdom</code></div>
-						<div>martyr</div>
-						<div>0.02</div>
-						<div>Determines whether a batter ground out with a runner on base that has to advance, turns into a Fielder's Choice or if the runner(s) is/are able to advance on the out.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>tragicness</code></div>
-						<div>tragic</div>
-						<div>-0.01</div>
-						<div>Tragicness is generated randomly, but often gets reset to exactly 0.1 at seemingly random points. Most current players have a tragicness of 0.1. The in-game effect of this is unknown. Allegedly linked to <code>shakespearianism</code>.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>buoyancy</code></div>
-						<div>float</div>
-						<div>0</div>
-						<div>Appears to turn fielded outs specifically into flyouts. Countered by the opposing pitcher's suppression. Included in the batting stars calculation, but does not affect the output. Also represents vibe period in the vibe calculation formula.</div>
-					</div>
-				</div>
-				<h1>The Pitching Stlats</h1>
-				<div class="faq-stlats">
-					<div class="faq-stlats-header">
-						<div>Name</div>
-						<div>Abbreviation</div>
-						<div>Star Weight</div>
-						<div>Description</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>unthwackability</code></div>
-						<div>unthwk</div>
-						<div>0.5</div>
-						<div>Lowers hits allowed, increases ground outs and flyouts. The "counter" to batter <code>thwackability.</code></div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>ruthlessness</code></div>
-						<div>ruth</div>
-						<div>0.4</div>
-						<div>How likely a pitch is to be inside the strike zone. Higher ruthlessness reduces walks and increases strikeouts. Along with unthwackability, is one of the primary components of pitcher performance.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>overpowerment</code></div>
-						<div>op</div>
-						<div>0.15</div>
-						<div>Seems to reduce the power of batted balls - mainly lowers home runs, but seems to affect all types of hits.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>shakespearianism</code></div>
-						<div>ssper</div>
-						<div>0.1</div>
-						<div>Appears to convert fielder's choices into double plays. Allegedly linked to <code>tragicness</code>, according to <a href="https://www.youtube.com/watch?v=zO05p-e57AQ&t=1188s">Joel</a>.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>coldness</code></div>
-						<div>cold</div>
-						<div>0.025</div>
-						<div>Unknown at this time, but there is weak signal that this is used in the stolen base rolls for a baserunner.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>suppression</code></div>
-						<div>supp</div>
-						<div>0</div>
-						<div>Appears to counter batter buoyancy and converts flyouts to ground outs.</div>
-					</div>
-				</div>
-				<h1>The Baserunning Stlats</h1>
-				<div class="faq-stlats">
-					<div class="faq-stlats-header">
-						<div>Name</div>
-						<div>Abbreviation</div>
-						<div>Star Weight</div>
-						<div>Description</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>laserlikeness</code></div>
-						<div>laser</div>
-						<div>0.5</div>
-						<div>The most significant factor in the baserunning star formula, appears to be a general measure of "baserunning skill".</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>continuation</code></div>
-						<div>cont</div>
-						<div>0.1</div>
-						<div>Governs runner advancement on hits, both how often and how many bases.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>baseThirst</code></div>
-						<div>thrst</div>
-						<div>0.1</div>
-						<div>Determines likelihood of base stealing attempts, although not necessarily success rate. A player with high base thirst but low <code>laserlikeness</code> will get caught stealing often.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>indulgence</code></div>
-						<div>indlg</div>
-						<div>0.1</div>
-						<div>Related to runner advancement on an out, likely also related to sac flys.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>groundFriction</code></div>
-						<div>fric</div>
-						<div>0.1</div>
-						<div>Appears to determine if a batter's hit turns into a triple instead of a single.</div>
-					</div>
-				</div>
-				<h1>The Defense Stlats</h1>
-				<p>Defense stlats are particularly hard to determine because the simulation does not seem to track defenders' positions (Rule 5e. When a team is on Defense, <span class="redacted-group"><span class="redacted">all</span><span class="redacted">of</span><span class="redacted">the</span><span class="redacted">team's</span><span class="super-redacted">players</span><span class="redacted">will</span><span class="redacted">stand</span><span class="super-redacted">somewhere</span><span class="redacted">out</span><span class="redacted">in</span><span class="redacted">the</span><span class="redacted">field.</span><span class="redacted">Doesn't</span><span class="redacted">really</span><span class="redacted">matter</span><span class="redacted">where.</span></span>) and the output does not always show which defenders were involved in a play.</p>
-				<div class="faq-stlats">
-					<div class="faq-stlats-header">
-						<div>Name</div>
-						<div>Abbreviation</div>
-						<div>Star Weight</div>
-						<div>Description</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>omniscience</code></div>
-						<div>omnisc</div>
-						<div>0.2</div>
-						<div>Controls fielding hits, turns batter hits into outs.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>tenaciousness</code></div>
-						<div>tenac</div>
-						<div>0.2</div>
-						<div>Related to steal attempts in some form.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>watchfulness</code></div>
-						<div>watch</div>
-						<div>0.1</div>
-						<div>Reduces baserunning attempts - unknown impact on success rate.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>anticapitalism</code></div>
-						<div>anticap</div>
-						<div>0.1</div>
-						<div>Seems to "defend" against base theft.</div>
-					</div>
-					<div class="faq-stlats-row">
-						<div><code>chasiness</code></div>
-						<div>chase</div>
-						<div>0.1</div>
-						<div>Defends against extra base hits, holding runners to first base.</div>
-					</div>
-				</div>
-				<h1>Other Stlats</h1>
-				<div class="faq-stlats">
-					<div class="faq-other-header">
-						<div>Name</div>
-						<div>Description</div>
-					</div>
-					<div class="faq-other-row">
-						<div><code>totalFingers</code></div>
-						<div>
-							<p>Finger count appears to represent instances of change to pitching stats. All players start with 10 fingers. Players impacted by general stat buffs all received 1 more finger, regardless of the size of the buff. Party buffs don't appear to grant fingers.</p>
-							<p>Raúl Leal received an over-debuff of 0.51 with the Iffey Jr. to Minimize them, and gained 51 fingers - they appear to have been given -0.01 to all stlats 51 times to get them to 0 in everything.</p>
-							<p>This process in reverse is likely how PolkaDot Patterson and Axel Trololol got their pitching maximized (we can check on Axel since we have their stat history) by adding a small amount repeatedly until they hit 5 stars.</p>
-							<p>Goodwin Morin seems to have gotten the reverse of Raúl's process when being maximized, instead of the same process PolkaDot Patterson and Axel Trololol got - resulting in gaining 81 fingers and +0.81 to every attribute. This brought their pitching to 5 stars, but boosted other ratings much further - they ended up with 7 baserunning stars, for example.</p>
-						</div>
-					</div>
-					<div class="faq-other-row">
-						<div><code>pressurization</code></div>
-						<div>Represents "minimum vibes" in the vibe calculation formula (higher pressurization = lower vibe floor).</div>
-					</div>
-					<div class="faq-other-row">
-						<div><code>cinnamon</code></div>
-						<div>Represents "maximum vibes" in the vibe calculation formula (higher cinnamon = higher vibe ceiling).</div>
-					</div>
-					<div class="faq-other-row">
-						<div><code>soul</code></div>
-						<div>Represents the amount of 11-letter "chunks" in the player's soulscream. All players have a value between 2 and 9, with the exception of <a href="https://www.blaseball.com/player/a1628d97-16ca-4a75-b8df-569bae02bef9">Chorby Soul</a>, with a value of 1777 (hence the broken soulscream).</div>
-					</div>
-					<div class="faq-other-row">
-						<div><code>peanutAllergy</code></div>
-						<div>Whether the player is allergic to peanuts. An allergic player will get an allergic reaction (a debuff) from swallowing a peanut during Peanut weather, whereas a non-allergic player will get a "yummy" reaction (a buff) instead.</div>
-					</div>
-					<div class="faq-other-row">
-						<div><code>fate</code></div>
-						<div>Unknown effect. Ranges between 1 and 99. Directly visible on the player page, unlike other stlats. Seems to change sometimes when a player changes teams.</div>
-					</div>
-				</div>
+				<% }) %>
 
 				<h1>The Sibrmetric Stlats</h1>
 				<p>The <code>wOBABR</code>, <code>SLGBR</code>, <code>BsRR</code>, and <code>ERPR</code> ratings are a fan attempt to make better star rankings for players by doing statistical analysis each season of player performance verses different relevent attributes to see how positively or negatively correlated certain attributes with actual performance metrics such as <a href="https://library.fangraphs.com/offense/woba/">wOBA</a>, <a href="https://www.mlb.com/glossary/standard-stats/slugging-percentage">Slugging Percentage</a>, <a href="https://library.fangraphs.com/offense/bsr/">Base Running</a>, and <a href="https://www.mlb.com/glossary/standard-stats/earned-run">Earned Runs</a>. <a href="https://twitter.com/ErrantlyErin">ErrantlyErin</a> (also ErrantlyErin#0805 on discord) runs a linear regression in Excel using the <a href="https://support.microsoft.com/en-us/office/linest-function-84d7d0d9-6e50-4101-977a-fa7abf772b6d">LINEST function</a> to give slopes for each attribute and turns those into the percent weights used in these formulas. More information on this can be found in the <a href="https://discord.gg/XKppCuj">SIBR discord</a>.</p>
@@ -276,701 +92,289 @@
 		<script type="text/template" id="template-nav">
 			<ul>
 				<% _.each(models, function(model) { %>
-					<li><a href="#<%= model.slug() + (isForbidden() ? "/forbidden-knowledge" : "") %>"><i class="team-icon" style="background:<%= model.get("mainColor") %>"><%= emoji(model.get("emoji")) %></i><span style="<%= (isLightMode() ? "background:" : "color:") + model.get("secondaryColor") %>"><%= model.get("shorthand") %></span></a></li>
+					<li><a href="#<%= model.slug() %>"><i class="team-icon" style="background:<%= model.get("mainColor") %>"><%= model.emoji() %></i><span style="<%= (isLightMode() ? "background:" : "color:") + model.get("secondaryColor") %>"><%= model.get("shorthand") %></span></a></li>
 				<% }); %>
 			</ul>
 		</script>
 		
 		<script type="text/template" id="template-footer">
 			<div class="footer-toggles">
-				<a data-toggle-items="<%= isEquipped() ? "true" : "false" %>" href="javascript:;"><%= isEquipped() ? "Exclude" : "Include" %> Items</a>
-				<a data-toggle-group-active="<%= isRosterCombined() ? "true" : "false" %>" href="javascript:;"><%= isRosterCombined() ? "Separate" : "Combine" %> Roster</a>
-				<a "<%= isShadows() ? "" : " style='display:none'" %> data-toggle-group-shadows="<%= isShadowsCombined() ? "true" : "false" %>" href="javascript:;"><%= isShadowsCombined() ? "Separate" : "Combine" %> Shadows</a>
-				<a data-toggle-shadows="<%= isShadows() ? "true" : "false" %>" href="javascript:;"><%= isShadows() ? "Hide" : "Peer into" %> the Shadows</a>
-				<a data-toggle-knowledge="<%= isForbidden() ? "true" : "false" %>" href="javascript:;">Forbidden Knowledge <%= isForbidden() ? "Visible" : "Hidden" %></a>
-				<% if(isForbidden()) { %>
+				<label><input data-toggle="items" type="checkbox" <%= model.get("items") ? "checked" : "" %>/><span>Items Adjustments</span></label>
+				<label><input data-toggle="group_active" type="checkbox" <%= model.get("group_active") ? "checked" : "" %>/><span>Combine Roster</span></label>
+				<% if(model.get("shadows")) { %>
+					<label><input data-toggle="group_shadows" type="checkbox" <%= model.get("group_shadows") ? "checked" : "" %>/><span>Combine Shadows</span></label>
+				<% } %>
+				<label><input data-toggle="shadows" type="checkbox" <%= model.get("shadows") ? "checked" : "" %>/><span>Show Shadows</span></label>
+				<label><input data-toggle="forbidden_knowledge" type="checkbox" <%= model.get("forbidden_knowledge") ? "checked" : "" %>/><span>Forbidden Knowledge</span></label>
+			</div>
+			<div class="footer-buttons">
+				<% if(model.get("forbidden_knowledge")) { %>
+					<div class="color-reference">
+						<span>Colors</span>
+						<span class="stat-terrible">Terrible</span>
+						<span class="stat-bad">Bad</span>
+						<span class="stat-poor">Poor</span>
+						<span class="stat-okay">Okay</span>
+						<span class="stat-good">Good</span>
+						<span class="stat-great">Great</span>
+						<span class="stat-exceptional">Exceptional</span>
+						<span class="stat-elite">Elite</span>
+						<span class="stat-super-elite">Super Elite</span>
+						</div>
+				<% } %>
+				<% if(model.get("forbidden_knowledge")) { %>
 					<a data-toggle-faq="false" href="javascript:;"><%= emoji(0x2754) %></a>
 				<% } %>
 				<a data-toggle-lights="<%= isLightMode() ? "true" : "false" %>" href="javascript:;"><%= emoji(isLightMode() ? 0x1F506 : 0x1F311) %></a>
 			</div>
-			<% if(isForbidden()) { %>
-				<div class="color-reference">
-					<span>Colors</span>
-					<span class="stlat-terrible">Terrible</span>
-					<span class="stlat-bad">Bad</span>
-					<span class="stlat-poor">Poor</span>
-					<span class="stlat-good">Good</span>
-					<span class="stlat-great">Great</span>
-					<span class="stlat-exceptional">Exceptional</span>
-					<span class="stlat-elite">Elite</span>
-					<span class="stlat-super-elite">Super Elite</span>
-				</div>
-			<% } %>
 		</script>
 		
 		<script type="text/template" id="template-team">
 			<section class="team">
-				<div class="team-icon" style="background:<%= get("mainColor") %>">
-					<%= emoji(get("emoji")) %>
-				</div>
-				<div class="team-info">
-					<div class="team-name"><%= get("fullName") %></div>
-					<div class="team-slogan"><%= get("slogan") %></div>
-				</div>
-			</section>
-			<section class="players">
-				<% if(_.size(get("tributes"))) { %>
-					<%= players("Tributes") %>
-				<% } else { %>
-					<% if(isRosterCombined()) { %>
-						<%= players("Team") %>
-					<% } else { %> 
-						<%= players("Lineup") %>
-						<%= players("Rotation") %>
-					<% } %>
-					<% if(isShadows()) { %>
-						<% if(isShadowsCombined()) { %>
-							<%= players("Shadows") %>
-						<% } else if(_.size(get("bench")) || _.size(get("bullpen")) || _.size(get("percolated"))) { %>
-							<% if(_.size(get("bench"))) { %>
-								<%= players("Bench") %>
-							<% } %>
-							<% if(_.size(get("bullpen"))) { %>
-								<%= players("Bullpen") %>
-							<% } %>
-							<% if(_.size(get("percolated"))) { %>
-								<%= players("Percolated") %>
-							<% } %>
-						<% } %>
-					<% } %>
-				<% } %>
-			</section>
-		</script>
-		
-		<script type="text/template" id="template-players">
-			<% var isCombined = (isRosterCombined() && position == "Team") || (isShadowsCombined() && position == "Shadows") %>
-			<div class="player-summary <%= isCombined ? "with-overall" : "" %>">
-				<div class="players-header"><%= position %></div>
-				<div class="summary-header">
-					<div class="summary-general" data-sort="name">Name</div>
-					<% if(isCombined) { %>
-						<div class="summary-general" data-sort="overallRating">Overall</div>
-					<% } %>
-					<div class="summary-batting" data-sort="hittingRating">Batting</div>
-					<div class="summary-pitching" data-sort="pitchingRating">Pitching</div>
-					<div class="summary-baserunning" data-sort="baserunningRating">Baserunning</div>
-					<div class="summary-defense" data-sort="defenseRating">Defense</div>
-					<div class="summary-extra" data-sort="totalRating">Total</div>
-				</div>
-				<% _.each(players, function(player) { %>
-					<div class="summary-row">
-						<div class="summary-player-name">
-							<a href="https://www.blaseball.com/player/<%= player.id %>"><%= player.get("name") %></a>
-						</div>
-						<% if(isCombined) { %>
-							<div><%= stars(player.calculateOverallRating()) %></div>
-						<% } %>
-						<div><%= stars(player.calculateBatting()) %></div>
-						<div><%= stars(player.calculatePitching()) %></div>
-						<div><%= stars(player.calculateBaserunning()) %></div>
-						<div><%= stars(player.calculateDefense()) %></div>
-						<div><%= Math.round(10 * player.calculateTotalRating()) / 2 %></div>
-						
+				<div class="team-header">
+					<div class="team-icon" style="background:<%= team.get("mainColor") %>">
+						<%= team.emoji() %>
 					</div>
+					<div class="team-info">
+						<div class="team-name"><%= team.get("fullName") %></div>
+						<div class="team-slogan"><%= team.get("slogan") %></div>
+					</div>
+				</div>
+				<% _.each(groups, function(group) { %>
+					<% if(_.contains(["all"], group) || (team.get(group) && team.get(group).length)) { %>
+						<% if(!_.contains(["all", "tributes"], group)) { %>
+							<h1><%= ucFirst(group) %></h1>
+						<% } %>
+						<table>
+							<colgroup span="<%= columns.sibrmetrics.length + 6 %>"></colgroup>
+							<% _.each(columns.categories, function(category) {
+								if(isKnowledgeVisible()) { %>
+									<colgroup span="<%= category.attributes.length + (category.hasRating ? 1 : 0) %>"></colgroup>
+								<% } else if(category.hasRating) { %>
+									<colgroup></colgroup>
+								<% } 
+							}) %>
+							<thead>
+								<tr>
+									<th colspan="<%= columns.sibrmetrics.length + 6 %>">General</th>
+									<% _.each(columns.categories, function(category) { 
+										if(isKnowledgeVisible()) { %>
+											<th colspan="<%= category.attributes.length + (category.hasRating ? 1 : 0) %>"><%= category.name %></th>
+										<% } else if(category.hasRating) { %>
+											<th><%= category.name %></th>
+										<% } 
+									}) %>
+								</tr>
+								<tr>
+									<th class="player-name" title="Player Name" data-sort="name">Name</th>
+									<th title="Player Team" data-sort="team">Team</th>
+									<th title="Player Position" data-sort="position">Position</th>
+									<th title="Player Modifications" data-sort="modifications">Modifications</th>
+									<th title="Player Items" data-sort="items">Items</th>
+									<% _.each(columns.sibrmetrics, function(sibrmetric) { %>
+										<th title="<%= sibrmetric.name %>" data-sort="<%= sibrmetric.id %>"><%= sibrmetric.shorthand %></th>
+									<% }) %>
+									<th title="Combined Stars" data-sort="combined"><%= emoji(0x1F31F) %></th>
+									<% _.each(columns.categories, function(category) {
+										if(category.hasRating) { %>
+											<th title="<%= category.name %> Stars" data-sort="<%= category.id %>"><%= emoji(0x2B50) %></th>
+										<% }
+										if(isKnowledgeVisible()) {
+											_.each(category.attributes, function(attribute) { %>
+												<th title="<%= attribute.name %>" data-sort="<%= attribute.id %>"><%= attribute.shorthand %></th>
+											<% })
+										}
+									}) %>
+								</tr>
+							</thead>
+							<tbody>
+								<% _.each(team.get("sorted") ? team.get("sorted")[group] : (_.contains(["all"], group) ? players.pluck("id") : team.get(group)), function(id) { %>
+									<tr>
+										<td class="player-name"><a href="https://blaseball.com/player/<%= id %>"><%= players.get(id).canonicalName() %></a></td>
+										<td><%= players.get(id).team() %></td>
+										<td class="player-stat"><%= players.get(id).position() %></td>
+										<td class="player-stat">
+											<% if(players.get(id).modifications().length) {
+												_.each(players.get(id).modifications(), function(modifier) { %>
+													<%= getModifier(modifier) %>
+												<% })
+											} else { %>
+												-
+											<% } %>
+										</td>
+										<td class="player-stat">
+											<% if(players.get(id).items().length) {
+												_.each(players.get(id).items(), function(item) { %>
+													<%= item %>
+												<% })
+											} else { %>
+												-
+											<% } %>
+										</td>
+										<% _.each(columns.sibrmetrics, function(sibrmetric) { %>
+											<td class="player-stat <%= players.get(id).getScaleClass(sibrmetric.id) %>" title="<%= Math.round(players.get(id).getSummary(sibrmetric.id) * 5000) / 1000 %> <%= sibrmetric.shorthand %> Stars"><%= Math.round(players.get(id).getSummary(sibrmetric.id) * 5000) / 1000 %></td>
+										<% }) %>
+										<td class="player-stat <%= players.get(id).getScaleClass("combined") %>" title="<%= Math.round(players.get(id).getSummary("combined") * 5000) / 1000 %> Combined Stars"><%= Math.round(players.get(id).getSummary("combined") * 5000) / 1000 %></td>
+										<% _.each(columns.categories, function(category) { 
+											if(category.hasRating) { %>
+												<td class="player-stat <%= players.get(id).getScaleClass(category.id) %>" title="<%= Math.round(players.get(id).getSummary(category.id) * 5000) / 1000 %> <%= category.name %> Stars"><%= Math.round(players.get(id).getSummary(category.id) * 5000) / 1000 %></td>
+											<% }
+											if(isKnowledgeVisible()) {
+												_.each(category.attributes, function(attribute) { 
+													if(attribute.id == "peanutAllergy") { %>
+														<td class="player-stat <%= players.get(id).get(attribute.id) ? "stat-terrible" : "stat-exceptional" %>" title="<%= players.get(id).get(attribute.id) ? "" : "Not " %>Allergic"><%= players.get(id).allergy() %></td>
+													<% } else if(attribute.id == "eDensity") { %>
+														<td class="player-stat" title="<%= attribute.name %>: <%= players.get(id).get(attribute.id) %>"><%= Math.round(players.get(id).get(attribute.id) * 1000) / 1000 %></td>
+													<% } else if(category.id == "misc") { %>
+														<td class="player-stat" title="<%= attribute.name %>: <%= players.get(id).get(attribute.id) %>"><%= players.get(id).get(attribute.id) %></td>
+													<% } else { %>
+														<td class="player-stat <%= players.get(id).getScaleClass(attribute.id) %> <%= players.get(id).getAdjustment(attribute.id) ? "stat-adjusted" : "" %>" title="<%= attribute.name %>: <%= players.get(id).getTooltip(attribute.id) %>"><%= Math.round(players.get(id).getAdjusted(attribute.id) * 1000) / 1000 %></td>
+													<% }
+												})
+											}
+										}) %>
+									</tr>
+								<% }) %>
+								<% if(!_.contains(["all", "tributes"], group)) { %>
+									<tr>
+										<td class="player-name"><strong><%= ucFirst(group) %> Average</strong></td>
+										<td colspan="4"></td>
+										<% _.each(columns.sibrmetrics, function(sibrmetric) { %>
+											<td class="player-stat <%= team.getScaleClass(group, sibrmetric.id) %>" title="<%= Math.round(team.getAverage(group, sibrmetric.id) * 5000) / 1000 %> Average <%= sibrmetric.shorthand %> Stars"><%= Math.round(team.getAverage(group, sibrmetric.id) * 5000) / 1000 %></td>
+										<% }) %>
+										<td class="player-stat <%= team.getScaleClass(group, "combined") %>" title="<%= Math.round(team.getAverage(group, "combined") * 5000) / 1000 %> Average Combined Stars"><%= Math.round(team.getAverage(group, "combined") * 5000) / 1000 %></td>
+										<% _.each(columns.categories, function(category) { 
+											if(category.hasRating) { %>
+												<td class="player-stat <%= team.getScaleClass(group, category.id) %>" title="<%= Math.round(team.getAverage(group, category.id) * 5000) / 1000 %> Average <%= category.name %> Stars"><%= Math.round(team.getAverage(group, category.id) * 5000) / 1000 %></td>
+											<% }
+											if(isKnowledgeVisible()) {
+												_.each(category.attributes, function(attribute) { 
+													if(attribute.id == "peanutAllergy") { %>
+														<td class="player-stat <%= team.getScaleClass(group, attribute.id) %>" title="<%= Math.round(team.getAverage(group, attribute.id) * 100) %>% Allergic"><%= Math.round(team.getAverage(group, attribute.id) * 100) %>%</td>
+													<% } else if(category.id == "misc") { %>
+														<td class="player-stat" title="Average <%= attribute.name %>: <%= Math.round(team.getAverage(group, attribute.id) * 1000) / 1000 %>"><%= Math.round(team.getAverage(group, attribute.id) * 1000) / 1000 %></td>
+													<% } else { %>
+														<td class="player-stat <%= team.getScaleClass(group, attribute.id) %>" title="Average <%= attribute.name %>: <%= Math.round(team.getAverage(group, attribute.id) * 1000) / 1000 %>"><%= Math.round(team.getAverage(group, attribute.id) * 1000) / 1000 %></td>
+													<% }
+												})
+											}
+										}) %>
+									</tr>
+								<% } %>
+							</tbody>
+						</table>
+					<% } %>
 				<% }) %>
-				<div class="summary-row">
-					<div class="summary-player-name">Average Stars</div>
-					<% if(isCombined) { %>
-						<div><%= Math.round(100 * average(players, "overallRating")) / 20 %></div>
-					<% } %>
-					<div><%= Math.round(100 * average(players, "hittingRating")) / 20 %></div>
-					<div><%= Math.round(100 * average(players, "pitchingRating")) / 20 %></div>
-					<div><%= Math.round(100 * average(players, "baserunningRating")) / 20 %></div>
-					<div><%= Math.round(100 * average(players, "defenseRating")) / 20 %></div>
-					<div><%= Math.round(100 * average(players, "totalRating")) / 20 %></div>
-				</div>
-			</div>
-		</script>
-		
-		<script type="text/template" id="template-stlats">
-			<div class="player-stlats">
-				<div class="players-header"><%= position %></div>
-				<div class="stlats-categories">
-					<div class="stlats-general">General</div>
-					<div class="stlats-batting">Batting</div>
-					<div class="stlats-pitching">Pitching</div>
-					<div class="stlats-baserunning">Baserunning</div>
-					<div class="stlats-defense">Defense</div>
-					<div class="stlats-extra">Extras</div>
-				</div>
-				<div class="stlats-header">
-					<div class="stlats-general" data-sort="name">
-						<span>Name</span>
-					</div>
-					<div class="stlats-general" data-sort="wobaRating">
-						<span class="stlat-truncated">wOBABR</span>
-						<span class="stlat-full">wOBA Rating</span>
-					</div>
-					<div class="stlats-general" data-sort="sluggingRating">
-						<span class="stlat-truncated">SLGBR</span>
-						<span class="stlat-full">Slugging Rating</span>
-					</div>
-					<div class="stlats-general" data-sort="bsrRating">
-						<span class="stlat-truncated">BsRR</span>
-						<span class="stlat-full">Base Running Rating</span>
-					</div>
-					<div class="stlats-general" data-sort="earnedRunsRating">
-						<span class="stlat-truncated">ERPR</span>
-						<span class="stlat-full">Earned Runs Rating</span>
-					</div>
-					<div class="stlats-general" data-sort="totalRating">
-						<span class="stlat-truncated">stars</span>
-						<span class="stlat-full">Combined Stars</span>
-					</div>
-					
-					<div class="stlats-batting" data-sort="hittingRating">
-						<span class="stlat-truncated">stars</span>
-						<span class="stlat-full">Batting Stars</span>
-					</div>
-					<div class="stlats-batting" data-sort="buoyancy">
-						<span class="stlat-truncated">float</span>
-						<span class="stlat-full">Buoyancy</span>
-					</div>
-					<div class="stlats-batting" data-sort="divinity">
-						<span class="stlat-truncated">divin</span>
-						<span class="stlat-full">Divinity</span>
-					</div>
-					<div class="stlats-batting" data-sort="martyrdom">
-						<span class="stlat-truncated">martyr</span>
-						<span class="stlat-full">Martyrdom</span>
-					</div>
-					<div class="stlats-batting" data-sort="moxie">
-						<span class="stlat-truncated">moxie</span>
-						<span class="stlat-full">Moxie</span>
-					</div>
-					<div class="stlats-batting" data-sort="musclitude">
-						<span class="stlat-truncated">muscl</span>
-						<span class="stlat-full">Musclitude</span>
-					</div>
-					<div class="stlats-batting" data-sort="patheticism">
-						<span class="stlat-truncated">pathtc</span>
-						<span class="stlat-full">Patheticism</span>
-					</div>
-					<div class="stlats-batting" data-sort="thwackability">
-						<span class="stlat-truncated">thwack</span>
-						<span class="stlat-full">Thwackability</span>
-					</div>
-					<div class="stlats-batting" data-sort="tragicness">
-						<span class="stlat-truncated">tragic</span>
-						<span class="stlat-full">Tragicness</span>
-					</div>
-					
-					<div class="stlats-pitching" data-sort="pitchingRating">
-						<span class="stlat-truncated">stars</span>
-						<span class="stlat-full">Pitching Stars</span>
-					</div>
-					<div class="stlats-pitching" data-sort="coldness">
-						<span class="stlat-truncated">cold</span>
-						<span class="stlat-full">Coldness</span>
-					</div>
-					<div class="stlats-pitching" data-sort="overpowerment">
-						<span class="stlat-truncated">op</span>
-						<span class="stlat-full">Overpowerment</span>
-					</div>
-					<div class="stlats-pitching" data-sort="ruthlessness">
-						<span class="stlat-truncated">ruth</span>
-						<span class="stlat-full">Ruthlessness</span>
-					</div>
-					<div class="stlats-pitching" data-sort="shakespearianism">
-						<span class="stlat-truncated">ssper</span>
-						<span class="stlat-full">Shakespearianism</span>
-					</div>
-					<div class="stlats-pitching" data-sort="suppression">
-						<span class="stlat-truncated">supp</span>
-						<span class="stlat-full">Suppression</span>
-					</div>
-					<div class="stlats-pitching" data-sort="unthwackability">
-						<span class="stlat-truncated">unthwk</span>
-						<span class="stlat-full">Unthwackability</span>
-					</div>
-					
-					<div class="stlats-baserunning" data-sort="baserunningRating">
-						<span class="stlat-truncated">stars</span>
-						<span class="stlat-full">Baserunning Stars</span>
-					</div>
-					<div class="stlats-baserunning" data-sort="baseThirst">
-						<span class="stlat-truncated">thrst</span>
-						<span class="stlat-full">Base Thirst</span>
-					</div>
-					<div class="stlats-baserunning" data-sort="continuation">
-						<span class="stlat-truncated">cont</span>
-						<span class="stlat-full">Continuation</span>
-					</div>
-					<div class="stlats-baserunning" data-sort="groundFriction">
-						<span class="stlat-truncated">fric</span>
-						<span class="stlat-full">Ground Friction</span>
-					</div>
-					<div class="stlats-baserunning" data-sort="indulgence">
-						<span class="stlat-truncated">indlg</span>
-						<span class="stlat-full">Indulgence</span>
-					</div>
-					<div class="stlats-baserunning" data-sort="laserlikeness">
-						<span class="stlat-truncated">laser</span>
-						<span class="stlat-full">Laserlikeness</span>
-					</div>
-					
-					<div class="stlats-defense" data-sort="defenseRating">
-						<span class="stlat-truncated">stars</span>
-						<span class="stlat-full">Defense Stars</span>
-					</div>
-					<div class="stlats-defense" data-sort="anticapitalism">
-						<span class="stlat-truncated">anticap</span>
-						<span class="stlat-full">Anticapitalism</span>
-					</div>
-					<div class="stlats-defense" data-sort="chasiness">
-						<span class="stlat-truncated">chase</span>
-						<span class="stlat-full">Chasiness</span>
-					</div>
-					<div class="stlats-defense" data-sort="omniscience">
-						<span class="stlat-truncated">omnisc</span>
-						<span class="stlat-full">Omniscience</span>
-					</div>
-					<div class="stlats-defense" data-sort="tenaciousness">
-						<span class="stlat-truncated">tenac</span>
-						<span class="stlat-full">Tenaciousness</span>
-					</div>
-					<div class="stlats-defense" data-sort="watchfulness">
-						<span class="stlat-truncated">watch</span>
-						<span class="stlat-full">Watchfulness</span>
-					</div>
-					
-					<div class="stlats-extra" data-sort="pressurization">
-						<span class="stlat-truncated">prssr</span>
-						<span class="stlat-full">Pressurization</span>
-					</div>
-					<div class="stlats-extra" data-sort="cinnamon">
-						<span class="stlat-truncated">cinnm</span>
-						<span class="stlat-full">Cinnamon</span>
-					</div>
-					<div class="stlats-extra" data-sort="soul">
-						<span class="stlat-truncated">soul</span>
-						<span class="stlat-full">Soul</span>
-					</div>
-					<div class="stlats-extra" data-sort="fate">
-						<span class="stlat-truncated">fate</span>
-						<span class="stlat-full">Fate</span>
-					</div>
-					<div class="stlats-extra" data-sort="totalFingers">
-						<span class="stlat-truncated">fingers</span>
-						<span class="stlat-full">Total Fingers</span>
-					</div>
-					<div class="stlats-extra" data-sort="peanutAllergy">
-						<span class="stlat-truncated">allergy</span>
-						<span class="stlat-full">Peanut Allergy</span>
-					</div>
-					<div class="stlats-extra" data-sort="eDensity">
-						<span class="stlat-truncated">density</span>
-						<span class="stlat-full">eDensity</span>
-					</div>
-				</div>
-				<% _.each(players, function(player) { %>
-					<% player.getItemAdjustments() %>
-					<div class="stlats-row">
-						<div class="stlat-player-name">
-							<a href="https://www.blaseball.com/player/<%= player.id %>"><%= player.get("name") %></a>
-						</div>
-						<div <%= scale(player.calculateWobaRating()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateWobaRating()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateWobaRating() %></span>
-						</div>
-						<div <%= scale(player.calculateSluggingRating()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateSluggingRating()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateSluggingRating() %></span>
-						</div>
-						<div <%= scale(player.calculateBsrRating()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateBsrRating()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateBsrRating() %></span>
-						</div>
-						<div <%= scale(player.calculateEarnedRunsRating()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateEarnedRunsRating()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateEarnedRunsRating() %></span>
-						</div>
-						<div <%= scale(player.calculateTotalRating() / 4) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateTotalRating()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateTotalRating() %></span>
-						</div>
-						
-						<div <%= scale(player.calculateBatting()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateBatting()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateBatting() %></span>
-						</div>
-						<% _.each(["buoyancy", "divinity", "martyrdom", "moxie", "musclitude"], function(attribute) { %>
-							<div <%= scale(player.getValue(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
-								<span class="stlat-full"><%= player.getValue(attribute) %></span>
-							</div>
-						<% }) %>
-						<div <%= scaleInverse(player.getValue("patheticism")) %>>
-							<span class="stlat-truncated"><%= round(player.getValue("patheticism")) %></span>
-							<span class="stlat-full"><%= player.getValue("patheticism") %></span>
-						</div>
-						<div <%= scale(player.getValue("thwackability")) %>>
-							<span class="stlat-truncated"><%= round(player.getValue("thwackability")) %></span>
-							<span class="stlat-full"><%= player.getValue("thwackability") %></span>
-						</div>
-						<div <%= scaleInverse(player.getValue("tragicness")) %>>
-							<span class="stlat-truncated"><%= round(player.getValue("tragicness")) %></span>
-							<span class="stlat-full"><%= player.getValue("tragicness") %></span>
-						</div>
-						
-						<div <%= scale(player.calculatePitching()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculatePitching()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculatePitching() %></span>
-						</div>
-						<% _.each(["coldness", "overpowerment", "ruthlessness", "shakespearianism", "suppression", "unthwackability"], function(attribute) { %>
-							<div <%= scale(player.getValue(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
-								<span class="stlat-full"><%= player.getValue(attribute) %></span>
-							</div>
-						<% }) %>
-						
-						<div <%= scale(player.calculateBaserunning()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateBaserunning()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateBaserunning() %></span>
-						</div>
-						<% _.each(["baseThirst", "continuation", "groundFriction", "indulgence", "laserlikeness"], function(attribute) { %>
-							<div <%= scale(player.getValue(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
-								<span class="stlat-full"><%= player.getValue(attribute) %></span>
-							</div>
-						<% }) %>
-						
-						<div <%= scale(player.calculateDefense()) %>>
-							<span class="stlat-truncated"><%= round(5 * player.calculateDefense()) %></span>
-							<span class="stlat-full"><%= 5 * player.calculateDefense() %></span>
-						</div>
-						<% _.each(["anticapitalism", "chasiness", "omniscience", "tenaciousness", "watchfulness"], function(attribute) { %>
-							<div <%= scale(player.getValue(attribute)) %>>
-								<span class="stlat-truncated"><%= round(player.getValue(attribute)) %></span>
-								<span class="stlat-full"><%= player.getValue(attribute) %></span>
-							</div>
-						<% }) %>
-						
-						<div <%= scaleInverse(player.getValue("pressurization")) %>>
-							<span class="stlat-truncated"><%= round(player.getValue("pressurization")) %></span>
-							<span class="stlat-full"><%= player.getValue("pressurization") %></span>
-						</div>
-						<div <%= scale(player.getValue("cinnamon")) %>>
-							<span class="stlat-truncated"><%= round(player.getValue("cinnamon")) %></span>
-							<span class="stlat-full"><%= player.getValue("cinnamon") %></span>
-						</div>
-						<div>
-							<span><%= player.get("soul") %></span>
-						</div>
-						<div>
-							<span><%= player.get("fate") %></span>
-						</div>
-						<div>
-							<span><%= player.get("totalFingers") %></span>
-						</div>
-						<div class="<%= player.get("peanutAllergy") ? "stlat-terrible" : "stlat-exceptional" %>">
-							<span><%= player.get("peanutAllergy") ? emoji(0x1f922) : emoji(0x1f60b) %></span>
-						</div>
-						<div>
-							<span class="stlat-truncated"><%= round(player.get("eDensity")) %></span>
-							<span class="stlat-full"><%= player.get("eDensity") %></span>
-						</div>
-					</div>
-				<% }); %>
-				<div class="stlats-row">
-					<div class="stlat-player-name">Average Stlats</div>
-					<div <%= scale(average(players, "wobaRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "wobaRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "wobaRating") %></span>
-					</div>
-					<div <%= scale(average(players, "sluggingRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "sluggingRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "sluggingRating") %></span>
-					</div>
-					<div <%= scale(average(players, "bsrRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "bsrRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "bsrRating") %></span>
-					</div>
-					<div <%= scale(average(players, "earnedRunsRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "earnedRunsRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "earnedRunsRating") %></span>
-					</div>
-					<div <%= scale(average(players, "totalRating") / 4) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "totalRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "totalRating") %></span>
-					</div>
-					
-					<div <%= scale(average(players, "hittingRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "hittingRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "hittingRating") %></span>
-					</div>
-					<% _.each(["buoyancy", "divinity", "martyrdom", "moxie", "musclitude"], function(attribute) { %>
-						<div <%= scale(average(players, attribute)) %>>
-							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
-							<span class="stlat-full"><%= average(players, attribute) %></span>
-						</div>
-					<% }) %>
-					<div <%= scaleInverse(average(players, "patheticism")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "patheticism")) %></span>
-						<span class="stlat-full"><%= average(players, "patheticism") %></span>
-					</div>
-					<div <%= scale(average(players, "thwackability")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "thwackability")) %></span>
-						<span class="stlat-full"><%= average(players, "thwackability") %></span>
-					</div>
-					<div <%= scaleInverse(average(players, "tragicness")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "tragicness")) %></span>
-						<span class="stlat-full"><%= average(players, "tragicness") %></span>
-					</div>
-					
-					<div <%= scale(average(players, "pitchingRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "pitchingRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "pitchingRating") %></span>
-					</div>
-					<% _.each(["coldness", "overpowerment", "ruthlessness", "shakespearianism", "suppression", "unthwackability"], function(attribute) { %>
-						<div <%= scale(average(players, attribute)) %>>
-							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
-							<span class="stlat-full"><%= average(players, attribute) %></span>
-						</div>
-					<% }) %>
-					
-					<div <%= scale(average(players, "baserunningRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "baserunningRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "baserunningRating") %></span>
-					</div>
-					<% _.each(["baseThirst", "continuation", "groundFriction", "indulgence", "laserlikeness"], function(attribute) { %>
-						<div <%= scale(average(players, attribute)) %>>
-							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
-							<span class="stlat-full"><%= average(players, attribute) %></span>
-						</div>
-					<% }) %>
-					
-					<div <%= scale(average(players, "defenseRating")) %>>
-						<span class="stlat-truncated"><%= round(5 * average(players, "defenseRating")) %></span>
-						<span class="stlat-full"><%= 5 * average(players, "defenseRating") %></span>
-					</div>
-					<% _.each(["anticapitalism", "chasiness", "omniscience", "tenaciousness", "watchfulness"], function(attribute) { %>
-						<div <%= scale(average(players, attribute)) %>>
-							<span class="stlat-truncated"><%= round(average(players, attribute)) %></span>
-							<span class="stlat-full"><%= average(players, attribute) %></span>
-						</div>
-					<% }) %>
-					
-					<div <%= scaleInverse(average(players, "pressurization")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "pressurization")) %></span>
-						<span class="stlat-full"><%= average(players, "pressurization") %></span>
-					</div>
-					<div <%= scale(average(players, "cinnamon")) %>>
-						<span class="stlat-truncated"><%= round(average(players, "cinnamon")) %></span>
-						<span class="stlat-full"><%= average(players, "cinnamon") %></span>
-					</div>
-					<div>
-						<span class="stlat-truncated"><%= Math.round(100 * average(players, "soul")) / 100 %></span>
-						<span class="stlat-full"><%= average(players, "soul") %></span>
-					</div>
-					<div>
-						<span class="stlat-truncated"><%= Math.round(100 * average(players, "fate")) / 100 %></span>
-						<span class="stlat-full"><%= average(players, "fate") %></span>
-					</div>
-					<div>
-						<span class="stlat-truncated"><%= round(average(players, "totalFingers")) %></span>
-						<span class="stlat-full"><%= average(players, "totalFingers") %></span>
-					</div>
-					<div <%= scaleInverse(average(players, "peanutAllergy")) %>>
-						<span><%= Math.round(100 * average(players, "peanutAllergy")) %>%</span>
-					</div>
-					<div>
-						<span class="stlat-truncated"><%= round(average(players, "eDensity")) %></span>
-						<span class="stlat-full"><%= average(players, "eDensity") %></span>
-					</div>
-				</div>
-			</div>
+			</section>
 		</script>
 
 		<script type="text/template" id="template-squeezer">
-			<section class="squeezer">
-				<div class="squeezer-charts">
-					<svg id="chart-woba-bsrr" viewBox="0 0 <%= model.get("svg").size %> <%= model.get("svg").size %>" width="<%= model.get("svg").size %>" height="<%= model.get("svg").size %>">
-						<% var svgSize = model.get("svg").size - 2 * model.get("svg").padding, wobaMin = Math.floor(model.get("mins").wobabr * 10), wobaMax = Math.ceil(model.get("maxes").wobabr * 10), wobaLength = wobaMax - wobaMin , wobaSize = svgSize / wobaLength, bsrrMin = Math.floor(model.get("mins").bsrr * 10), bsrrMax = Math.ceil(model.get("maxes").bsrr * 10), bsrrLength = bsrrMax - bsrrMin, bsrrSize = svgSize / bsrrLength;
-						for(var i = 1; i < wobaLength; i++) { %>
-							<line class="axis-x-guide" x1="<%= model.get("svg").padding + wobaSize * i %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding + wobaSize * i %>" y2="<%= model.get("svg").padding + svgSize %>" />
-							<text class="axis-x-label" text-anchor="middle" dominant-baseline="hanging" x="<%= model.get("svg").padding + wobaSize * i %>" y="<%= model.get("svg").padding * 1.1 + svgSize %>"><%= (i + wobaMin) / 2 %></text>
-						<% }
-						for(var i = 1; i < bsrrLength; i++) { %>
-							<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + bsrrSize * i %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + bsrrSize * i %>" />
-							<text class="axis-y-label" text-anchor="end" dominant-baseline="middle" x="<%= model.get("svg").padding * 0.9 %>" y="<%= model.get("svg").padding + bsrrSize * i %>"><%= (bsrrMax - i) / 2 %></text>
-						<% } %>
-						<text class="title" text-anchor="middle" dominant-baseline="middle" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").padding / 2 %>">Key Offensive Averages</text>
-						<line class="axis-x-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding %>" y2="<%= model.get("svg").padding + svgSize %>" />
-						<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + svgSize %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + svgSize %>" />
-						<text class="axis-title" text-anchor="middle" dominant-baseline="baseline" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").size - model.get("svg").padding * 0.1 %>">Average wOBABR</text>
-						<g transform="translate(<%= model.get("svg").padding * 0.1 %> <%= model.get("svg").size / 2 %>) rotate(-90)">
-							<text class="axis-title" text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average BsRR</text>
-						</g>
-						<% _.each(model.get("teams"), function(team) { 
-							var teamX = model.get("svg").padding + (team.wobabr * 10 - wobaMin) / wobaLength * svgSize, teamY = model.get("svg").padding + (bsrrMax - team.bsrr * 10) / bsrrLength * svgSize; %>
-							<circle data-id="<%= team.id %>" fill="<%= team.color %>" cx="<%= teamX %>" cy="<%= teamY %>" r="<%= model.get("svg").icon %>" />
-							<image data-id="<%= team.id %>" href="<%= emojiSvg(team.emoji) %>" x="<%= teamX - model.get("svg").icon / 2 %>" y="<%= teamY - model.get("svg").icon / 2 %>" height="<%= model.get("svg").icon %>" width="<%= model.get("svg").icon %>" />
-						<% }) %>
-					</svg>
-					<svg id="chart-er-omni" viewBox="0 0 <%= model.get("svg").size %> <%= model.get("svg").size %>" width="<%= model.get("svg").size %>" height="<%= model.get("svg").size %>">
-						<% var erMin = Math.floor(model.get("mins").erpr * 10), erMax = Math.ceil(model.get("maxes").erpr * 10), erLength = erMax - erMin , erSize = svgSize / erLength, omniMin = Math.floor(model.get("mins").omni * 10), omniMax = Math.ceil(model.get("maxes").omni * 10), omniLength = omniMax - omniMin, omniSize = svgSize / omniLength;
-						for(var i = 1; i < erLength; i++) { %>
-							<line class="axis-x-guide" x1="<%= model.get("svg").padding + erSize * i %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding + erSize * i %>" y2="<%= model.get("svg").padding + svgSize %>" />
-							<text class="axis-x-label" text-anchor="middle" dominant-baseline="hanging" x="<%= model.get("svg").padding + erSize * i %>" y="<%= model.get("svg").padding * 1.1 + svgSize %>"><%= (i + erMin) / 2 %></text>
-						<% }
-						for(var i = 1; i < omniLength; i++) { %>
-							<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + omniSize * i %>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + omniSize * i %>" />
-							<text class="axis-y-label" text-anchor="end" dominant-baseline="middle" x="<%= model.get("svg").padding * 0.9 %>" y="<%= model.get("svg").padding + omniSize * i %>"><%= (omniMax - i) / 2 %></text>
-						<% } %>
-						<text class="title" text-anchor="middle" dominant-baseline="middle" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").padding / 2 %>">Key Defensive Averages</text>
-						<line class="axis-x-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding %>" x2="<%= model.get("svg").padding %>" y2="<%= model.get("svg").padding + svgSize %>" />
-						<line class="axis-y-guide" x1="<%= model.get("svg").padding %>" y1="<%= model.get("svg").padding + svgSize%>" x2="<%= model.get("svg").padding + svgSize %>" y2="<%= model.get("svg").padding + svgSize %>" />
-							<text class="axis-title" text-anchor="middle" dominant-baseline="baseline" x="<%= model.get("svg").size / 2 %>" y="<%= model.get("svg").size - model.get("svg").padding * 0.1 %>">Average ERPR</text>
-							<g transform="translate(<%= model.get("svg").padding * 0.1 %> <%= model.get("svg").size / 2 %>) rotate(-90)">
-								<text class="axis-title" text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average Omniscience</text>
-							</g>
-						<% _.each(model.get("teams"), function(team) { 
-							var teamX = model.get("svg").padding + (team.erpr * 10 - erMin) / erLength * svgSize, teamY = model.get("svg").padding + (omniMax - team.omni * 10) / omniLength * svgSize; %>
-							<circle data-id="<%= team.id %>" data-er="<%= team.erpr * 5 %>" data-omni="<%= team.omni * 5 %>" fill="<%= team.color %>" cx="<%= teamX %>" cy="<%= teamY %>" r="<%= model.get("svg").icon %>" />
-							<image data-id="<%= team.id %>" href="<%= emojiSvg(team.emoji) %>" x="<%= teamX - model.get("svg").icon / 2 %>" y="<%= teamY - model.get("svg").icon / 2 %>" height="<%= model.get("svg").icon %>" width="<%= model.get("svg").icon %>" />
-						<% }) %>
-					</svg>
+			<section class="team">
+				<div class="team-header">
+					<div class="team-icon" style="background:<%= model.get("mainColor") %>">
+						<%= model.emoji() %>
+					</div>
+					<div class="team-info">
+						<div class="team-name"><%= model.get("fullName") %></div>
+					</div>
 				</div>
-				<div class="squeezer-tables">
-					<div class="squeezer-categories">
-						<div class="squeezer-general">General</div>
-						<div class="squeezer-batting">Batting</div>
-						<div class="squeezer-pitching">Pitching</div>
-						<div class="squeezer-others">False Idol</div>
-					</div>
-					<div class="squeezer-header">
-						<div class="squeezer-general" data-sort="name">
-							<span>Name</span>
-						</div>
-						<div class="squeezer-general" data-sort="wobabr">
-							<span class="stlat-truncated">wOBABR</span>
-							<span class="stlat-full">wOBA Rating</span>
-						</div>
-						<div class="squeezer-general" data-sort="bsrr">
-							<span class="stlat-truncated">BsRR</span>
-							<span class="stlat-full">Base Running Rating</span>
-						</div>
-						<div class="squeezer-general" data-sort="erpr">
-							<span class="stlat-truncated">ERPR</span>
-							<span class="stlat-full">Earned Runs Rating</span>
-						</div>
-						<div class="squeezer-batting" data-sort="patheticism">
-							<span class="stlat-truncated">pathtc</span>
-							<span class="stlat-full">Patheticism</span>
-						</div>
-						<div class="squeezer-batting" data-sort="thwackability">
-							<span class="stlat-truncated">thwack</span>
-							<span class="stlat-full">Thwackability</span>
-						</div>
-						<div class="squeezer-batting" data-sort="divinity">
-							<span class="stlat-truncated">divin</span>
-							<span class="stlat-full">Divinity</span>
-						</div>
-						<div class="squeezer-batting" data-sort="musclitude">
-							<span class="stlat-truncated">muscl</span>
-							<span class="stlat-full">Musclitude</span>
-						</div>
-						<div class="squeezer-batting" data-sort="martyrdom">
-							<span class="stlat-truncated">martyr</span>
-							<span class="stlat-full">Martyrdom</span>
-						</div>
-						<div class="squeezer-batting" data-sort="moxie">
-							<span class="stlat-truncated">moxie</span>
-							<span class="stlat-full">Moxie</span>
-						</div>
-						<div class="squeezer-batting" data-sort="groundFriction">
-							<span class="stlat-truncated">fric</span>
-							<span class="stlat-full">Ground Friction</span>
-						</div>
-						<div class="squeezer-pitching" data-sort="ruthlessness">
-							<span class="stlat-truncated">ruth</span>
-							<span class="stlat-full">Ruthlessness</span>
-						</div>
-						<div class="squeezer-pitching" data-sort="unthwackability">
-							<span class="stlat-truncated">unthwk</span>
-							<span class="stlat-full">Unthwackability</span>
-						</div>
-						<div class="squeezer-pitching" data-sort="overpowerment">
-							<span class="stlat-truncated">op</span>
-							<span class="stlat-full">Overpowerment</span>
-						</div>
-						<div class="squeezer-others" data-sort="omniscience">
-							<span class="stlat-truncated">omni</span>
-							<span class="stlat-full">Omniscience</span>
-						</div>
-					</div>
-					<% _.each(model.get("sorted") ? model.get("sorted") : model.get("teams"), function(team) { %>
-						<div class="squeezer-row">
-							<div class="squeezer-team"><a href="#<%= team.slug %>/forbidden-knowledge"><%= team.name %></a></div>
-							<div <%= scale(team.wobabr) %>>
-								<span class="stlat-truncated"><%= round(5 * team.wobabr) %></span>
-								<span class="stlat-full"><%= 5 * team.wobabr %></span>
-							</div>
-							<div <%= scale(team.bsrr) %>>
-								<span class="stlat-truncated"><%= round(5 * team.bsrr) %></span>
-								<span class="stlat-full"><%= 5 * team.bsrr %></span>
-							</div>
-							<div <%= scale(team.erpr) %>>
-								<span class="stlat-truncated"><%= round(5 * team.erpr) %></span>
-								<span class="stlat-full"><%= 5 * team.erpr %></span>
-							</div>
-							<div <%= scaleInverse(team.attributes["patheticism"]) %>>
-								<span class="stlat-truncated"><%= round(team.attributes["patheticism"]) %></span>
-								<span class="stlat-full"><%= team.attributes["patheticism"] %></span>
-							</div>
-							<% _.each(["thwackability", "divinity", "musclitude", "martyrdom", "moxie", "groundFriction", "ruthlessness", "unthwackability", "overpowerment"], function(attribute) { %>
-								<div <%= scale(team.attributes[attribute]) %>>
-									<span class="stlat-truncated"><%= round(team.attributes[attribute]) %></span>
-									<span class="stlat-full"><%= team.attributes[attribute] %></span>
-								</div>
+				<table>
+					<colgroup span="<%= columns.sibrmetrics.length + 5 %>"></colgroup>
+					<% _.each(columns.categories, function(category) {
+						if(isKnowledgeVisible()) { %>
+							<colgroup span="<%= category.attributes.length + (category.hasRating ? 1 : 0) %>"></colgroup>
+						<% } else if(category.hasRating) { %>
+							<colgroup></colgroup>
+						<% } 
+					}) %>
+					<thead>
+						<tr>
+							<th colspan="<%= columns.sibrmetrics.length + 5 %>">General</th>
+							<% _.each(columns.categories, function(category) { 
+								if(isKnowledgeVisible()) { %>
+									<th colspan="<%= category.attributes.length + (category.hasRating ? 1 : 0) %>"><%= category.name %></th>
+								<% } else if(category.hasRating) { %>
+									<th><%= category.name %></th>
+								<% } 
+							}) %>
+						</tr>
+						<tr>
+							<th class="team-name" title="Team Name" data-sort="name">Name</th>
+							<th title="Team Modifications" data-sort="modifications">Modifications</th>
+							<th title="Stadium Modifications" data-sort="stadium">Stadium</th>
+							<th title="Combined wOBABR + ERPR Rank" data-sort="rank">Rank</th>
+							<% _.each(columns.sibrmetrics, function(sibrmetric) { %>
+								<th title="<%= sibrmetric.name %>" data-sort="<%= sibrmetric.id %>"><%= sibrmetric.shorthand %></th>
 							<% }) %>
-							<div <%= scale(team.omni) %>>
-								<span class="stlat-truncated"><%= round(team.omni) %></span>
-								<span class="stlat-full"><%= team.omni %></span>
-							</div>
-						</div>
-					<% }) %>
-					<div class="squeezer-row">
-						<div class="squeezer-team">League Average</div>
-						<div <%= scale(model.get("league").wobabr) %>>
-							<span class="stlat-truncated"><%= round(5 * model.get("league").wobabr) %></span>
-							<span class="stlat-full"><%= 5 * model.get("league").wobabr %></span>
-						</div>
-						<div <%= scale(model.get("league").bsrr) %>>
-							<span class="stlat-truncated"><%= round(5 * model.get("league").bsrr) %></span>
-							<span class="stlat-full"><%= 5 * model.get("league").bsrr %></span>
-						</div>
-						<div <%= scale(model.get("league").erpr) %>>
-							<span class="stlat-truncated"><%= round(5 * model.get("league").erpr) %></span>
-							<span class="stlat-full"><%= 5 * model.get("league").erpr %></span>
-						</div>
-						<div <%= scaleInverse(model.get("league").attributes["patheticism"]) %>>
-							<span class="stlat-truncated"><%= round(model.get("league").attributes["patheticism"]) %></span>
-							<span class="stlat-full"><%= model.get("league").attributes["patheticism"] %></span>
-						</div>
-						<% _.each(["thwackability", "divinity", "musclitude", "martyrdom", "moxie", "groundFriction", "ruthlessness", "unthwackability", "overpowerment"], function(attribute) { %>
-							<div <%= scale(model.get("league").attributes[attribute]) %>>
-								<span class="stlat-truncated"><%= round(model.get("league").attributes[attribute]) %></span>
-								<span class="stlat-full"><%= model.get("league").attributes[attribute] %></span>
-							</div>
+							<th title="Combined Stars" data-sort="combined"><%= emoji(0x1F31F) %></th>
+							<% _.each(columns.categories, function(category) {
+								if(category.hasRating) { %>
+									<th title="<%= category.name %> Stars" data-sort="<%= category.id %>"><%= emoji(0x2B50) %></th>
+								<% }
+								if(isKnowledgeVisible()) {
+									_.each(category.attributes, function(attribute) { %>
+										<th title="<%= attribute.name %>" data-sort="<%= attribute.id %>"><%= attribute.shorthand %></th>
+									<% })
+								}
+							}) %>
+						</tr>
+					</thead>
+					<tbody>
+						<% _.each(model.get("sorted") ? model.get("sorted") : collection, function(team) { %>
+							<tr>
+								<% if(team.id == "all") { %>
+									<td class="team-name">
+										<strong><%= team.emoji() %> <%= team.get("nickname") %></strong>
+									</td>
+									<td colspan="3"></td>
+								<% } else { %>
+									<td class="team-name">
+										<a href="https://blaseball.com/team/<%= team.id %>"><%= team.emoji() %> <%= team.get("nickname") %></a>
+									</td>
+									<td class="team-stat">
+										<% if(team.modifications().length) {
+											_.each(team.modifications(), function(modifier) { %>
+												<%= getModifier(modifier) %>
+											<% })
+										} else { %>
+											-
+										<% } %>
+									</td>
+									<td class="team-stat">
+										<% if(team.stadium().length) {
+											_.each(team.stadium(), function(modifier) { %>
+												<%= getModifier(modifier) %>
+											<% })
+										} else { %>
+											-
+										<% } %>
+									</td>
+									<td class="team-stat"><%= team.get("rank") %></td>
+								<% } %>
+								<% _.each(columns.sibrmetrics, function(sibrmetric) { %>
+									<td class="team-stat <%= team.getScaleClass(sibrmetric.group, sibrmetric.id) %>" title="Average <%= Math.round(team.getAverage(sibrmetric.group, sibrmetric.id) * 5000) / 1000 %> <%= sibrmetric.shorthand %> Stars"><%= Math.round(team.getAverage(sibrmetric.group, sibrmetric.id) * 5000) / 1000 %></td>
+								<% }) %>
+								<td class="team-stat <%= team.getScaleClass("roster", "combined") %>" title="Average <%= Math.round(team.getAverage("roster", "combined") * 5000) / 1000 %> Combined Stars"><%= Math.round(team.getAverage("roster", "combined") * 5000) / 1000 %></td>
+								<% _.each(columns.categories, function(category) { 
+									if(category.hasRating) { %>
+										<td class="team-stat <%= team.getScaleClass(category.group, category.id) %>" title="Average <%= Math.round(team.getAverage(category.group, category.id) * 5000) / 1000 %> <%= category.name %> Stars"><%= Math.round(team.getAverage(category.group, category.id) * 5000) / 1000 %></td>
+									<% }
+									if(isKnowledgeVisible()) {
+										_.each(category.attributes, function(attribute) { 
+											if(attribute.id == "peanutAllergy") { %>
+												<td class="team-stat <%= team.getScaleClass(category.group, attribute.id) %>" title="<%= Math.round(team.getAverage(category.group, attribute.id) * 100) %>% Allergic"><%= Math.round(team.getAverage(category.group, attribute.id) * 100) %>%</td>
+											<% } else if(category.id == "misc") { %>
+												<td class="team-stat" title="Average <%= attribute.name %>: <%= Math.round(team.getAverage(category.group, attribute.id) * 1000) / 1000 %>"><%= Math.round(team.getAverage(category.group, attribute.id) * 1000) / 1000 %></td>
+											<% } else { %>
+												<td class="team-stat <%= team.getScaleClass(category.group, attribute.id) %>" title="Average <%= attribute.name %>: <%= Math.round(team.getAverage(category.group, attribute.id) * 1000) / 1000 %>"><%= Math.round(team.getAverage(category.group, attribute.id) * 1000) / 1000 %></td>
+											<% }
+										})
+									}
+								}) %>
+							</tr>
 						<% }) %>
-						<div <%= scale(model.get("league").omni) %>>
-							<span class="stlat-truncated"><%= round(model.get("league").omni) %></span>
-							<span class="stlat-full"><%= model.get("league").omni %></span>
-						</div>
-					</div>
-				</div>
+					</tbody>
+				</table>
 			</section>
 		</script>
 		

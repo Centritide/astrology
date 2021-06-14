@@ -165,13 +165,13 @@
 	},
 	{
 		"id": "HEATING_UP",
-		"emoji": null,
+		"emoji": "0x1F336",
 		"title": "Heating Up...",
         "description": "This batter needs one more consecutive hit to enter Fire mode. This mod will disappear if the batter gets out."
 	},
 	{
 		"id": "ON_FIRE",
-		"emoji": null,
+		"emoji": "0x1F336",
 		"title": "Red Hot!",
         "description": "Red Hot! This player's batting is greatly boosted. This mod will disappear if the batter gets out."
 	},
