@@ -667,7 +667,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	});
 	App.Collections.Tributes = Backbone.Collection.extend({
 		url: "https://cors-proxy.blaseball-reference.com/api/getTribute",
-		model: App.Models.Tribute
+		model: App.Models.Tribute,
+		parse: function(data) {
+			return data.players;
+		}
 	});
 	App.Collections.AllPlayers = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v1/players",
@@ -1028,7 +1031,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					_.each(groups, function(group, key) {
 						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
 					});
-					thisView.collection.reset(_.union(groups.ilb, groups.coffee, groups.special));
+					thisView.collection.reset(_.union(groups.ilb, groups.ulb, groups.coffee, groups.special));
 					thisView.collection.add(new App.Models.Team({
 						emoji: 0x26BE,
 						fullName: "All Players",
@@ -2100,6 +2103,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			case "d2634113-b650-47b9-ad95-673f8e28e687": // sibr
 			case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
 				return "coffee";
+			case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
+				return "ulb";
 			default:
 				return "ilb";
 		}
