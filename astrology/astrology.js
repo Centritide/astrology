@@ -156,6 +156,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			if(this.get("deceased")) {
 				return parseEmoji(0x1F3DB) + " The Hall";
 			}
+			if(_.contains(this.modifications(), "LEGENDARY") && !_.contains(this.modifications(), "REPLICA") || _.contains(this.modifications(), "DUST")) {
+				return parseEmoji(0x1F3C6) + " The Vault";
+			}
 			var team = globalTeams.get(this.get("leagueTeamId"));
 			if(!team) {
 				team = globalTeams.get(this.get("tournamentTeamId"));
