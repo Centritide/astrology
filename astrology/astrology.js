@@ -530,6 +530,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				emoji: 0x26BE,
 				id: "all",
 				lineup: league.lineup,
+				mainColor: "#424242",
 				rotation: league.rotation,
 				roster: _.union(league.lineup, league.rotation),
 				nickname: "League Average",
@@ -577,6 +578,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				this.model.unset("sorted");
 			}
 			this.$el.html(this.template({
+				svg: {
+					radius: 15,
+					padding: 40,
+					size: $("main").innerHeight() > $("main").innerWidth() ? $("main").innerWidth() : Math.min($("main").innerHeight(), $("main").innerWidth() / 2),
+					data: this.generateSvgData()
+				},
 				columns: attributes,
 				model: this.model,
 				collection: this.collection,
@@ -611,8 +618,42 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				.reverse()
 				.each(function(team, index) { return team.set("rank", index + 1); });
 		},
+		generateSvgData: function() {
+			var data = {
+				maxes: {},
+				mins: {},
+				ranges: {},
+				points: _.map(this.collection, function(team) {
+					return {
+						id: team.id,
+						color: team.get("mainColor"),
+						name: team.get("nickname"),
+						src: $(parseEmoji(team.get("emoji"), { "folder": "svg", "ext": ".svg" })).attr("src"),
+						wobabr: team.getAverage("lineup", "wobabr"),
+						bsrr: team.getAverage("lineup", "bsrr"),
+						erpr: team.getAverage("rotation", "erpr"),
+						defense: team.getAverage("roster", "defense")
+					};
+				})
+			};
+			_.each(["wobabr", "bsrr", "erpr", "defense"], function(attribute) {
+				var chain = _.chain(data.points).pluck(attribute);
+				data.maxes[attribute] = Math.ceil(chain.max().value() * 10);
+				data.mins[attribute] = Math.floor(chain.min().value() * 10);
+				data.ranges[attribute] = data.maxes[attribute] - data.mins[attribute];
+			});
+			_.each(data.points, function(point) {
+				point.x1 = (point.wobabr * 10 - data.mins.wobabr) / data.ranges.wobabr;
+				point.y1 = (data.maxes.bsrr - point.bsrr * 10) / data.ranges.bsrr;
+				point.x2 = (point.erpr * 10 - data.mins.erpr) / data.ranges.erpr;
+				point.y2 = (data.maxes.defense - point.defense * 10) / data.ranges.defense;
+			});
+			return data;
+		},
 		events: {
-			"click th": "sortTeams"
+			"click th": "sortTeams",
+			"mouseenter .charts circle[data-id], .charts image[data-id]": "showChartHover",
+			"mouseleave .charts circle[data-id], .charts image[data-id]": "hideChartHover"
 		},
 		sortTeams: function(e) {
 			var sort = $(e.currentTarget).data("sort"), isReversed = _.contains(descAttributes, sort);
@@ -632,6 +673,37 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				sortColumn = sortDirection ? sort : null;
 				this.render();
 			}
+		},
+		showChartHover: function(e) {
+			var id = $(e.currentTarget).data("id");
+			if(id) {
+				var team = _.findWhere(this.collection, { id : id }),
+					wobabrBsrrEl = $("<div class='chart-hover'><p><strong>" + team.get("nickname") + "</strong></p><p>" + (Math.round(team.getAverage("lineup", "wobabr") * 5000) / 1000) + " wOBABR</p><p>" + (Math.round(team.getAverage("lineup", "bsrr") * 5000) / 1000) + " BsRR</p></div>"),
+					wobabrBsrrCircEl = $("#chart-wobabr-bsrr circle[data-id=" + id + "]"),
+					erprDefenseEl = $("<div class='chart-hover'><p><strong>" + team.get("nickname") + "</strong></p><p>" + (Math.round(team.getAverage("rotation", "erpr") * 5000) / 1000) + " ERPR</p><p>" + (Math.round(team.getAverage("roster", "defense") * 5000) / 1000) + " Defense Stars</p></div>"),
+					erprDefenseCircEl = $("#chart-erpr-defense circle[data-id=" + id + "]");
+				$("[data-id=" + id + "]").addClass("active");
+				$(".chart-hover").remove();
+				$("#chart-wobabr-bsrr").append($("#chart-wobabr-bsrr [data-id=" + id + "]").remove());
+				wobabrBsrrEl.css({
+					left: wobabrBsrrCircEl.position().left + 15,
+					top: parseFloat(wobabrBsrrCircEl.attr("cy")) + 25
+				});
+				$(".charts").append(wobabrBsrrEl);
+				$("#chart-erpr-defense").append($("#chart-erpr-defense [data-id=" + id + "]").remove());
+				erprDefenseEl.css({
+					left: erprDefenseCircEl.position().left + 15,
+					top: parseFloat(erprDefenseCircEl.attr("cy")) + 25
+				});
+				$(".charts").append(erprDefenseEl);
+			}
+		},
+		hideChartHover: function(e) {
+			var id = $(e.currentTarget).data("id");
+			if(id) {
+				$("[data-id=" + id + "]").removeClass("active");
+				$(".chart-hover").remove();
+			}
 		}
 	});
 	
@@ -649,10 +721,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 	Backbone.history.start();
 	
 	window.onresize = function() {
-		/*if(teamView && teamView.model) {
-			teamView.model.get("svg").size = $(window).height() > $(window).width() ? $("main").innerWidth() : Math.min($("main").innerHeight(), $("main").innerWidth() / 2);
+		if(teamView) {
 			teamView.render();
-		}*/
+		}
 	};
 	
 	function loadAssets(id) {

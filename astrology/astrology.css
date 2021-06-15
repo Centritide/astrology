@@ -11,8 +11,7 @@
 	--toggle-light-hover: #292746;
 	--guide: #aaa;
 	--chart-transparent: rgba(170,170,170,0);
-	--chart-hover: #aaa;
-	--chart-hover-bg: rgba(170,170,170,0.4);
+	--chart-hover: rgba(170,170,170,0.4);
 	--faq-link: #1d4a46;
 	--faq-code: #feebc8;
 	--faq-redacted: #444;
@@ -33,8 +32,7 @@
 	--toggle-light-hover: #f5d641;
 	--guide: #777;
 	--chart-transparent: rgba(255,255,255,0);
-	--chart-hover: #fff;
-	--chart-hover-bg: rgba(255,255,255,0.4);
+	--chart-hover: rgba(255,255,255,0.4);
 	--faq-link: #61a09b;
 	--faq-code: #2b5663;
 	--faq-redacted: #fff;
@@ -538,44 +536,50 @@ a[data-toggle-lights]:hover {
     font-weight: bold;
 }
 
-section.squeezer {
-	overflow-y: auto;
-}
-
-.squeezer-charts {
+.charts {
+	position: sticky;
+	left: 0;
+	right: 0;
 	display: flex;
-	flex-wrap: wrap;
+	flex-flow: row wrap;
 	justify-content: center;
+	margin: 0 0 20px;
 }
 
-.squeezer-tables {
-    margin: 20px;
-}
-
-.squeezer-charts line {
-	stroke: #aaa;
+.charts line {
+	stroke: var(--guide);
 	stroke-width: 1;
 }
 
-.squeezer-charts text {
-	fill: #000;
+.charts text {
+	fill: var(--body-text);
 	font-size: 0.9em;
 }
 
-.squeezer-charts text.title {
+.charts text.title {
 	font-size: 1.2em;
 	font-weight: bold;
 }
 
-.squeezer-charts circle,
-.squeezer-charts image {
+.charts circle,
+.charts image {
 	transition: all 0.4s ease-out;
 	cursor: pointer;
 }
 
+.charts circle {
+	stroke-width: 0;
+	stroke: var(--chart-transparent);
+}
+
+.charts circle.active {
+	stroke: var(--chart-hover);
+	stroke-width: 4;
+}
+
 .chart-hover {
 	position: absolute;
-	background: rgba(0, 0, 0, 0.6);
+	background: rgba(0, 0, 0, 0.8);
 	color: #fff;
 	padding: 5px;
 	border-radius: 5px;
@@ -587,28 +591,6 @@ section.squeezer {
 .chart-hover p {
 	margin: 0;
 	padding: 0;
-}
-
-.dark .squeezer-charts line {
-	stroke: #777;
-}
-
-.dark .squeezer-charts text {
-	fill: #fff;
-}
-
-.dark .chart-hover {
-	background: #fff;
-	color: #000;
-}
-
-.dark .squeezer-charts circle {
-	stroke-width: 0;
-	stroke: rgba(255, 255, 255, 0.4);
-}
-
-.dark .squeezer-charts circle.active {
-	stroke-width: 4;
 }
 
 @media screen and (max-width: 700px) {	

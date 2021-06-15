@@ -275,6 +275,57 @@
 						<div class="team-name"><%= model.get("fullName") %></div>
 					</div>
 				</div>
+				<div class="charts">
+					<svg id="chart-wobabr-bsrr" viewBox="0 0 <%= svg.size %> <%= svg.size %>" width="<%= svg.size %>" height="<%= svg.size %>">
+						<% var svgSize = svg.size - 2 * svg.padding;
+						for(var i = 0; i < svg.data.ranges.wobabr; i++) { %>
+							<line x1="<%= svg.padding + (svgSize / svg.data.ranges.wobabr) * i %>" y1="<%= svg.padding %>" x2="<%= svg.padding + (svgSize / svg.data.ranges.wobabr) * i %>" y2="<%= svg.padding + svgSize %>" />
+							<% if(i > 0) { %>
+								<text text-anchor="middle" dominant-baseline="hanging" x="<%= svg.padding + (svgSize / svg.data.ranges.wobabr) * i %>" y="<%= svg.padding * 1.1 + svgSize %>"><%= (i + svg.data.mins.wobabr) / 2 %></text>
+							<% }
+						}
+						for(var i = svg.data.ranges.bsrr; i > 0; i--) { %>
+							<line x1="<%= svg.padding %>" y1="<%= svg.padding + (svgSize / svg.data.ranges.bsrr) * i %>" x2="<%= svg.padding + svgSize %>" y2="<%= svg.padding + (svgSize / svg.data.ranges.bsrr) * i %>" />
+							<% if(i < svg.data.ranges.bsrr) { %>
+								<text text-anchor="end" dominant-baseline="middle" x="<%= svg.padding * 0.9 %>" y="<%= svg.padding + (svgSize / svg.data.ranges.bsrr) * i %>"><%= (svg.data.maxes.bsrr - i) / 2 %></text>
+							<% }
+						} %>
+						<text class="title" text-anchor="middle" dominant-baseline="middle" x="<%= svg.size / 2 %>" y="<%= svg.padding / 2 %>">Key Offensive Averages</text>
+						<line x1="<%= svg.padding %>" y1="<%= svg.padding %>" x2="<%= svg.padding %>" y2="<%= svg.padding + svgSize %>" />
+						<line x1="<%= svg.padding %>" y1="<%= svg.padding + svgSize %>" x2="<%= svg.padding + svgSize %>" y2="<%= svg.padding + svgSize %>" />
+						<text text-anchor="middle" dominant-baseline="baseline" x="<%= svg.size / 2 %>" y="<%= svg.size - svg.padding * 0.1 %>">Average wOBABR</text>
+						<g transform="translate(<%= svg.padding * 0.1 %> <%= svg.size / 2 %>) rotate(-90)">
+							<text text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average BsRR</text>
+						</g>
+						<% _.each(svg.data.points, function(point) { %>
+							<circle data-id="<%= point.id %>" fill="<%= point.color %>" cx="<%= svg.padding + point.x1 * svgSize %>" cy="<%= svg.padding + point.y1 * svgSize %>" r="<%= svg.radius %>" />
+							<image data-id="<%= point.id %>" href="<%= point.src %>" x="<%= svg.padding + point.x1 * svgSize - svg.radius / 2 %>" y="<%= svg.padding + point.y1 * svgSize - svg.radius / 2 %>" height="<%= svg.radius %>" width="<%= svg.radius %>" />
+						<% }) %>
+					</svg>
+					<svg id="chart-erpr-defense" viewBox="0 0 <%= svg.size %> <%= svg.size %>" width="<%= svg.size %>" height="<%= svg.size %>">
+						<% for(var i = 0; i < svg.data.ranges.erpr; i++) { %>
+							<line x1="<%= svg.padding + (svgSize / svg.data.ranges.erpr) * i %>" y1="<%= svg.padding %>" x2="<%= svg.padding + (svgSize / svg.data.ranges.erpr) * i %>" y2="<%= svg.padding + svgSize %>" />
+							<% if(i > 0) { %>
+								<text text-anchor="middle" dominant-baseline="hanging" x="<%= svg.padding + (svgSize / svg.data.ranges.erpr) * i %>" y="<%= svg.padding * 1.1 + svgSize %>"><%= (i + svg.data.mins.erpr) / 2 %></text>
+							<% }
+						}
+						for(var i = svg.data.ranges.defense; i > 0; i--) { %>
+							<line x1="<%= svg.padding %>" y1="<%= svg.padding + (svgSize / svg.data.ranges.defense) * i %>" x2="<%= svg.padding + svgSize %>" y2="<%= svg.padding + (svgSize / svg.data.ranges.defense) * i %>" />
+							<% if(i < svg.data.ranges.defense) { %>
+								<text text-anchor="end" dominant-baseline="middle" x="<%= svg.padding * 0.9 %>" y="<%= svg.padding + (svgSize / svg.data.ranges.defense) * i %>"><%= (svg.data.maxes.defense - i) / 2 %></text>
+							<% } 
+						}%>
+						<text class="title" text-anchor="middle" dominant-baseline="middle" x="<%= svg.size / 2 %>" y="<%= svg.padding / 2 %>">Key Defensive Averages</text>
+						<text text-anchor="middle" dominant-baseline="baseline" x="<%= svg.size / 2 %>" y="<%= svg.size - svg.padding * 0.1 %>">Average ERPR</text>
+						<g transform="translate(<%= svg.padding * 0.1 %> <%= svg.size / 2 %>) rotate(-90)">
+							<text text-anchor="middle" dominant-baseline="hanging" x="0" y="0">Average Defense Stars</text>
+						</g>
+						<% _.each(svg.data.points, function(point) { %>
+							<circle data-id="<%= point.id %>" fill="<%= point.color %>" cx="<%= svg.padding + point.x2 * svgSize %>" cy="<%= svg.padding + point.y2 * svgSize %>" r="<%= svg.radius %>" />
+							<image data-id="<%= point.id %>" href="<%= point.src %>" x="<%= svg.padding + point.x2 * svgSize - svg.radius / 2 %>" y="<%= svg.padding + point.y2 * svgSize - svg.radius / 2 %>" height="<%= svg.radius %>" width="<%= svg.radius %>" />
+						<% }) %>
+					</svg>
+				</div>
 				<table>
 					<colgroup span="<%= columns.sibrmetrics.length + 5 %>"></colgroup>
 					<% _.each(columns.categories, function(category) {
