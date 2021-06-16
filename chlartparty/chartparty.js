@@ -9,8 +9,8 @@ requirejs.config({
         json: "../libs/json",
 		jquery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min",
 		backbone: "https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min",
-		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.11.0/underscore-min",
-		twemoji: "https://cdnjs.cloudflare.com/ajax/libs/twemoji/12.0.4/2/twemoji.min"
+		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min",
+		twemoji: "https://twemoji.maxcdn.com/v/latest/twemoji.min"
 	},
 	shim : {
 		jquery: {
@@ -93,6 +93,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 				case "d2634113-b650-47b9-ad95-673f8e28e687": // sibr
 				case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
 					return "coffee";
+				case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
+					return "ulb";
 				default:
 					return "ilb";
 			}
@@ -296,6 +298,22 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					reaction: matcher[2]
 				}
 			}
+			matcher = outcome.match(/^(.+) has been cured of their peanut allergy!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F60B,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^(.+) is no longer superallergic!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F60B,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
 			matcher = outcome.match(/^the (.+) had (their (lineup|rotation)|several players) shuffled in the reverb!$/i);
 			if(matcher) {
 				var team = getTeamByName(matcher[1]);
@@ -413,11 +431,20 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					teams: [ team.id ]
 				}
 			}
-			matcher = outcome.match(/^sun 2 set a win upon the ([^\.]+)\.?$/i);
+			matcher = outcome.match(/^sun 2 (?:smiled at|set a win upon) the ([^\.]+)\.?$/i);
 			if(matcher) {
 				var team = getTeamByName(matcher[1]);
 				return {
 					emoji: 0x2600,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>"),
+					teams: [ team.id ]
+				}
+			}
+			matcher = outcome.match(/the black hole burped at the (.+)!/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x26AB,
 					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>"),
 					teams: [ team.id ]
 				}
@@ -449,7 +476,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					players: [{ name: matcher[1], team: null }]
 				}
 			}
-			matcher = outcome.match(/^(.+) returned from elsewhere!$/i);
+			matcher = outcome.match(/^(.+) (?:returned|was pulled back) from elsewhere!$/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F9C7,
@@ -484,7 +511,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					]
 				}
 			}
-			matcher = outcome.match(/^consumers attack\s(.+)$/i);
+			matcher = outcome.match(/^consumers attack\s(?:scattered\s)?(.+)$/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F988,
@@ -508,6 +535,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					players: [{ name: matcher[1], team: null }]
 				}
 			}
+			matcher = outcome.match(/^the (.+) won the prize match!$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x1F381,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("nickname") + "</strong>"),
+					teams: [ team.id ]
+				}
+			}
 			matcher = outcome.match(/BRIDGE WEAKENED/i);
 			if(matcher) {
 				return {
@@ -529,6 +565,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					formatted: outcome
 				};
 			}
+			matcher = outcome.match(/SIESTA DETECTED/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F6CF,
+					formatted: outcome
+				};
+			}
 			matcher = outcome.match(/(.+) gained (.+)(?: and (?:dropped|ditched) (.+))?\.?/i);
 			if(matcher) {
 				return null;
@@ -545,7 +588,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 			if(matcher) {
 				return null;
 			}
-			matcher = outcome.match(/consumers attack\s(?:scattered\s)?(.+) defends\s+(.+) (?:damaged|breaks)/i);
+			matcher = outcome.match(/consumers attack\s(?:scattered\s)?(.+) defends\s+(.+) (?:damaged|breaks?)/i);
 			if(matcher) {
 				return null;
 			}
@@ -575,123 +618,132 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 			var parsedData = data.data, teamWins = {}, teamLosses = {}, seriesWins = {}, seriesLosses = {};
 			
 			parsedData = _.chain(parsedData).map(function(data) {
-				var awayTeam = navView.model.get("teams").get(data.data.awayTeam), 
-					homeTeam = navView.model.get("teams").get(data.data.homeTeam),
-					weatherIndex = data.data.weather < weather.length ? data.data.weather : 0,
-					game = {
-						away: {
-							emoji: awayTeam.get("emoji"),
-							fullName: awayTeam.get("fullName"),
-							id: awayTeam.id,
-							isAway: true,
-							location: awayTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : awayTeam.get("location"),
-							mainColor: awayTeam.get("mainColor"),
-							nickname: awayTeam.get("nickname"),
-							odds: data.data.awayOdds,
-							pitcher: data.data.awayPitcherName,
-							score: data.data.awayScore,
-							secondaryColor: awayTeam.get("secondaryColor")
-						},
-						day: data.data.day,
-						duration: new Date(data.endTime) - new Date(data.startTime),
-						home: {
-							emoji: homeTeam.get("emoji"),
-							fullName: homeTeam.get("fullName"),
-							id: homeTeam.id,
-							isAway: false,
-							location: homeTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : homeTeam.get("location"),
-							mainColor: homeTeam.get("mainColor"),
-							nickname: homeTeam.get("nickname"),
-							odds: data.data.homeOdds,
-							pitcher: data.data.homePitcherName,
-							score: data.data.homeScore,
-							secondaryColor: homeTeam.get("secondaryColor")
-						},
-						id: data.gameId,
-						innings: data.data.inning,
-						isPostseason: data.data.isPostseason,
-						isShame: data.data.shame,
-						outcomes: data.data.outcomes,
-						season: data.data.season,
-						seriesIndex: data.data.seriesIndex,
-						seriesLength: data.data.seriesLength,
-						tournament: data.data.tournament,
-						weather: weather[weatherIndex]
-					};
-					
-					if(!teamWins.hasOwnProperty(game.away.id)) {
-						teamWins[game.away.id] = 0;
-						teamLosses[game.away.id] = 0;
-					}
-					if(!teamWins.hasOwnProperty(game.home.id)) {
-						teamWins[game.home.id] = 0;
-						teamLosses[game.home.id] = 0;
-					}
-					
-					if(data.data.seriesIndex === 1) {
-						seriesWins[game.away.id] = 0;
-						seriesWins[game.home.id] = 0;
-						seriesLosses[game.away.id] = 0;
-						seriesLosses[game.home.id] = 0;
-					}
-					
-					_.each(game.outcomes, function(outcome) {
-						var matcher = outcome.match(/sun 2 set a win upon the (.+)/i);
-						if(matcher) {
-							if(matcher[1] == game.away.nickname) {
-								teamWins[game.away.id]++;
-								seriesWins[game.away.id]++;
-							}
-							if(matcher[1] == game.home.nickname) {
-								teamWins[game.home.id]++;
-								seriesWins[game.home.id]++;
-							}
+				if(data.startTime && data.endTime) {
+					var awayTeam = navView.model.get("teams").get(data.data.awayTeam), 
+						homeTeam = navView.model.get("teams").get(data.data.homeTeam),
+						weatherIndex = weather && data.data.weather < weather.length ? data.data.weather : 0,
+						game = {
+							away: {
+								emoji: awayTeam.get("emoji"),
+								fullName: awayTeam.get("fullName"),
+								id: awayTeam.id,
+								isAway: true,
+								location: awayTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : awayTeam.get("location"),
+								mainColor: awayTeam.get("mainColor"),
+								nickname: awayTeam.get("nickname"),
+								odds: data.data.awayOdds,
+								pitcher: data.data.awayPitcherName,
+								score: data.data.awayScore,
+								secondaryColor: awayTeam.get("secondaryColor")
+							},
+							day: data.data.day,
+							duration: new Date(data.endTime) - new Date(data.startTime),
+							home: {
+								emoji: homeTeam.get("emoji"),
+								fullName: homeTeam.get("fullName"),
+								id: homeTeam.id,
+								isAway: false,
+								location: homeTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : homeTeam.get("location"),
+								mainColor: homeTeam.get("mainColor"),
+								nickname: homeTeam.get("nickname"),
+								odds: data.data.homeOdds,
+								pitcher: data.data.homePitcherName,
+								score: data.data.homeScore,
+								secondaryColor: homeTeam.get("secondaryColor")
+							},
+							id: data.gameId,
+							innings: data.data.inning,
+							isPostseason: data.data.isPostseason,
+							isShame: data.data.shame,
+							outcomes: data.data.outcomes,
+							season: data.data.season,
+							seriesIndex: data.data.seriesIndex,
+							seriesLength: data.data.seriesLength,
+							tournament: data.data.tournament,
+							weather: weather ? weather[weatherIndex] : { "name": "Pony", "emoji": "0x1F434" }
+						};
+						
+						if(!teamWins.hasOwnProperty(game.away.id)) {
+							teamWins[game.away.id] = 0;
+							teamLosses[game.away.id] = 0;
 						}
-						matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
-						if(matcher) {
-							if(matcher[1] == game.away.nickname) {
-								teamWins[game.away.id]--;
-								seriesWins[game.away.id]--;
-							}
-							if(matcher[1] == game.home.nickname) {
-								teamWins[game.home.id]--;
-								seriesWins[game.home.id]--;
-							}
+						if(!teamWins.hasOwnProperty(game.home.id)) {
+							teamWins[game.home.id] = 0;
+							teamLosses[game.home.id] = 0;
 						}
-					});
-					
-					game.away.isWinner = game.away.score > game.home.score;
-					game.home.isWinner = !game.away.isWinner;
-					if(game.away.isWinner) {
-						game.away.wins = ++teamWins[game.away.id];
-						game.away.losses = teamLosses[game.away.id];
-						game.away.seriesWins = ++seriesWins[game.away.id];
-						game.away.seriesLosses = seriesLosses[game.away.id];
-						game.home.wins = teamWins[game.home.id];
-						game.home.losses = ++teamLosses[game.home.id];
-						game.home.seriesWins = seriesWins[game.home.id];
-						game.home.seriesLosses = ++seriesLosses[game.home.id];
-					} else {
-						game.away.wins = teamWins[game.away.id];
-						game.away.losses = ++teamLosses[game.away.id];
-						game.away.seriesWins = seriesWins[game.away.id];
-						game.away.seriesLosses = ++seriesLosses[game.away.id];
-						game.home.wins = ++teamWins[game.home.id];
-						game.home.losses = teamLosses[game.home.id];
-						game.home.seriesWins = ++seriesWins[game.home.id];
-						game.home.seriesLosses = seriesLosses[game.home.id];
+						
+						if(data.data.seriesIndex === 1) {
+							seriesWins[game.away.id] = 0;
+							seriesWins[game.home.id] = 0;
+							seriesLosses[game.away.id] = 0;
+							seriesLosses[game.home.id] = 0;
+						}
+						
+						_.each(game.outcomes, function(outcome) {
+							var matcher = outcome.match(/sun 2 (?:smiled at|set a win upon) the ([^\.]+)\.?/i);
+							if(matcher) {
+								if(matcher[1] == game.away.nickname) {
+									teamWins[game.away.id]++;
+									seriesWins[game.away.id]++;
+								}
+								if(matcher[1] == game.home.nickname) {
+									teamWins[game.home.id]++;
+									seriesWins[game.home.id]++;
+								}
+							}
+							matcher = outcome.match(/the black hole burped at the (.+)!/i);
+							if(matcher) {
+								if(matcher[1] == game.away.nickname) {
+									teamWins[game.away.id]++;
+									seriesWins[game.away.id]++;
+								}
+								if(matcher[1] == game.home.nickname) {
+									teamWins[game.home.id]++;
+									seriesWins[game.home.id]++;
+								}
+							}
+							matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
+							if(matcher) {
+								if(matcher[1] == game.away.nickname) {
+									teamWins[game.away.id]--;
+									seriesWins[game.away.id]--;
+								}
+								if(matcher[1] == game.home.nickname) {
+									teamWins[game.home.id]--;
+									seriesWins[game.home.id]--;
+								}
+							}
+						});
+						
+						game.away.isWinner = game.away.score > game.home.score;
+						game.home.isWinner = !game.away.isWinner;
+						if(game.away.isWinner) {
+							game.away.wins = ++teamWins[game.away.id];
+							game.away.losses = teamLosses[game.away.id];
+							game.away.seriesWins = ++seriesWins[game.away.id];
+							game.away.seriesLosses = seriesLosses[game.away.id];
+							game.home.wins = teamWins[game.home.id];
+							game.home.losses = ++teamLosses[game.home.id];
+							game.home.seriesWins = seriesWins[game.home.id];
+							game.home.seriesLosses = ++seriesLosses[game.home.id];
+						} else {
+							game.away.wins = teamWins[game.away.id];
+							game.away.losses = ++teamLosses[game.away.id];
+							game.away.seriesWins = seriesWins[game.away.id];
+							game.away.seriesLosses = ++seriesLosses[game.away.id];
+							game.home.wins = ++teamWins[game.home.id];
+							game.home.losses = teamLosses[game.home.id];
+							game.home.seriesWins = ++seriesWins[game.home.id];
+							game.home.seriesLosses = seriesLosses[game.home.id];
+						}
+						
+						game.away.diff = game.away.wins - game.away.losses;
+						game.home.diff = game.home.wins - game.home.losses;
+						return game;
 					}
-					
-					game.away.diff = game.away.wins - game.away.losses;
-					game.home.diff = game.home.wins - game.home.losses;
-					return game;
 				}).sortBy("day").value();
 			
 			return parsedData;
-			/*if(season > -1 && game.isPostseason && game.id == _.last(data.data).gameId) {
-				var championTeam = _.findWhere(teamsGraphs, { id: game.winner });
-				game.outcomes.push("Your Season " + (parseInt(game.season) + 1) + " champions are the " +  championTeam.name + "!");
-			}*/
 		}
 	});
 	App.Collections.Details = Backbone.Collection.extend({
@@ -784,7 +836,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 		initialize: function() {
 			var thisView = this;
 			if(this.model.get("games")) {
-				this.getTeamGames();
+				this.render();
 			} else {
 				this.model.set("games", new App.Collections.Games());
 				this.model.get("games").fetch({
@@ -793,33 +845,24 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 						started: true
 					},
 					success: function() {
-						thisView.getTeamGames();
+						thisView.render();
 					}
 				});
 			}
 		},
 		getTeamGames: function() {
-			if(!this.model.has("teams")) {
-				this.model.set("teams", {});
-			}
-			if(this.model.get("teams")[activeTeam.id]) {
-				this.render();
-			} else {
-				var models = this.model.get("games").chain().filter(function(game) { 
-					return _.contains([game.get("away").id, game.get("home").id], activeTeam.id); 
-				}).map(function(game) {
-					if(game.get("away").id == activeTeam.id) {
-						game.set("opponent", game.get("home"));
-						game.set("team", game.get("away"));
-					} else {
-						game.set("opponent", game.get("away"));
-						game.set("team", game.get("home"));
-					}
-					return game;
-				}).value();
-				this.model.get("teams")[activeTeam.id] = new App.Collections.Details(models);
-				this.render();
-			}
+			return new App.Collections.Details(this.model.get("games").chain().filter(function(game) { 
+				return _.contains([game.get("away").id, game.get("home").id], activeTeam.id); 
+			}).map(function(game) {
+				if(game.get("away").id == activeTeam.id) {
+					game.set("opponent", game.get("home"));
+					game.set("team", game.get("away"));
+				} else {
+					game.set("opponent", game.get("away"));
+					game.set("team", game.get("home"));
+				}
+				return game;
+			}).value())
 		},
 		maxWinDiff: function() {
 			return 89 - 19; // season 6 crabs
@@ -842,7 +885,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					bars: [],
 					outlines: []
 				}, 
-				games = this.model.get("teams")[activeTeam.id],
+				games = this.getTeamGames(),
 				barWidth = svg.width / Math.max(99, games.length),
 				barHeightUnit = svg.height / (this.maxWinDiff() + this.maxLossDiff());
 			
@@ -967,7 +1010,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 		},
 		showDetails: function(e) {
 			var id = $(e.currentTarget).data("id"), 
-				game = this.model.get("teams")[activeTeam.id].get(id),
+				game = this.model.get("games").get(id),
 				padding = isMobile() ? 10 : 20,
 				heightRatio = $("main").innerHeight() / (this.maxWinDiff() + this.maxLossDiff()),
 				style = {};

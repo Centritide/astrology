@@ -77,20 +77,15 @@
 				<% _.each(svg.outlines, function(outline) { %>
 					<path class="outline" fill="<%= outline.postseason && outline.above ? "#48c3a5" : outline.postseason ? "#b1264a" : outline.above ? "#4ab94a" : "#e23636" %>" d="<%= outline.path.join(" ") %>"/>
 				<% }) %>
-				<% yPos = -1 %>
-				<% lastIndex = -1 %>
-				<% _.each(svg.bars, function(bar, num) { %>
+				<% _.each(svg.bars, function(bar) { %>
 					<% emojis = _.uniq(_.pluck(bar.outcomes, "emoji")) %>
 					<% if(emojis.length) { %>
 						<% _.each(emojis, function(emoji, index) { %>
-							<% prevY = yPos %>
 							<% yPos = bar.y - bar.height - (bar.above ? 2 : -1) * bar.radius * (((bar.above ? 1 : 2) * index) + 1) %>
-							<% /*if(prevY > 0 && num - lastIndex <= 1 && yPos >= prevY - bar.radius) { yPos = prevY - (bar.above ? 2 : -2) * bar.radius }*/ %>
 							<circle class="outcome" data-id="<%= bar.id %>" cx="<%= bar.x + bar.radius / 2 %>" cy="<%= yPos + 0.5 * bar.radius %>" r="<%= bar.radius %>" fill="#ffffff" />
 							<image class="outcome" data-id="<%= bar.id %>" href="<%= emojiSvg(emoji) %>" x="<%= bar.x %>" y="<%= yPos %>" height="<%= bar.radius %>" width="<%= bar.radius %>" />
 						<% }) %>
 						<line class="outcome" x1="<%= bar.x + bar.radius / 2 %>" y1="<%= bar.y - bar.height %>" x2="<%= bar.x + bar.radius / 2 %>" y2="<%= yPos + bar.radius * (bar.above ? 1.5 + 2 * (emojis.length - 1) : -0.5 - 2 * (emojis.length - 1)) %>" />
-						<% lastIndex = num %>
 					<% } %>
 					<path class="bar" data-id="<%= bar.id %>" fill="<%= bar.color %>" d="<%= bar.path.join(" ") %>"/>
 				<% }) %>

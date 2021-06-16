@@ -51,12 +51,14 @@
                         method: "GET",
                         datatype: "json",
                         success: function(teams) {
-                            _.chain(teams).sortBy("nickname").each(function(team) {
+                            var chain = _.chain(teams).sortBy("nickname").each(function(team) {
                                 if(!isTeamSpecial(team.id)) {
                                     $("main").append("<div id='" + team.id + "'><h3>" + team.nickname + "</h3><ol></ol></div>")
                                 }
                             });
-                            loadGifts();
+                            loadGifts(chain.filter(function(team) {
+                                return _.contains(team.permAttr, "FREE_GIFT");
+                            }).pluck("id").value());
                         },
                         error: function() {
                             handleApiFailure();
@@ -64,21 +66,24 @@
                     });
                 }
 
-                function loadGifts() {
+                function loadGifts(freeGifts) {
                     $.ajax("https://cors-proxy.blaseball-reference.com/database/giftProgress", {
                         method: "GET",
                         datatype: "json",
                         success: function(data) {
                             _.each(data.teamWishLists, function(wishlist, id) {
+                                var hasFreeGift = _.contains(freeGifts, id);
                                 if(data.teamProgress[id]) {
                                     _.chain(wishlist)
                                         .sortBy("percent")
                                         .reverse()
-                                        .first(parseInt(data.teamProgress[id].total) + 1)
+                                        .first(parseInt(data.teamProgress[id].total) + (hasFreeGift ? 2 : 1))
                                         .each(function(gift) {
-                                            
                                             $("#" + id + " ol").append("<li>" + _.findWhere(gifts, { id: gift.bonus }).title + "</li>");
                                         });
+                                    if(hasFreeGift) {
+                                    $("#" + id + " ol li:first-child").append(" (Free Gift!)");
+                                    }
                                     $("#" + id + " ol li:last-child").append(" (" + Math.round(data.teamProgress[id].toNext * 100) + "% funded)");
                                 }
                             });
@@ -114,6 +119,7 @@
                         case "3b0a289b-aebd-493c-bc11-96793e7216d5": // blasesonas
                         case "d2634113-b650-47b9-ad95-673f8e28e687": // sibr
                         case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
+				        case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
                             return true;
                         default:
                             return false;
