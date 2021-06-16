@@ -238,7 +238,7 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 					drawGrindRail(x, y, elongationX, elongationY, forwardnessY, scale, stroke);
 					break;
 				case "SECRET_BASE":
-					drawBase(x, y - elongationY - 2 * scale, scale, stroke, "secret");
+					drawBase(x - elongationX, y - elongationY, scale, stroke, "secret");
 					break;
 				case "BIG_BUCKETS":
 				case "BIRDHOUSES":
@@ -341,7 +341,7 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 		if(_.contains(modifications, "SECRET_BASE")) {
 			$("canvas").drawArc({
 				fillStyle: colors.dirt,
-				x: centerX, y: secondY - 2 * scale,
+				x: thirdX, y: secondY,
 				radius: radius
 			});
 		}
