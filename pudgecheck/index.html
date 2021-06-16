@@ -106,7 +106,8 @@
 					datatype: "json",
 					data: {
 						order: "desc",
-						search: "Pudge Nakamoto"
+						search: "Pudge Nakamoto",
+						count: 1000
 					},
 					success: function(data) {
 						var updates = _.chain(data.data).map(function(update) {
@@ -122,7 +123,7 @@
 									$("#latest").append("<span class='huge'>The ILB* " + (update.good ? "loves" : "dislikes") + (update.ghost ? " the ghost of" : "") + " Pudge Nakamoto because <a href='https://reblase.sibr.dev/game/" + update.gameId + "#" + update.hash + "' target='_blank'>" + update.message + "</a></span>");
 									$("#lovers span").text(update.good ? "but especially" : "except");
 									$("#lovers").show();
-								} else if(index < 20) {
+								} else if(index < 40) {
 									$("#history ul").append("<li><a href='https://reblase.sibr.dev/game/" + update.gameId + "#" + update.hash + "' target='_blank'>" + (update.good ? "&#x1F49A;" : "&#x1F494;") + (update.ghost ? " The ghost of" : "") + " Pudge Nakamoto was previously " + (update.good ? "loved" : "disliked") + " because " + update.message + "</a></li>");
 								}
 							});
