@@ -752,6 +752,16 @@
         }
 	},
 	{
+        "id": "EARLY_TO_PARTY",
+		"emoji": "0x1FA85",
+        "title": "Early to the Party",
+        "description": "This Team or Player will Underperform in the Lateseason.",
+        "descriptions": {
+            "player": "This Player will Underperform in the Lateseason.",
+            "team": "This Team will Underperform in the Lateseason."
+        }
+    },
+	{
 		"id": "OVERUNDER",
 		"emoji": "0x2935",
 		"title": "Over Under",
@@ -973,9 +983,9 @@
     },
     {
         "id": "SECRET_TUNNELS",
-		"emoji": "0x1F687",
-        "title": "Secret Tunnels",
-        "description": "A network of tunnels underneath this Ballpark."
+		"emoji": "0x26CF",
+        "title": "Tunnels",
+        "description": "Tunnels allow the Home Team to steal from the Away Team in this Ballpark."
     },
     {
         "id": "SOLAR_PANELS",
@@ -1542,20 +1552,8 @@
     },
     {
         "id": "VERY_FOUL_BALLS",
-		"emoji": "0x1F9A8",
-        "title": "Very Foul Balls",
+		"emoji": "0x1F7E1",
+        "title": "Ball Pit",
         "description": "Every Foul Ball hit in this Ballpark will add 5x the eDensity that it normally would."
-    },
-    {
-        "id": "LIGHT_SWITCH_ON",
-		"emoji": "0x1F53A",
-        "title": "Light Switch ON",
-        "description": "Toggle the polarity of your Stadium's eDensity any time the Light Switch is rebuilt. Currently in the ON position."
-    },
-    {
-        "id": "LIGHT_SWITCH_OFF",
-		"emoji": "0x1F53B",
-        "title": "Light Switch OFF",
-        "description": "Toggle the polarity of your Stadium's eDensity any time the Light Switch is rebuilt. Currently in the OFF position."
     }
 ]
