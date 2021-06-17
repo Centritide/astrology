@@ -617,8 +617,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 		parse: function(data) {
 			var parsedData = data.data, teamWins = {}, teamLosses = {}, seriesWins = {}, seriesLosses = {};
 			
-			parsedData = _.chain(parsedData).map(function(data) {
-				if(data.startTime && data.endTime) {
+			parsedData = _.chain(parsedData)
+				.filter(function(data) {
+					return data.startTime && data.endTime;
+				})
+				.map(function(data) {
 					var awayTeam = navView.model.get("teams").get(data.data.awayTeam), 
 						homeTeam = navView.model.get("teams").get(data.data.homeTeam),
 						weatherIndex = weather && data.data.weather < weather.length ? data.data.weather : 0,
@@ -740,8 +743,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 						game.away.diff = game.away.wins - game.away.losses;
 						game.home.diff = game.home.wins - game.home.losses;
 						return game;
-					}
-				}).sortBy("day").value();
+				})
+				.sortBy("day")
+				.value();
 			
 			return parsedData;
 		}
