@@ -605,7 +605,7 @@
 		"id": "UNDERPERFORMING",
 		"emoji": "0x2B07",
 		"title": "Underperforming",
-        "description": "This Team or Player will play 20% better than usual.",
+        "description": "This Team or Player will play 20% worse than usual.",
         "descriptions": {
             "player": "This Player will play 20% worse than usual.",
             "team": "This Team will play 20% worse than usual."
@@ -1555,5 +1555,53 @@
 		"emoji": "0x1F7E1",
         "title": "Ball Pit",
         "description": "Every Foul Ball hit in this Ballpark will add 5x the eDensity that it normally would."
+    },
+    {
+        "id": "GREEN_LIGHT",
+		"emoji": "0x1F7E2",
+        "title": "Green Light",
+        "description": "This Player will play 50% better in Positive Polarity (+) Weather and 50% worse in Negative Polarity (-) Weather."
+    },
+    {
+        "id": "HEAVY_HANDED",
+		"emoji": "0x1F9BE",
+        "title": "Heavy-Handed",
+        "description": "All Items held by Players on this Team have positive eDensity."
+    },
+    {
+        "id": "LIGHT_HANDED",
+		"emoji": "0x270B",
+        "title": "Light-Handed",
+        "description": "All Items held by Players on this Team have negative eDensity."
+    },
+    {
+        "id": "SPONGE",
+		"emoji": "0x1F9FD",
+        "title": "Sponge",
+        "description": "Floods will be much more likely when this Player is on base."
+    },
+    {
+        "id": "MAGNIFY_2X",
+		"emoji": "0x274E",
+        "title": "2x",
+        "description": "Every Run that this Player bats in or allows will be multiplied by 2."
+    },
+    {
+        "id": "MAGNIFY_3X",
+		"emoji": "0x274E",
+        "title": "3x",
+        "description": "Every Run that this Player bats in or allows will be multiplied by 3."
+    },
+    {
+        "id": "MAGNIFY_4X",
+		"emoji": "0x274E",
+        "title": "4x",
+        "description": "Every Run that this Player bats in or allows will be multiplied by 4."
+    },
+    {
+        "id": "MAGNIFY_5X",
+		"emoji": "0x274E",
+        "title": "5x",
+        "description": "Every Run that this Player bats in or allows will be multiplied by 5."
     }
 ]
