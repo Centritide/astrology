@@ -544,6 +544,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					teams: [ team.id ]
 				}
 			}
+			matcher = outcome.match(/^(.+) was replaced by incoming fax ([^\.]+)\.$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F4E0,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [{ name: matcher[1], team: null }, { name: matcher[2], team: null }]
+				}
+			}
 			matcher = outcome.match(/BRIDGE WEAKENED/i);
 			if(matcher) {
 				return {
@@ -573,6 +581,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 				};
 			}
 			matcher = outcome.match(/(.+) gained (.+)(?: and (?:dropped|ditched) (.+))?\.?/i);
+			if(matcher) {
+				return null;
+			}
+			matcher = outcome.match(/(.+) stole (.+)!/i);
 			if(matcher) {
 				return null;
 			}
