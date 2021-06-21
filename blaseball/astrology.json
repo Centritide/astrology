@@ -46,9 +46,9 @@
             "name": "Earned Runs Pitcher Rating",
             "shorthand": "ERPR",
             "weights": {
-                "overpowerment": 0.14,
+                "overpowerment": 0.18,
                 "ruthlessness": 0.46,
-                "unthwackability": 0.40
+                "unthwackability": 0.36
             }
         }
     ],

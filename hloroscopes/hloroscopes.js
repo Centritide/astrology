@@ -753,7 +753,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 						var prevData = thisCollection.at(index - 1).get("data");
 						switch(attribute) {
 							case "canonical":
-							case "edensity":
 							case "id":
 								break;
 							case "modifiers":
@@ -1472,6 +1471,18 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				height: $("main").innerHeight() - this.$el.find("h1").height(),
 				width: isMobile() ? $(window).width() : $("main").width() - 320
 			});
+		},
+		events: {
+			"click th.player-timestamp": "sortByTimestamp"
+		},
+		sortByTimestamp: function(e) {
+			var scroll = { x: this.$el.find(".advanced").scrollLeft(), y: this.$el.find(".advanced").scrollTop() },
+				direction = $(e.currentTarget).data("direction") == "asc" ? "desc" : "asc";
+			this.collection.set(this.collection.toJSON().reverse());
+			this.render();
+			this.$el.find("th.player-timestamp").attr("data-direction", direction);
+			this.$el.find(".advanced").scrollLeft(scroll.x);
+			this.$el.find(".advanced").scrollTop(scroll.y);
 		}
 	});
 	App.Views.TeamHistory = Backbone.View.extend({

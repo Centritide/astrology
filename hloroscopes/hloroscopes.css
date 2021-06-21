@@ -807,6 +807,16 @@ i.half-star {
 	z-index: 2;
 }
 
+.advanced th[data-direction=desc]::after {
+    content: "\25BC";
+    margin-left: .1em;
+}
+
+.advanced th[data-direction=asc]::after {
+    content: "\25B2";
+    margin-left: .1em;
+}
+
 .advanced .player-stat {
 	text-align: center;
 }
