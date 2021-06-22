@@ -557,7 +557,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					players: [{ name: matcher[1], team: null }, { name: matcher[2], team: null }]
 				}
 			}
-			matcher = outcome.match(/^(.+) placed the fifth base in (.+)\.$/i);
+			matcher = outcome.match(/^(.+) (?:placed|took) the fifth base (?:in|from) (.+)\.$/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F590,
