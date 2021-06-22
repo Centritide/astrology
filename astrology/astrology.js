@@ -95,6 +95,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
 					return "coffee2";
 				case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
+				case "d6a352fc-b675-40a0-864d-f4fd50aaeea0": // canada artists
 					return "ulb";
 				default:
 					return "ilb";
@@ -294,17 +295,17 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 		}
 	});
 	App.Collections.Stadiums = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v1/stadiums",
+		url: "https://api.sibr.dev/chronicler/v2/entities?type=stadium",
 		model: App.Models.Stadium,
 		parse: function(data) {
-			return data.data;
+			return data.items;
 		}
 	});
 	App.Collections.Players = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v1/players",
+		url: "https://api.sibr.dev/chronicler/v2/entities?type=player",
 		model: App.Models.Player,
 		parse: function(data) {
-			return data.data
+			return data.items
 		}
 	});
 	App.Collections.Tributes = Backbone.Collection.extend({

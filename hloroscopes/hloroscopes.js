@@ -673,10 +673,25 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		}
 	});
 	App.Collections.AllPlayers = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v1/players",
+		url: "https://api.sibr.dev/chronicler/v2/entities",
 		model: App.Models.Player,
+		fetchPage: function(id, count, after, success) {
+			this.fetch({
+				reset: !after,
+				remove: !after,
+				data: {
+					type: "player",
+					order: "asc",
+					id: id,
+					count: count,
+					after: after
+				},
+				success: success,
+				error: console.log
+			});
+		},
 		parse: function(data) {
-			return _.chain(data.data).map(function(player) {
+			return _.chain(data.items).map(function(player) {
 				if(player.id == "bc4187fa-459a-4c06-bbf2-4e0e013d27ce") {
 					player.data.name = "Original Sixpack Dogwalker";
 				}
@@ -713,14 +728,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		model: App.Models.Player
 	});
 	App.Collections.Updates = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v1/players/updates",
+		url: "https://api.sibr.dev/chronicler/v2/versions",
 		model: App.Models.Update,
 		fetchPage: function(id, count, after, success) {
 			this.fetch({
 				reset: !after,
 				remove: !after,
 				data: {
-					player: id,
+					type: "player",
+					id: id,
 					count: count,
 					after: after
 				},
@@ -729,12 +745,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			});
 		},
 		parse: function(data) {
-			return _.map(data.data, function(update) {
+			return _.map(data.items, function(update) {
 				return {
-					id: update.updateId,
+					id: update.hash,
 					data: formatPlayerData(update.data),
-					start: new Date(update.firstSeen),
-					end: new Date(update.lastSeen),
+					start: new Date(update.validFrom),
+					end: new Date(update.validTo),
 					raw: update.data,
 					changes: []
 				};
@@ -847,14 +863,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		emoji: parseEmoji
 	});
 	App.Collections.TeamUpdates = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v1/teams/updates",
+		url: "https://api.sibr.dev/chronicler/v2/versions",
 		model: App.Models.TeamUpdate,
-		fetchPage: function(team, count, next, success) {
+		fetchPage: function(id, count, next, success) {
 			this.fetch({
 				reset: !next,
 				remove: !next,
 				data: {
-					team: team,
+					type: "team",
+					id: id,
 					count: count,
 					page: next
 				},
@@ -863,12 +880,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			});
 		},
 		parse: function(data) {
-			return _.map(data.data, function(update) {
+			return _.map(data.items, function(update) {
 				return {
-					id: update.updateId,
+					id: update.hash,
 					data: formatTeamData(update.data),
-					start: new Date(update.firstSeen),
-					end: new Date(update.lastSeen),
+					start: new Date(update.validFrom),
+					end: new Date(update.validTo),
 					raw: update.data,
 					changes: []
 				};
@@ -926,10 +943,25 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		}
 	});
 	App.Collections.TeamUpdatePlayers = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v1/players/updates",
+		url: "https://api.sibr.dev/chronicler/v2/versions",
 		model: App.Models.TeamUpdatePlayer,
+		fetchPage: function(id, count, after, success) {
+			this.fetch({
+				reset: !after,
+				remove: !after,
+				data: {
+					type: "player",
+					order: "asc",
+					id: id,
+					count: count,
+					after: after
+				},
+				success: success,
+				error: console.log
+			});
+		},
 		parse: function(data) {
-			return _.map(data.data, function(update) {
+			return _.map(data.items, function(update) {
 				return formatPlayerData(update.data);
 			});
 		}
@@ -1493,7 +1525,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				this.collection = updates[this.id];
 				this.render();
 			} else {
-				var thisView = this, count = 250,
+				var thisView = this, count = 1000,
 					fetchSuccess = function(collection, response) {
 						if(response.nextPage) {
 							collection.fetchPage(thisView.id, count, response.nextPage, fetchSuccess);
@@ -1509,9 +1541,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		loadPlayer: function(id, time, callback) {
 			new App.Collections.TeamUpdatePlayers().fetch({
 				data: {
-					player: id,
+					type: "player",
+					id: id,
 					after: time.toISOString(),
-					count:1
+					count: 1
 				},
 				success: function(collection) {
 					if(callback) {
@@ -2115,6 +2148,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
 				return "coffee";
 			case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
+			case "d6a352fc-b675-40a0-864d-f4fd50aaeea0": // canada artists
 				return "ulb";
 			default:
 				return "ilb";

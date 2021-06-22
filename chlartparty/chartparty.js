@@ -76,6 +76,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 				case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
 					return "coffee";
 				case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
+				case "d6a352fc-b675-40a0-864d-f4fd50aaeea0": // canada artists
 					return "ulb";
 				default:
 					return "ilb";
