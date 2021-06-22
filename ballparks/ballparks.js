@@ -53,14 +53,14 @@ requirejs(["jquery", "underscore", "backbone", "jcanvas"], function($, _, Backbo
 	
 	//-- BEGIN COLLECTIONS --
 	App.Collections.Stadiums = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v1/stadiums",
+		url: "https://api.sibr.dev/chronicler/v2/entities?type=stadium",
 		model: App.Models.Stadium,
 		comparator: function(model) {
 			var stadiumName = model.get("name");
 			return stadiumName.startsWith("The") ? stadiumName.substring(4) : stadiumName;
 		},
 		parse: function(data) {
-			return data.data;
+			return data.items;
 		}
 	});
 	//-- END COLLECTIONS --

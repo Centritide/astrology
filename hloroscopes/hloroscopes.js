@@ -675,16 +675,16 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	App.Collections.AllPlayers = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/entities",
 		model: App.Models.Player,
-		fetchPage: function(id, count, after, success) {
+		fetchPage: function(id, count, next, success) {
 			this.fetch({
-				reset: !after,
-				remove: !after,
+				reset: !next,
+				remove: !next,
 				data: {
 					type: "player",
 					order: "asc",
 					id: id,
 					count: count,
-					after: after
+					page: next
 				},
 				success: success,
 				error: console.log
@@ -730,15 +730,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	App.Collections.Updates = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/versions",
 		model: App.Models.Update,
-		fetchPage: function(id, count, after, success) {
+		fetchPage: function(id, count, next, success) {
 			this.fetch({
-				reset: !after,
-				remove: !after,
+				reset: !next,
+				remove: !next,
 				data: {
 					type: "player",
 					id: id,
 					count: count,
-					after: after
+					page: next
 				},
 				success: success,
 				error: console.log
@@ -945,16 +945,16 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	App.Collections.TeamUpdatePlayers = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/versions",
 		model: App.Models.TeamUpdatePlayer,
-		fetchPage: function(id, count, after, success) {
+		fetchPage: function(id, count, next, success) {
 			this.fetch({
-				reset: !after,
-				remove: !after,
+				reset: !next,
+				remove: !next,
 				data: {
 					type: "player",
 					order: "asc",
 					id: id,
 					count: count,
-					after: after
+					page: next
 				},
 				success: success,
 				error: console.log
@@ -969,16 +969,16 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	App.Collections.StadiumUpdates = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/versions",
 		model: App.Models.StadiumUpdate,
-		fetchPage: function(id, count, after, success) {
+		fetchPage: function(id, count, next, success) {
 			this.fetch({
-				reset: !after,
-				remove: !after,
+				reset: !next,
+				remove: !next,
 				data: {
 					type: "stadium",
 					order: "asc",
 					id: id,
 					count: count,
-					after: after
+					page: next
 				},
 				success: success,
 				error: console.log
@@ -1293,9 +1293,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				this.render();
 			} else {
 				var thisView = this, count = 1000,
-					fetchSuccess = function(collection) {
-						if(collection.last().get("end").getTime() > 0) {
-							collection.fetchPage(thisView.id, count, collection.last().get("end").toISOString(), fetchSuccess);
+					fetchSuccess = function(collection, response) {
+						if(response.nextPage) {
+							collection.fetchPage(thisView.id, count, response.nextPage, fetchSuccess);
 						} else {
 							collection.filterData();
 							updates[thisView.id] = collection;
@@ -1734,9 +1734,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 				this.render();
 			} else {
 				var thisView = this, count = 1000,
-					fetchSuccess = function(collection) {
-						if(collection.last().get("end").getTime() > 0) {
-							collection.fetchPage(thisView.id, count, collection.last().get("end").toISOString(), fetchSuccess);
+					fetchSuccess = function(collection, response) {
+						if(response.nextPage) {
+							collection.fetchPage(thisView.id, count, response.nextPage, fetchSuccess);
 						} else {
 							collection.filterData();
 							updates[thisView.id] = collection;
