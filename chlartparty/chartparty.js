@@ -48,25 +48,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 	//-- END ROUTER --
 	
 	//-- BEGIN MODELS --
-	App.Models.Nav = Backbone.Model.extend({
-		seasonExists: function(season, callback) {
-			var thisModel = this, SeasonModel = new App.Models.Season();
-			SeasonModel.fetch({
-				data: {
-					number: season
-				},
-				success: function() {
-					thisModel.get("seasons").add(SeasonModel);
-					thisModel.seasonExists(++season, callback);
-				},
-				error: function() {
-					if(callback) {
-						callback();
-					}
-				}
-			});
-		}
-	});
+	App.Models.Nav = Backbone.Model.extend({});
 	App.Models.Team = Backbone.Model.extend({
 		slug: function() {
 			return this.get("fullName").toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
@@ -126,9 +108,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 			return lightMode;
 		}
 	});
-	App.Models.Season = Backbone.Model.extend({
-		url: "https://cors-proxy.blaseball-reference.com/database/season"
-	});
+	App.Models.Season = Backbone.Model.extend({});
 	App.Models.Game = Backbone.Model.extend({
 		oddsAdjective: function() {
 			var adjectives = "";
@@ -225,6 +205,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 			if(matcher) {
 				return {
 					emoji: 0x1F973,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				};
+			}
+			matcher = outcome.match(/^(.+) became unstable!$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F47F,
 					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
 					players: [{ name: matcher[1], team: null }]
 				};
@@ -449,6 +437,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					teams: [ team.id ]
 				}
 			}
+			matcher = outcome.match(/sun 30 smiled upon the (.+) and (.+)\.$/i);
+			if(matcher) {
+				var team1 = getTeamByName(matcher[1]), team2 = getTeamByName(matcher[2]);
+				return {
+					emoji: 0x2600,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team1.get("secondaryColor") + "'>" + team1.get("nickname") + "</strong>").replace(matcher[2], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team2.get("secondaryColor") + "'>" + team2.get("nickname") + "</strong>"),
+					teams: [ team1.id, team2.id ]
+				}
+			}
 			matcher = outcome.match(/^(.+) was percolated by the tractor bean!(?: (.+) was fired into outer space!)?$/i);
 			if(matcher) {
 				return {
@@ -490,6 +487,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					emoji: 0x1F41F,
 					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
 					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/(.+) flipped (.+) negative\./i);
+			if(matcher) {
+				return {
+					emoji: 0x1F4A8	,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [{ name: matcher[1], team: null }, { name: matcher[2], team: null }]
 				}
 			}
 			matcher = outcome.match(/^(.+) became an echo!$/i);
@@ -552,6 +557,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					players: [{ name: matcher[1], team: null }, { name: matcher[2], team: null }]
 				}
 			}
+			matcher = outcome.match(/^(.+) placed the fifth base in (.+)\.$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F590,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
 			matcher = outcome.match(/BRIDGE WEAKENED/i);
 			if(matcher) {
 				return {
@@ -584,6 +597,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 			if(matcher) {
 				return null;
 			}
+			matcher = outcome.match(/(.+) dropped (.+)\./i);
+			if(matcher) {
+				return null;
+			}
 			matcher = outcome.match(/(.+) stole (.+)!/i);
 			if(matcher) {
 				return null;
@@ -592,7 +609,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 			if(matcher) {
 				return null;
 			}
-			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)!|\./i);
+			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)(?:!|\.)/i);
+			if(matcher) {
+				return null;
+			}
+			matcher = outcome.match(/(.+)'s? (.+) was repaired by smithy\./i);
 			if(matcher) {
 				return null;
 			}
@@ -621,7 +642,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 		}
 	});
 	App.Collections.Seasons = Backbone.Collection.extend({
-		model: App.Models.Season
+		url: "https://api.sibr.dev/chronicler/v2/versions?type=season",
+		model: App.Models.Season,
+		parse: function(data) {
+			return [{ seasonNumber: 0 }].concat(_.pluck(data.items, "data"));
+		}
 	});
 	App.Collections.Games = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v1/games",
@@ -706,6 +731,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 									seriesWins[game.home.id]++;
 								}
 							}
+							matcher = outcome.match(/sun 30 smiled upon the .+ and .+\./i);
+							if(matcher) {
+								teamWins[game.away.id]++;
+								seriesWins[game.away.id]++;
+								teamWins[game.home.id]++;
+								seriesWins[game.home.id]++;
+							}
 							matcher = outcome.match(/the black hole burped at the (.+)!/i);
 							if(matcher) {
 								if(matcher[1] == game.away.nickname) {
@@ -784,17 +816,23 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					if(activePage.team) {
 						loadTeam(activePage.team);
 					}
+					if(activePage.season) {
+						loadSeason(activePage.season);
+					}
 				},
 				error: console.log
 			});
-			this.model.seasonExists(0, function() {
-				if(teamView) {
-					teamView.render();
-				}
-				if(activePage.season) {
-					loadSeason(activePage.season);
-				}
-			});
+			this.model.get("seasons").fetch({
+				success: function() {
+					if(teamView) {
+						teamView.render();
+					}
+					if(activePage.season) {
+						loadSeason(activePage.season);
+					}
+				},
+				error: console.log
+			})
 		},
 		render: function() {
 			this.$el.html(this.template(this.model.get("teams")));
