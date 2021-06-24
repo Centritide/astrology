@@ -550,7 +550,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					teams: [ team.id ]
 				}
 			}
-			matcher = outcome.match(/^(.+) was replaced by incoming fax ([^\.]+)\.$/i);
+			matcher = outcome.match(/^(.+) was replaced by incoming (?:fax|voicemail) ([^\.]+)\.$/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F4E0,
@@ -623,6 +623,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 				return null;
 			}
 			matcher = outcome.match(/consumers attack\s(?:scattered\s)?(.+) defends\s+(.+) (?:damaged|breaks?)/i);
+			if(matcher) {
+				return null;
+			}
+			matcher = outcome.match(/.+!\s.+ a consumer!/i);
 			if(matcher) {
 				return null;
 			}

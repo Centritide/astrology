@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<title>Armory</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<meta name="description" content="The items of Blaseball.">
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://yoori.space/armory/">
+		<meta property="og:title" content="Armory">
+		<meta property="og:description" content="The items of Blaseball.">
+		<meta property="og:image" content="http://yoori.space/favicon-128.png">
+		<meta property="twitter:card" content="summary">
+		<meta name="twitter:title" content="Armory">
+		<meta name="twitter:description" content="The items of Blaseball.">
+		<meta name="twitter:image" content="http://yoori.space/favicon-128.png">
+		<link rel="icon" href="/favicon-128.png" sizes="128x128">
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<link href="armory.css" rel="stylesheet">
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-T7S24X2FST"></script>
+		<script>
+			var GA_TRACKING_ID = 'G-T7S24X2FST';
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', GA_TRACKING_ID);
+		</script>
+	</head>
+	<body>
+		<div id="root" class="dark">
+			<nav></nav>
+			<main></main>
+			<footer></footer>
+		</div>
+
+		<script type="text/template" id="template-placeholder"></script>
+		
+		<script type="text/template" id="template-footer">
+			<div class="footer-toggles"></div>
+			<div class="footer-buttons">
+				<a data-toggle-lights="<%= isLightMode() ? "true" : "false" %>" href="javascript:;"><%= emoji(isLightMode() ? 0x1F506 : 0x1F311) %></a>
+			</div>
+		</script>
+		
+		<script type="text/template" id="template-items">
+			<section class="items">
+				<table>
+					<colgroup span="6"></colgroup>
+					<% _.each(columns, function(category) { %>
+						<colgroup span="<%= category.attributes.length %>"></colgroup>
+					<% }) %>
+					<thead>
+						<tr>
+							<th colspan="6">General</th>
+							<% _.each(columns, function(category) { %>
+								<th colspan="<%= category.attributes.length %>"><%= category.name %></th>
+							<% }) %>
+						</tr>
+						<tr>
+							<th class="item-name" title="Item Name" data-sort="name" colspan="2">Name</th>
+							<th title="Item Owner(s)" data-sort="owners">Owner(s)</th>
+							<th title="Item Durability" data-sort="durability">Durability</th>
+							<th title="Item Modifications" data-sort="modifications">Modifications</th>
+							<th title="Item Elements" data-sort="elements">Elements</th>
+							<% _.each(columns, function(category) {
+								_.each(category.attributes, function(attribute) { %>
+									<th title="<%= attribute.name %>" data-sort="<%= attribute.id %>"><%= attribute.shorthand %></th>
+								<% })
+							}) %>
+						</tr>
+					</thead>
+					<tbody>
+						<% _.each(items, function(item) { %>
+							<tr>
+								<td title="<%= item.get("root").name %>"><%= item.emoji() %></td> 
+								<td class="item-name"><a href="https://blaseball.com/item/<%= item.id %>"><%= item.get("name") %></a></td>
+								<td class="item-owners">
+									<% if(item.get("owners") && item.get("owners").length) { 
+										_.each(item.get("owners"), function(player) { %>
+											<li><a class="player-name" href="https://blaseball.com/player/<%= player.id %>"><%= player.team() %> <%= player.canonicalName() %></a><% if(player.position()) { %> <span>(<%= player.position() %>)</span><% } %></li>
+										<% })
+									} else { %>
+										<span style="display:block;text-align:center">-</span>
+									<% } %>
+								</td>
+								<td class="item-stat">
+									<% if(item.get("durability") > 0) { %>
+										<%= item.get("health") %> / <%= item.get("durability") %>
+									<% } else { %>
+										Unbreakable
+									<% } %>
+								</td>
+								<td class="item-stat"><%= item.modifications().length ? item.modifications().join("") : "None" %></td>
+								<td class="item-elements"><%= item.elements().length ? item.elements().join(", ") : "None" %></td>
+								<% _.each(columns, function(category) { 
+									_.each(category.attributes, function(attribute) { 
+										var value = _.get(item.adjustments(), attribute.id, 0) %>
+										<td class="item-stat" title="<%= attribute.name %>: <%= value %>"><%= Math.round(value * 1000) / 1000 %></td>
+									<% })
+								}) %>
+							</tr>
+						<% }) %>
+					</tbody>
+				</table>
+			</section>
+		</script>
+		
+		<script data-main="armory.js" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+	</body>
+</html>

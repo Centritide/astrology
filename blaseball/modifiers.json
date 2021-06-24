@@ -1642,7 +1642,7 @@
     },
     {
         "id": "FLOOD_BALLOONS",
-		"emoji": "0x2602",
+		"emoji": "0x1F3D0",
         "title": "Flood Balloons",
         "description": "A medium, permanent amount of negative eDensity is added for each Flood in this Ballpark."
     },
