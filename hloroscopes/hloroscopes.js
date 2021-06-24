@@ -572,6 +572,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					return "None";
 			}
 		},
+		improvements: function() {
+			return _.pick(this.get("renoLog"), ["light_switch_toggle"]);
+		},
 		weather: function() {
 			return _.map(this.get("weather"), function(modifier, index) {
 				var weatherName = weathers ? weathers[index].name : index;
@@ -1010,6 +1013,28 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 						_.each(model.get("data"), function(value, attribute) {
 							switch(attribute) {
 								case "id":
+									break;
+								case "improvements":
+									var prevImps = lastChange.get("data").improvements;
+									if(!_.isEqual(prevImps, value)) {
+										_.each(value, function(state, key) {
+											console.log(state, key);
+											if(_.get(prevImps, key, undefined) != state) {
+												if(_.get(prevImps, key, undefined) == undefined) {
+													model.get("changes").push("installed " + key.replace(/\_/g, " "));
+												} else if(state) {
+													model.get("changes").push(key.replace(/\_/g, " ") + "d on");
+												} else {
+													model.get("changes").push(key.replace(/\_/g, " ") + "d off");
+												}
+											}
+										});
+										_.each(prevImps, function(state, key) {
+											if(_.get(value, key, undefined) != state) {
+												model.get("changes").push("removed " + key.replace(/\_/g, " "));
+											}
+										});
+									}
 									break;
 								case "modifiers":
 									var prevMods = lastChange.get("data").modifiers;
@@ -2253,6 +2278,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			grandiosity: model.get("grandiosity"),
 			hype: model.hype(),
 			id: model.get("id"),
+			improvements: model.improvements(),
 			inconvenience: model.get("inconvenience"),
 			luxuriousness: model.luxuriousness(),
 			modifiers: model.get("mods"),

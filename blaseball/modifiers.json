@@ -847,7 +847,7 @@
 	},
 	{
 		"id": "FLOOD_PUMPS",
-		"emoji": "0x1F4A7",
+		"emoji": "0x1F6B0",
 		"title": "Flood Pumps",
         "description": "Flood Pumps will prevent Flooding weather from making your Ballpark filthier."
 	},
@@ -1157,7 +1157,7 @@
     },
     {
         "id": "FORCE",
-		"emoji": "0x1FAA2",
+		"emoji": "0x2693",
         "title": "Force",
         "description": "This Player is Forced into position. They cannot leave their current Location."
     },
@@ -1196,7 +1196,7 @@
         "description": "Players with 0 will always swing at strikes while there are 0 Balls and 0 Strikes in the At Bat.",
         "descriptions": {
             "player": "This Player will always swing at strikes while there are 0 Balls and 0 Strikes in the At Bat.",
-            "team": "Players batting for this Team will always swin at strikes while there are 0 Balls and 0 Strikes in the At Bat."
+            "team": "Players batting for this Team will always swing at strikes while there are 0 Balls and 0 Strikes in the At Bat."
         }
     },
     {
@@ -1307,7 +1307,7 @@
     },
     {
         "id": "HOTEL_MOTEL",
-        "emoji": "0x1F3E8",
+        "emoji": "0x1F3E2",
         "title": "Hotel Motel",
         "description": "The Hotel Motel will occasionally create Holiday Innings during the Earlseason, where you Party instead of Score.",
         "descriptions": {
@@ -1603,5 +1603,59 @@
 		"emoji": "0x274E",
         "title": "5x",
         "description": "Every Run that this Player bats in or allows will be multiplied by 5."
+    },
+    {
+        "id": "PROFIT",
+		"emoji": "0x1F4C8",
+        "title": "Profit",
+        "description": "This Player pays out 10x the rewards for all Idol Snacks."
+    },
+    {
+        "id": "NONPROFIT",
+		"emoji": "0x1F4C9",
+        "title": "Non-Profit",
+        "description": "This Player does not pay out Snack rewards to Fans of their own Team."
+    },
+    {
+        "id": "NIGHTSHADE",
+		"emoji": "0x1F303",
+        "title": "Nightshade",
+        "description": "This Team plays 20% better in Night Weather."
+    },
+    {
+        "id": "TRADER",
+		"emoji": "0x1F500",
+        "title": "Trader",
+        "description": "This Player has a chance of swapping Items with an opponent during a game."
+    },
+    {
+        "id": "TRAITOR",
+		"emoji": "0x1F500",
+        "title": "Traitor",
+        "description": "This Player has a chance of swapping Items with a teammate during a game."
+    },
+    {
+        "id": "BIRD_HOTEL",
+		"emoji": "0x1F3E8",
+        "title": "Bird Hotel",
+        "description": "When the Home Team parties, a number of Birds will come join the Party."
+    },
+    {
+        "id": "FLOOD_BALLOONS",
+		"emoji": "0x2602",
+        "title": "Flood Balloons",
+        "description": "A medium, permanent amount of negative eDensity is added for each Flood in this Ballpark."
+    },
+    {
+        "id": "ANTI_FLOOD_PUMPS",
+		"emoji": "0x1F6B1",
+        "title": "Anti Flood Pumps",
+        "description": "Whenever a Flood happens in this Ballpark, its Filthiness is greatly increased."
+    },
+    {
+        "id": "VOICEMAIL",
+		"emoji": "0x1F4DF",
+        "title": "Voicemail",
+        "description": "When the Home Team is shut out in this Ballpark, they'll swap the worst Batter in their Lineup with the best Batter in their Shadows."
     }
 ]
