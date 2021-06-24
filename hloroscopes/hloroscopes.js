@@ -61,9 +61,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return _.template($("#template-players").html())({
 				emoji: parseEmoji,
 				position: position, 
-				players: teamPlayers ? _.chain(this.get(position.toLowerCase())).map(function(id) {
+				players: position == "Players" ? teamPlayers.models : (teamPlayers ? _.chain(this.get(position.toLowerCase())).map(function(id) {
 					return teamPlayers.findWhere({ id: id });
-				}).compact().value() : []
+				}).compact().value() : [])
 			});
 		},
 		modifiers: function() {
@@ -678,14 +678,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	App.Collections.AllPlayers = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/entities",
 		model: App.Models.Player,
-		fetchPage: function(id, count, next, success) {
+		fetchPage: function(count, next, success) {
 			this.fetch({
 				reset: !next,
 				remove: !next,
 				data: {
 					type: "player",
 					order: "asc",
-					id: id,
 					count: count,
 					page: next
 				},
@@ -697,28 +696,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return _.chain(data.items).map(function(player) {
 				if(player.id == "bc4187fa-459a-4c06-bbf2-4e0e013d27ce") {
 					player.data.name = "Original Sixpack Dogwalker";
-				}
-				if(_.intersection(player.data.permAttr, ["DUST", "RETIRED"]).length || (_.contains(player.data.permAttr, "LEGENDARY") && !_.contains(player.data.permAttr, "REPLICA"))) {
-					player.data.position = "inactive";
-				} else if(player.data.deceased) {
-					player.data.position = "deceased";
-				} else if(!player.data.leagueTeamId) {
-					if(getTeamType(player.teamId) == "coffee") {
-						player.data.position = "exhibition";
-					} else {
-						player.data.position = "inactive";
-					}
-				} else {
-					switch(player.position) {
-						case "lineup":
-						case "rotation":
-						case "shadows":
-							player.data.position = "active";
-							break;
-						default:
-							player.data.position = "inactive";
-							break;
-					}
 				}
 				return player.data;
 			}).sortBy(function(player) {
@@ -1018,7 +995,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 									var prevImps = lastChange.get("data").improvements;
 									if(!_.isEqual(prevImps, value)) {
 										_.each(value, function(state, key) {
-											console.log(state, key);
 											if(_.get(prevImps, key, undefined) != state) {
 												if(_.get(prevImps, key, undefined) == undefined) {
 													model.get("changes").push("installed " + key.replace(/\_/g, " "));
@@ -1137,27 +1113,19 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			if(this.model.get("players")) {
 				this.render();
 			} else if(this.model.id == "all") {
-				var PlayersCollection = new App.Collections.AllPlayers();
-				PlayersCollection.fetch({
-					success: function() {
-						thisView.model.set({
-							"active": [],
-							"deceased": [],
-							"exhibition": [],
-							"inactive": [],
-							"players": PlayersCollection
-						});
-						PlayersCollection.forEach(function(player) {
-							thisView.model.get(player.get("position")).push(player.id);
-						});
-						thisView.model.set("players", PlayersCollection);
-						thisView.render();
-						if(activePage.player) {
-							loadPlayer(activePage.player);
+				var thisView = this, count = 1000, PlayersCollection = new App.Collections.AllPlayers(),
+					fetchSuccess = function(collection, response) {
+						if(response.nextPage) {
+							collection.fetchPage(count, response.nextPage, fetchSuccess);
+						} else {
+							thisView.model.set("players", PlayersCollection);
+							thisView.render();
+							if(activePage.player) {
+								loadPlayer(activePage.player);
+							}
 						}
-					},
-					error: console.log
-				});
+					};
+				PlayersCollection.fetchPage(count, null, fetchSuccess);
 			} else if(this.model.id == "tributes") {
 				var HallCollection = new App.Collections.Tributes();
 				HallCollection.fetch({
