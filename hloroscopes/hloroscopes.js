@@ -1006,7 +1006,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 											}
 										});
 										_.each(prevImps, function(state, key) {
-											if(_.get(value, key, undefined) != state) {
+											if(_.get(value, key, undefined) == undefined) {
 												model.get("changes").push("removed " + key.replace(/\_/g, " "));
 											}
 										});
