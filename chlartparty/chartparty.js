@@ -51,6 +51,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 	App.Models.Nav = Backbone.Model.extend({});
 	App.Models.Team = Backbone.Model.extend({
 		slug: function() {
+			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
+				return "baltimore-clabs";
+			}
 			return this.get("fullName").toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		type: function() {
@@ -77,6 +80,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 					return "coffee";
 				case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
 				case "d6a352fc-b675-40a0-864d-f4fd50aaeea0": // canada artists
+				case "54d0d0f2-16e0-42a0-9fff-79cfa7c4a157": // antarctic fireballs
+				case "71c621eb-85dc-4bd7-a690-0c68c0e6fb90": // downward dogs
+				case "9494152b-99f6-4adb-9573-f9e084bc813f": // baltimore clabs
 					return "ulb";
 				default:
 					return "ilb";
