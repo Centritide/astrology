@@ -83,6 +83,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 				case "54d0d0f2-16e0-42a0-9fff-79cfa7c4a157": // antarctic fireballs
 				case "71c621eb-85dc-4bd7-a690-0c68c0e6fb90": // downward dogs
 				case "9494152b-99f6-4adb-9573-f9e084bc813f": // baltimore clabs
+				case "a4b23784-0132-4813-b300-f7449cb06493": // phoenix trunks
 					return "ulb";
 				default:
 					return "ilb";
@@ -645,7 +646,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/wea
 	
 	//-- BEGIN COLLECTIONS --
 	App.Collections.Teams = Backbone.Collection.extend({
-		url: "https://cors-proxy.blaseball-reference.com/database/allTeams",
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams",
 		model: App.Models.Team,
 		emoji: parseEmoji,
 		isLightMode: function() {

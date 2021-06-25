@@ -664,7 +664,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	
 	//-- BEGIN COLLECTIONS --
 	App.Collections.Teams = Backbone.Collection.extend({
-		url: "https://cors-proxy.blaseball-reference.com/database/allTeams",
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams",
 		model: App.Models.Team,
 		emoji: parseEmoji,
 		isLightMode: function() {
@@ -672,7 +672,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		}
 	});
 	App.Collections.Tributes = Backbone.Collection.extend({
-		url: "https://cors-proxy.blaseball-reference.com/api/getTribute",
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getTribute",
 		model: App.Models.Tribute,
 		parse: function(data) {
 			return data.players;
@@ -707,7 +707,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 		}
 	});
 	App.Collections.Players = Backbone.Collection.extend({
-		url: "https://cors-proxy.blaseball-reference.com/database/players",
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/players",
 		model: App.Models.Player
 	});
 	App.Collections.Updates = Backbone.Collection.extend({
@@ -2148,6 +2148,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			case "54d0d0f2-16e0-42a0-9fff-79cfa7c4a157": // antarctic fireballs
 			case "71c621eb-85dc-4bd7-a690-0c68c0e6fb90": // downward dogs
 			case "9494152b-99f6-4adb-9573-f9e084bc813f": // baltimore clabs
+			case "a4b23784-0132-4813-b300-f7449cb06493": // phoenix trunks
 				return "ulb";
 			default:
 				return "ilb";

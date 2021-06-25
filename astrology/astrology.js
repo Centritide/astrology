@@ -102,6 +102,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				case "54d0d0f2-16e0-42a0-9fff-79cfa7c4a157": // antarctic fireballs
 				case "71c621eb-85dc-4bd7-a690-0c68c0e6fb90": // downward dogs
 				case "9494152b-99f6-4adb-9573-f9e084bc813f": // baltimore clabs
+				case "a4b23784-0132-4813-b300-f7449cb06493": // phoenix trunks
 					return "ulb";
 				default:
 					return "ilb";
@@ -294,7 +295,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 	
 	//-- BEGIN COLLECTIONS --
 	App.Collections.Teams = Backbone.Collection.extend({
-		url: "https://cors-proxy.blaseball-reference.com/database/allTeams",
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams",
 		model: App.Models.Team,
 		isLightMode: function() {
 			return lightMode;
@@ -315,7 +316,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 		}
 	});
 	App.Collections.Tributes = Backbone.Collection.extend({
-		url: "https://cors-proxy.blaseball-reference.com/api/getTribute",
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getTribute",
 		model: App.Models.Tribute,
 		parse: function(data) {
 			return data.players;
@@ -776,6 +777,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 					if(!navView) {
 						navView = new App.Views.Nav();
 					}
+					loadPage(id);
 				},
 				error: console.log
 			});
@@ -794,59 +796,61 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 	}
 
 	function loadPage(id) {
-		if(!id) {
-			$("main").html(_.template($("#template-index").html())({ 
-				isLightMode: function() { 
-					return lightMode; 
-				}, 
-				emoji: parseEmoji 
-			}));
-			$("section.index a:last-child").click(function(e) {
-				e.preventDefault();
-				lightMode = !lightMode;
-				$("#root").addClass("transition");
-				$("#root").toggleClass("dark", !lightMode);
-				$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
-				if(navView) {
-					navView.render();
+		if(globalPlayers.length && globalTeams.length) {
+			if(!id) {
+				$("main").html(_.template($("#template-index").html())({ 
+					isLightMode: function() { 
+						return lightMode; 
+					}, 
+					emoji: parseEmoji 
+				}));
+				$("section.index a:last-child").click(function(e) {
+					e.preventDefault();
+					lightMode = !lightMode;
+					$("#root").addClass("transition");
+					$("#root").toggleClass("dark", !lightMode);
+					$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
+					if(navView) {
+						navView.render();
+					}
+					if(localStorageExists()) {
+						localStorage.setItem("lightModeState", lightMode);
+					}
+					gtag('event', 'toggle_lights');
+				});	
+			} else if(id != activePage) {
+				activePage = id;
+				activeTeam = globalTeams.find(function(model) {
+					return model.id == id || model.slug() == id;
+				});
+				if(!footerView) {
+					footerView = new App.Views.Footer({
+						model: new App.Models.Footer({
+							items: true,
+							group_active: false,
+							shadows: false,
+							forbidden_knowledge: false
+						})
+					});
 				}
-				if(localStorageExists()) {
-					localStorage.setItem("lightModeState", lightMode);
+				if(teamView) {
+					teamView.undelegateEvents();
 				}
-				gtag('event', 'toggle_lights');
-			});	
-		} else if(id != activePage) {
-			activePage = id;
-			activeTeam = globalTeams.find(function(model) {
-				return model.id == id || model.slug() == id;
-			});
-			if(!footerView) {
-				footerView = new App.Views.Footer({
-					model: new App.Models.Footer({
-						items: true,
-						group_active: false,
-						shadows: false,
-						forbidden_knowledge: false
-					})
-				});
+				if(activeTeam.id == "squeezer") {
+					teamView = new App.Views.Squeezer({
+						model: activeTeam,
+						collection: globalTeams.filter(function(team) {
+							return team.type() == "ilb";
+						})
+					});
+				} else {
+					teamView = new App.Views.Team({
+						model: activeTeam,
+						collection: globalPlayers
+					});
+				}
+				loadPageView();
 			}
-			if(teamView) {
-				teamView.undelegateEvents();
-			}
-			if(activeTeam.id == "squeezer") {
-				teamView = new App.Views.Squeezer({
-					model: activeTeam,
-					collection: globalTeams.filter(function(team) {
-						return team.type() == "ilb";
-					})
-				});
-			} else {
-				teamView = new App.Views.Team({
-					model: activeTeam,
-					collection: globalPlayers
-				});
-			}
-			loadPageView();
 		}
 	}
 	

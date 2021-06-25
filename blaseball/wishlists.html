@@ -33,7 +33,7 @@
                 loadElection();
 
                 function loadElection() {
-                    $.ajax("https://cors-proxy.blaseball-reference.com/database/offseasonSetup", {
+                    $.ajax("https://api.sibr.dev/corsmechanics/www.blaseball.com/database/offseasonSetup", {
                         method: "GET",
                         datatype: "json",
                         success: function(data) {
@@ -47,11 +47,12 @@
                 }
 
                 function loadTeams() {
-                    $.ajax("https://cors-proxy.blaseball-reference.com/database/allTeams", {
+                    $.ajax("https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams", {
                         method: "GET",
                         datatype: "json",
                         success: function(teams) {
                             var chain = _.chain(teams).sortBy("nickname").each(function(team) {
+                                console.log(team.id, team.nickname);
                                 if(!isTeamSpecial(team.id)) {
                                     $("main").append("<div id='" + team.id + "'><h3>" + team.nickname + "</h3><ol></ol></div>")
                                 }
@@ -67,7 +68,7 @@
                 }
 
                 function loadGifts(freeGifts) {
-                    $.ajax("https://cors-proxy.blaseball-reference.com/database/giftProgress", {
+                    $.ajax("https://api.sibr.dev/corsmechanics/www.blaseball.com/database/giftProgress", {
                         method: "GET",
                         datatype: "json",
                         success: function(data) {
@@ -124,6 +125,7 @@
 			            case "54d0d0f2-16e0-42a0-9fff-79cfa7c4a157": // antarctic fireballs
                         case "71c621eb-85dc-4bd7-a690-0c68c0e6fb90": // downward dogs
                         case "9494152b-99f6-4adb-9573-f9e084bc813f": // baltimore clabs
+			        	case "a4b23784-0132-4813-b300-f7449cb06493": // phoenix trunks
                             return true;
                         default:
                             return false;

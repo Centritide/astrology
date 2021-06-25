@@ -58,11 +58,14 @@
                 loadStadiums();
 
                 function loadStadiums() {
-                    $.ajax("https://api.sibr.dev/chronicler/v1/stadiums", {
+                    $.ajax("https://api.sibr.dev/chronicler/v2/entities", {
                         method: "GET",
                         datatype: "json",
+                        data: {
+                            type: "stadium"
+                        },
                         success: function(data) {
-                            _.chain(data.data)
+                            _.chain(data.items)
                                 .map(function(stadium) { return stadium.data; })
                                 .filter(function(stadium) {
                                     return _.contains(_.keys(stadium.renoLog), "peanut_mister_mod") || _.intersection(stadium.mods, ["FAX_MACHINE", "SMITHY"]).length;
