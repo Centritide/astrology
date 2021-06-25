@@ -817,10 +817,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			if(!footerView) {
 				footerView = new App.Views.Footer({
 					model: new App.Models.Footer({
-						isItemsApplied: true,
-						isRosterCombined: false,
-						isShadowsVisible: false,
-						isKnowledgeVisible: false
+						items: true,
+						group_active: false,
+						shadows: false,
+						forbidden_knowledge: false
 					})
 				});
 			}

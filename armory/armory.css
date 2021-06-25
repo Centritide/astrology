@@ -248,6 +248,30 @@ section.items .item-stat {
 	white-space: nowrap;
 }
 
+.stat-plus-plus-plus {
+	background: rgba(127, 220, 255, .6);
+}
+
+.stat-plus-plus {
+	background: rgba(131, 239, 189, .5);
+}
+
+.stat-plus {
+	background: rgba(186, 255, 164, .6);
+}
+
+.stat-minus {
+	background: rgba(255, 237, 112, .7);
+}
+
+.stat-minus-minus {
+	background: rgba(255, 171, 85, .7);
+}
+
+.stat-minus-minus-minus {
+	background: rgba(234, 80, 80, .6);
+}
+
 footer {
 	display: flex;
 	flex-flow: row wrap;

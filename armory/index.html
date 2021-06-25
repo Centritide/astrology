@@ -35,9 +35,13 @@
 		<script type="text/template" id="template-placeholder"></script>
 		
 		<script type="text/template" id="template-footer">
-			<div class="footer-toggles"></div>
+			<div class="footer-toggles">
+				<label><input data-toggle="active" type="checkbox" <%= model.get("active") ? "checked" : "" %> /><span>Show Active Items</span></label>
+				<label><input data-toggle="inactive" type="checkbox" <%= model.get("inactive") ? "checked" : "" %> /><span>Show Inactive Items</span></label>
+				<label><input data-toggle="bargain_bin" type="checkbox" <%= model.get("bargain_bin") ? "checked" : "" %> /><span>Show Bargain Bin</span></label>
+			</div>
 			<div class="footer-buttons">
-				<a data-toggle-lights="<%= isLightMode() ? "true" : "false" %>" href="javascript:;"><%= emoji(isLightMode() ? 0x1F506 : 0x1F311) %></a>
+				<a data-toggle-lights="<%= model.isLightMode() ? "true" : "false" %>" href="javascript:;"><%= model.lightEmoji() %></a>
 			</div>
 		</script>
 		
@@ -94,7 +98,7 @@
 								<% _.each(columns, function(category) { 
 									_.each(category.attributes, function(attribute) { 
 										var value = _.get(item.adjustments(), attribute.id, 0) %>
-										<td class="item-stat" title="<%= attribute.name %>: <%= value %>"><%= Math.round(value * 1000) / 1000 %></td>
+										<td class="item-stat <%= scale(value) %>" title="<%= attribute.name %>: <%= value %>"><%= Math.round(value * 1000) / 1000 %></td>
 									<% })
 								}) %>
 							</tr>

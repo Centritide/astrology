@@ -30,8 +30,8 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/astrology.json", "json!../blaseball/modifiers.json"], function($, _, Backbone, twemoji, attributes, modifiers) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, globalTeams, globalPlayers, 
-	globalItems, descAttributes = _.chain(attributes.categories).reduce(function(c, d) { return _.union(c, d.attributes); }, []).where({ "direction": "desc" }).pluck("id").union(["name", "team", "position", "peanutAllergy", "rank"]).value(), summaryAttributes = _.chain(attributes.categories).union(attributes.sibrmetrics).pluck("id").union(["name", "team", "position", "modifications", "items", "combined", "rank"]).value(), columnGroups = _.chain(attributes.categories).union(attributes.sibrmetrics).reduce(function(c, d) { return c.concat(_.reduce(d.attributes, function(a, b) { return a.concat(b.id, d.group); }, [d.id, d.group])); }, []).chunk(2).object().value(), mainView, footerView, sortColumn = null, sortDirection = null, lightMode = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, navView, globalTeams, globalPlayers, 
+	globalItems, descAttributes = _.chain(attributes.categories).reduce(function(c, d) { return _.union(c, d.attributes); }, []).where({ "direction": "desc" }).pluck("id").union(["name", "team", "position", "peanutAllergy", "rank"]).value(), mainView, footerView, sortColumn = null, sortDirection = null, lightMode = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -46,7 +46,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 	
 	//-- BEGIN MODELS --
 	App.Models.Nav = Backbone.Model.extend({});
-	App.Models.Footer = Backbone.Model.extend({});
+	App.Models.Footer = Backbone.Model.extend({
+		lightEmoji: function() {
+			return parseEmoji(lightMode ? 0x1F506 : 0x1F311);
+		},
+		isLightMode: function() {
+			return lightMode;
+		}
+	});
 	App.Models.Team = Backbone.Model.extend({
 		emoji: function() {
 			return parseEmoji(this.get("emoji"));
@@ -255,10 +262,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 	//-- BEGIN COLLECTIONS --
 	App.Collections.Teams = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams",
-		model: App.Models.Team,
-		isLightMode: function() {
-			return lightMode;
-		}
+		model: App.Models.Team
 	});
 	App.Collections.Players = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/entities",
@@ -317,19 +321,36 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 		template: _.template($("#template-footer").html()),
 		el: "footer",
 		initialize: function() {
+			if(localStorageExists()) {
+				if(localStorage.getItem("active_state") !== null) {
+					this.model.set("active", localStorage.getItem("active_state") == "true");
+				}
+				if(localStorage.getItem("inactive_state") !== null) {
+					this.model.set("inactive", localStorage.getItem("inactive_state") == "true");
+				}
+				if(localStorage.getItem("bargain_bin_state") !== null) {
+					this.model.set("bargain_bin", localStorage.getItem("bargain_bin_state") == "true");
+				}
+			}
 			this.render();
 		},
 		render: function() {
-			this.$el.html(this.template({
-				model: this.model,
-				emoji: parseEmoji,
-				isLightMode: function() {
-					return lightMode;
-				}
-			}));
+			this.$el.html(this.template({ model: this.model }));
 		},
 		events: {
+			"change input[data-toggle]": "toggleCheckbox",
 			"click a[data-toggle-lights]": "toggleLights"
+		},
+		toggleCheckbox: function(e) {
+			var type = $(e.currentTarget).data("toggle"), isChecked = $(e.currentTarget).prop("checked");
+			this.model.set(type, isChecked);
+			if(localStorageExists()) {
+				localStorage.setItem(type + "_state", isChecked);
+			}
+			if(mainView) {
+				mainView.render();
+			}
+			gtag('event', 'toggle_' + type);
 		},
 		toggleLights: function(e) {
 			e.preventDefault();
@@ -337,10 +358,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			$(e.currentTarget).data("toggle-lights", lightMode);
 			$("#root").addClass("transition");
 			$("#root").toggleClass("dark", !lightMode);
-			$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
-			if(navView) {
-				navView.render();
-			}
+			$(e.currentTarget).html(this.model.lightEmoji());
 			if(localStorageExists()) {
 				localStorage.setItem("lightModeState", lightMode);
 			}
@@ -354,9 +372,28 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			this.render();
 		},
 		render: function() {
-			var thisView = this, chain = globalItems.chain(), scrollPos;
+			var chain = globalItems.chain(), scrollPos;
 			if(this.$el.find("section.items").length) {
 				scrollPos = { x: this.$el.find("section.items").scrollLeft(), y: this.$el.find("section.items").scrollTop() };
+			}
+			if(!isBargainBinShown()) {
+				chain = chain.filter(function(item) {
+					return (item.get("owners") || []).length;
+				});
+			}
+			if(!isInactiveShown()) {
+				chain = chain.reject(function(item) {
+					return _.chain(item.get("owners") || []).map(function(player) {
+						return player.position();
+					}).intersection(["Shadows", null]).value().length;
+				});
+			}
+			if(!isActiveShown()) {
+				chain = chain.reject(function(item) {
+					return _.chain(item.get("owners") || []).map(function(player) {
+						return player.position();
+					}).intersection(["Lineup", "Rotation"]).value().length;
+				});
 			}
 			if(sortColumn) {
 				chain = chain.sortBy(function(item) {
@@ -386,7 +423,24 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				columns: _.reject(attributes.categories, function(category) {
 					return category.id === "misc";
 				}),
-				items: chain.value()
+				items: chain.value(),
+				scale: function(value) {
+					if(value > 0.5) {
+						return "stat-plus-plus-plus";
+					} else if(value > 0.25) {
+						return "stat-plus-plus";
+					} else if(value > 0) {
+						return "stat-plus";
+					} else if(value == 0) {
+						return "stat-zero";
+					} else if(value < -0.5) {
+						return "stat-minus-minus-minus";
+					} else if(value < -0.25) {
+						return "stat-minus-minus";
+					} else if(value < 0) {
+						return "stat-minus";
+					}
+				}
 			}));
 			if(sortColumn) {
 				this.$el.find("[data-sort=" + sortColumn + "]").attr("data-direction", sortDirection);
@@ -474,6 +528,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			mainView = new App.Views.Items({
 				collection: globalItems
 			});
+			if(!footerView) {
+				footerView = new App.Views.Footer({
+					model: new App.Models.Footer({
+						active: true,
+						inactive: true,
+						bargain_bin: true
+					})
+				});
+			}
 			loadPageView();
 		}
 	}
@@ -487,63 +550,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				}
 			});
 		});
-	}
-
-	function loadPage(id) {
-		if(!id) {
-			$("main").html(_.template($("#template-index").html())({ 
-				isLightMode: function() { 
-					return lightMode; 
-				}, 
-				emoji: parseEmoji 
-			}));
-			$("section.index a:last-child").click(function(e) {
-				e.preventDefault();
-				lightMode = !lightMode;
-				$("#root").addClass("transition");
-				$("#root").toggleClass("dark", !lightMode);
-				$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
-				if(navView) {
-					navView.render();
-				}
-				if(localStorageExists()) {
-					localStorage.setItem("lightModeState", lightMode);
-				}
-				gtag('event', 'toggle_lights');
-			});	
-		} else if(id != activePage) {
-			activePage = id;
-			activeTeam = globalTeams.find(function(model) {
-				return model.id == id || model.slug() == id;
-			});
-			if(!footerView) {
-				footerView = new App.Views.Footer({
-					model: new App.Models.Footer({
-						isItemsApplied: true,
-						isRosterCombined: false,
-						isShadowsVisible: false,
-						isKnowledgeVisible: false
-					})
-				});
-			}
-			if(teamView) {
-				teamView.undelegateEvents();
-			}
-			if(activeTeam.id == "squeezer") {
-				teamView = new App.Views.Squeezer({
-					model: activeTeam,
-					collection: globalTeams.filter(function(team) {
-						return team.type() == "ilb";
-					})
-				});
-			} else {
-				teamView = new App.Views.Team({
-					model: activeTeam,
-					collection: globalPlayers
-				});
-			}
-			loadPageView();
-		}
 	}
 	
 	function loadPageView() {
@@ -566,6 +572,18 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			};
 		}
 		return mod;
+	}
+	
+	function isActiveShown() {
+		return footerView ? footerView.model.get("active") : $("[data-toggle=active]").prop("checked");
+	}
+	
+	function isInactiveShown() {
+		return footerView ? footerView.model.get("inactive") : $("[data-toggle=inactive]").prop("checked");
+	}
+	
+	function isBargainBinShown() {
+		return footerView ? footerView.model.get("bargain_bin") : $("[data-toggle=bargain_bin]").prop("checked");
 	}
 	
 	function localStorageExists() {
