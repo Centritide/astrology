@@ -29,7 +29,7 @@ requirejs.config({
 	}
 });
 //Start the main app logic.
-requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, modifiers, oldItems, weathers) {
+requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/teams.json", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, teamTypes, modifiers, oldItems, weathers) {
 	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null, style: "chart" }, activeTeam, activePlayer, navView, teamView, updatesView, advancedView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
 	
 	//-- BEGIN ROUTER --
@@ -57,7 +57,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 			return this.get("fullName").toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		type: function() {
-			return getTeamType(this.id);
+			var thisId = this.id;
+			return _.findKey(teamTypes, function(ids) { return _.contains(ids, thisId); }) || "unknown";
 		},
 		players: function(position) {
 			var teamPlayers = this.get("filtered") ? this.get("filtered") : this.get("players");
@@ -1066,7 +1067,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 					_.each(groups, function(group, key) {
 						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
 					});
-					thisView.collection.reset(_.union(groups.ilb, groups.ulb, groups.coffee, groups.special));
+					thisView.collection.reset(_.union(groups.ilb, groups.ulb, groups.coffee, groups.coffee2, groups.unknown));
 					thisView.collection.add(new App.Models.Team({
 						emoji: 0x26BE,
 						fullName: "All Players",
@@ -2117,42 +2118,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/mod
 	
 	function formatDateLabel(date) {
 		return date.toLocaleDateString(undefined, { "dateStyle": "short" });
-	}
-
-	function getTeamType(id) {
-		switch(id) {
-			case "all": // all players
-			case "tributes": // hall of flame
-			case "40b9ec2a-cb43-4dbb-b836-5accb62e7c20": // pods
-			case "c6c01051-cdd4-47d6-8a98-bb5b754f937f": // hall stars
-				return "special";
-			case "f29d6e60-8fce-4ac6-8bc2-b5e3cabc5696": // black
-			case "70eab4ab-6cb1-41e7-ac8b-1050ee12eecc": // light and sweet
-			case "9e42c12a-7561-42a2-b2d0-7cf81a817a5e": // macchiato
-			case "b3b9636a-f88a-47dc-a91d-86ecc79f9934": // cream and sugar
-			case "4d921519-410b-41e2-882e-9726a4e54a6a": // cold brew
-			case "e3f90fa1-0bbe-40df-88ce-578d0723a23b": // flat white
-			case "4e5d0063-73b4-440a-b2d1-214a7345cf16": // americano
-			case "d8f82163-2e74-496b-8e4b-2ab35b2d3ff1": // espresso
-			case "e8f7ffee-ec53-4fe0-8e87-ea8ff1d0b4a9": // heavy foam
-			case "49181b72-7f1c-4f1c-929f-928d763ad7fb": // latte
-			case "a3ea6358-ce03-4f23-85f9-deb38cb81b20": // decaf
-			case "a7592bd7-1d3c-4ffb-8b3a-0b1e4bc321fd": // milk substitute
-			case "9a5ab308-41f2-4889-a3c3-733b9aab806e": // plenty of sugar
-			case "3b0a289b-aebd-493c-bc11-96793e7216d5": // blasesonas
-			case "d2634113-b650-47b9-ad95-673f8e28e687": // sibr
-			case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
-				return "coffee";
-			case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
-			case "d6a352fc-b675-40a0-864d-f4fd50aaeea0": // canada artists
-			case "54d0d0f2-16e0-42a0-9fff-79cfa7c4a157": // antarctic fireballs
-			case "71c621eb-85dc-4bd7-a690-0c68c0e6fb90": // downward dogs
-			case "9494152b-99f6-4adb-9573-f9e084bc813f": // baltimore clabs
-			case "a4b23784-0132-4813-b300-f7449cb06493": // phoenix trunks
-				return "ulb";
-			default:
-				return "ilb";
-		}
 	}
 
 	function getPath(x1, y1, x2, y2, width) {

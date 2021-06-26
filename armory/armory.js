@@ -29,7 +29,7 @@ requirejs.config({
 	}
 });
 //Start the main app logic.
-requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/astrology.json", "json!../blaseball/modifiers.json"], function($, _, Backbone, twemoji, attributes, modifiers) {
+requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/teams.json", "json!../blaseball/astrology.json", "json!../blaseball/modifiers.json"], function($, _, Backbone, twemoji, teamTypes, attributes, modifiers) {
 	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, navView, globalTeams, globalPlayers, 
 	globalItems, descAttributes = _.chain(attributes.categories).reduce(function(c, d) { return _.union(c, d.attributes); }, []).where({ "direction": "desc" }).pluck("id").union(["name", "team", "position", "peanutAllergy", "rank"]).value(), mainView, footerView, sortColumn = null, sortDirection = null, lightMode = false;
 	
@@ -59,41 +59,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 			return parseEmoji(this.get("emoji"));
 		},
 		type: function() {
-			switch(this.id) {
-				case "all":
-				case "squeezer":
-				case "tributes":
-				case "40b9ec2a-cb43-4dbb-b836-5accb62e7c20": // pods
-				case "c6c01051-cdd4-47d6-8a98-bb5b754f937f": // hall stars
-					return "special";
-				case "70eab4ab-6cb1-41e7-ac8b-1050ee12eecc": // light and sweet
-				case "9e42c12a-7561-42a2-b2d0-7cf81a817a5e": // macchiato
-				case "b3b9636a-f88a-47dc-a91d-86ecc79f9934": // cream and sugar
-				case "4d921519-410b-41e2-882e-9726a4e54a6a": // cold brew
-				case "e3f90fa1-0bbe-40df-88ce-578d0723a23b": // flat white
-				case "4e5d0063-73b4-440a-b2d1-214a7345cf16": // americano
-				case "d8f82163-2e74-496b-8e4b-2ab35b2d3ff1": // espresso
-				case "e8f7ffee-ec53-4fe0-8e87-ea8ff1d0b4a9": // heavy foam
-				case "49181b72-7f1c-4f1c-929f-928d763ad7fb": // latte
-				case "a3ea6358-ce03-4f23-85f9-deb38cb81b20": // decaf
-				case "a7592bd7-1d3c-4ffb-8b3a-0b1e4bc321fd": // milk substitute
-				case "9a5ab308-41f2-4889-a3c3-733b9aab806e": // plenty of sugar
-					return "coffee";
-				case "f29d6e60-8fce-4ac6-8bc2-b5e3cabc5696": // black
-				case "3b0a289b-aebd-493c-bc11-96793e7216d5": // blasesonas
-				case "d2634113-b650-47b9-ad95-673f8e28e687": // sibr
-				case "7fcb63bc-11f2-40b9-b465-f1d458692a63": // real game band
-					return "coffee2";
-				case "88151292-6c12-4fb8-b2d6-3e64821293b3": // alaskan immortals
-				case "d6a352fc-b675-40a0-864d-f4fd50aaeea0": // canada artists
-				case "54d0d0f2-16e0-42a0-9fff-79cfa7c4a157": // antarctic fireballs
-				case "71c621eb-85dc-4bd7-a690-0c68c0e6fb90": // downward dogs
-				case "9494152b-99f6-4adb-9573-f9e084bc813f": // baltimore clabs
-				case "a4b23784-0132-4813-b300-f7449cb06493": // phoenix trunks
-					return "ulb";
-				default:
-					return "ilb";
-			}
+			var thisId = this.id;
+			return _.findKey(teamTypes, function(ids) { return _.contains(ids, thisId); }) || "unknown";
 		}
 	});
 	App.Models.Player = Backbone.Model.extend({
@@ -403,7 +370,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/ast
 				chain = chain.sortBy(function(item) {
 					switch(sortColumn) {
 						case "durability":
-							return item.get("durability") < 0 ? Infinity : item.get("health");
+							return item.get("durability") < 0 ? Infinity : (item.get("health") + item.get("durability") / 100);
 						case "elements":
 							return _.reduce(item.elements(), function(e, f) {
 								var matcher = f.match(/.+ x(\d+)$/i);
