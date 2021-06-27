@@ -1657,5 +1657,17 @@
 		"emoji": "0x1F4DF",
         "title": "Voicemail",
         "description": "When the Home Team is shut out in this Ballpark, they'll swap the worst Batter in their Lineup with the best Batter in their Shadows."
+    },
+    {
+        "id": "HEIST_EXPERT",
+		"emoji": "0x1F978",
+        "title": "Heist Expert",
+        "description": "This Player is adept at using a Ballpark's Tunnels."
+    },
+    {
+        "id": "PROTOTYPE",
+		"emoji": "0x1F9BF",
+        "title": "Prototype",
+        "description": "This Team's Postseason Births will arrive with a random modification."
     }
 ]

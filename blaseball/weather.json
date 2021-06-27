@@ -86,5 +86,25 @@
 	{
 		"name": "Polarity -",
 		"emoji": "0x23EC"
-	}
+	},
+    {
+        "name": "Sun 90",
+		"emoji": "0x1F536"
+    },
+    {
+        "name": "Sun .1",
+		"emoji": "0x1F538"
+    },
+    {
+        "name": "Sum Sun",
+		"emoji": "0x1F506"
+    },
+    {
+        "name": "Jazz",
+		"emoji": "0x1F3B7"
+    },
+    {
+        "name": "Night",
+		"emoji": "0x1F319"
+    }
 ]

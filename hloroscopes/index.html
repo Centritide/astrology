@@ -537,6 +537,10 @@
 						<strong>Championships</strong>
 						<span><% _.times(model.get("data").championships, function() { print(emoji(0x1F48D)) }) %></span>
 					</div>
+					<div class="team-stat-row">
+						<strong>Underchampionships</strong>
+						<span><% _.times(model.get("data").underchampionships, function() { print(emoji(0x1F345)) }) %></span>
+					</div>
 					<% if(model.get("data").level) { %>
 						<div class="team-stat-row">
 							<strong>Level</strong>
