@@ -171,6 +171,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return this.get("name");
 		},
 		slug: function() {
+			if(this.id == "5d063a91-31b3-4688-97a7-e34a7181da30") {
+				return "baby-pitching-machine";
+			}
 			return (activeTeam ? activeTeam.slug() + "/" : "") + this.canonicalName().toLowerCase().replace(/\,/g, "-comma-").replace(/[\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		calculateBatting: function() {
