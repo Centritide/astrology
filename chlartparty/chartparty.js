@@ -547,7 +547,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			matcher = outcome.match(/^(.+) thieves' guild stole (.+) from (.+) and give it to (.+)\.$/i);
 			if(matcher) {
 				return {
-					emoji: 0x1F590,
+					emoji: 0x1F978,
 					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>").replace(matcher[4], "<strong>" + matcher[4] + "</strong>"),
 					players: [
 						{ name: matcher[3], team: null },
@@ -559,7 +559,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			if(matcher) {
 				var team1 = getTeamByName(matcher[3]), team2 = getTeamByName(matcher[4]);
 				return {
-					emoji: 0x1F590,
+					emoji: 0x1F978,
 					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>").replace(matcher[3], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team1.get("secondaryColor") + "'>" + team1.get("nickname") + "</strong>").replace(matcher[4], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team2.get("secondaryColor") + "'>" + team2.get("nickname") + "</strong>"),
 					teams: [ team1.id, team2.id ]
 				}
