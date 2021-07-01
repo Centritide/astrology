@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<title>Modifier Icons</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+		<link rel="icon" href="/favicon-128.png" sizes="128x128">
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<style>
+			html, body { padding:0;margin:0;background:#111;color:#fff;font-family:'Roboto',sans-serif }
+            main { display:flex;flex-flow:row wrap;justify-content:center }
+            li { display: grid;grid-template-columns:125px 225px;grid-template-rows:auto;grid-template-areas:"icon title" "description description";align-items:center;list-style:none;padding:10px }
+            li i { grid-area:icon }
+            li strong { grid-area:title }
+            li span { grid-area:description;align-self:flex-start;margin-top:5px }
+            img.emoji { height:1em;width:1em;vertical-align:-0.1em }
+        </style>
+	</head>
+	<body>
+		<main></main>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/underscore@1.11.0/underscore-min.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+		<script>
+			$(function() {
+                $.getJSON("modifiers.json", function(modifiers) {
+                    _.chain(modifiers)
+                        .sortBy("title")
+                        .each(function(modifier) {
+                            $("main").append("<li><i>" + parseEmoji(modifier.emoji) + " (" + modifier.emoji + ")</i><strong>" + modifier.title + "</strong><span>" + modifier.description + "</span></li>");
+                        });
+                });
+			});
+	
+            function parseEmoji(emoji, options) {
+                return twemoji.parse(isNaN(Number(emoji)) ? emoji : twemoji.convert.fromCodePoint(emoji), options);
+            }
+		</script>
+	</body>
+</html>

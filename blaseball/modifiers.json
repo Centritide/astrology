@@ -119,7 +119,7 @@
 	},
 	{
 		"id": "MARKED",
-		"emoji": "0x274C",
+		"emoji": "0x1F635",
 		"title": "Unstable",
         "description": "Unstable players have a much higher chance of being incinerated in a Solar Eclipse.",
         "descriptions": {
@@ -287,7 +287,7 @@
 	},
 	{
 		"id": "STABLE",
-		"emoji": "0x1F9F1",
+		"emoji": "0x1FAA8",
 		"title": "Stable",
         "description": "Stable players cannot be made Unstable.",
         "descriptions": {
@@ -491,7 +491,7 @@
 	},
 	{
 		"id": "UNFLAMED",
-		"emoji": "0x1F0CF",
+		"emoji": "0x1F921",
 		"title": "Chaotic",
         "description": "The Unstable players on a Chaotic team will hit 100% better."
 	},
@@ -509,7 +509,7 @@
 	},
 	{
 		"id": "CONTAINMENT",
-		"emoji": "0x1F512",
+		"emoji": "0x1F510",
 		"title": "Containment",
         "description": "This Player cannot spread Instability."
 	},
@@ -613,7 +613,7 @@
 	},
 	{
 		"id": "EGO1",
-		"emoji": "0x1F3C5",
+		"emoji": "0x1F380",
 		"title": "Ego+",
         "description": "This Player has a boosted Ego."
 	},
@@ -811,7 +811,7 @@
 	},
 	{
 		"id": "HOMEBODY",
-		"emoji": "0x1F3E0",
+		"emoji": "0x1F3E1",
 		"title": "Homebody",
         "description": "This Player will Overperform when playing in their home Ballpark and Underperform otherwise."
 	},
@@ -1181,7 +1181,7 @@
     },
     {
         "id": "MIDDLING",
-		"emoji": "0x1F937",
+		"emoji": "0x2195",
         "title": "Middling",
         "description": "This Team or Player will Overperform in the Midseason.",
         "descriptions": {
@@ -1329,7 +1329,7 @@
     },
     {
         "id": "OFFWORLD",
-		"emoji": "0x1F6F8",
+		"emoji": "0x1FA90",
         "title": "Offworld",
         "description": "When this Player hits a foul ball, it will fly Offworld."
     },
@@ -1523,7 +1523,7 @@
 	},
 	{
 		"id": "FIREWALKER",
-		"emoji": "0x26FD",
+		"emoji": "0x1F9E8",
 		"title": "Firewalker",
 		"description": "When this Player leaves a Location, they'll leave Instability behind."
 	},
@@ -1558,7 +1558,7 @@
     },
     {
         "id": "HOT_AIR_BALLOONS",
-		"emoji": "0x1FA82",
+		"emoji": "0x1F3EE",
         "title": "Hot Air Balloons",
         "description": "A large, permanent amount of negative eDensity is added for each Incineration in this Ballpark."
     },
@@ -1654,7 +1654,7 @@
     },
     {
         "id": "TRAITOR",
-		"emoji": "0x1F500",
+		"emoji": "0x267B",
         "title": "Traitor",
         "description": "This Player has a chance of swapping Items with a teammate during a game."
     },
