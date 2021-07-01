@@ -191,7 +191,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			matcher = outcome.match(/^(.+) became unstable!$/i);
 			if(matcher) {
 				return {
-					emoji: 0x1F47F,
+					emoji: 0x1F635,
 					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
 					players: [{ name: matcher[1], team: null }]
 				};
@@ -616,7 +616,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			if(matcher) {
 				return null;
 			}
-			matcher = outcome.match(/^trader .+ traded their .+ for .+'s? .+\.$/i);
+			matcher = outcome.match(/^(?:trader|traitor) .+ traded their .+ for .+'s? .+\.$/i);
 			if(matcher) {
 				return null;
 			}

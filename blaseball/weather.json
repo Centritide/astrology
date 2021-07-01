@@ -1,15 +1,18 @@
 [
 	{ 
 		"name": "Void",
-		"emoji": "0x2754"
+		"emoji": "0x2754",
+        "description": "No chance of nothing."
 	},
 	{ 
 		"name": "Sun 2",
-		"emoji": "0x2600"
+		"emoji": "0x2600",
+        "description": "When a team collects 10 Runs, Sun 2 will collect the Runs, and set a Win upon that team."
 	},
 	{ 
 		"name": "Overcast",
-		"emoji": "0x26C5"
+		"emoji": "0x26C5",
+        "description": "A bit cloudy."
 	},
 	{ 
 		"name": "Rainy",
@@ -29,82 +32,106 @@
 	},
 	{ 
 		"name": "Solar Eclipse",
-		"emoji": "0x1F311"
+		"emoji": "0x1F311",
+        "description": "A chance of incinerations."
 	},
 	{ 
 		"name": "Glitter",
-		"emoji": "0x2728"
+		"emoji": "0x2728",
+        "description": "A chance of sparkles."
 	},
 	{ 
 		"name": "Blooddrain",
-		"emoji": "0x1FA78"
+		"emoji": "0x1FA78",
+        "description": "A chance of transfusions between players."
 	},
 	{ 
 		"name": "Peanuts",
-		"emoji": "0x1F95C"
+		"emoji": "0x1F95C",
+        "description": "Traces of salt and honey..."
 	},
 	{ 
 		"name": "Birds",
-		"emoji": "0x1F426"
+		"emoji": "0x1F426",
+        "description": "Birds have been to known to eat peanuts and are just generally great friends."
 	},
 	{ 
 		"name": "Feedback",
-		"emoji": "0x1F3A4"
+		"emoji": "0x1F3A4",
+        "description": "A chance of player swaps between teams."
 	},
 	{ 
 		"name": "Reverb",
-		"emoji": "0x1F30A"
+		"emoji": "0x1F30A",
+        "description": "A chance of roster shuffles."
 	},
 	{ 
 		"name": "Black Hole",
-		"emoji": "0x26AB"
+		"emoji": "0x26AB",
+        "description": "When a Team collects 10 Runs, Black Hole will swallow the Runs and burp at the opposing Team."
 	},
 	{ 
 		"name": "Coffee",
-		"emoji": "0x2615"
+		"emoji": "0x2615",
+        "description": "Players may get Wired or Tired."
 	},
 	{ 
 		"name": "Coffee 2",
-		"emoji": "0x1F375"
+		"emoji": "0x1F375",
+        "description": "Players may get Free Refills."
 	},
 	{ 
 		"name": "Coffee 3s",
-		"emoji": "3️⃣"
+		"emoji": "3️⃣",
+        "description": "Pitchers will become Triple Threats."
 	},
     {
         "name": "Flooding",
-        "emoji": "0x1F93F"
+        "emoji": "0x1F93F",
+        "description": "An Accident."
     },
 	{
 		"name": "Salmon",
-		"emoji": "0x1F41F"
+		"emoji": "0x1F41F",
+        "description": "Salmon have been known to swim Upstream."
 	},
 	{
 		"name": "Polarity +",
-		"emoji": "0x23EB"
+		"emoji": "0x23EB",
+        "description": "Numbers go up."
 	},
 	{
 		"name": "Polarity -",
-		"emoji": "0x23EC"
+		"emoji": "0x23EC",
+        "description": "Numbers go down."
 	},
     {
+        "name": "???",
+		"emoji": "0x2753"
+    },
+    {
         "name": "Sun 90",
-		"emoji": "0x1F536"
+		"emoji": "0x1F536",
+        "description": "Scoring Plays are worth an extra Run for each Out."
     },
     {
         "name": "Sun .1",
-		"emoji": "0x1F538"
+		"emoji": "0x1F538",
+        "description": "Each Run scored is worth .1 more per inning."
     },
     {
         "name": "Sum Sun",
-		"emoji": "0x1F506"
+		"emoji": "0x1F506",
+        "description": "Each successive scoring play in a half inning is worth an extra Run."
     },
     {
         "name": "Jazz",
-		"emoji": "0x1F3B7"
+		"emoji": "0x1F3B7",
+        "description": "louie-ooie-la-la-la or shoo-doo-shoo-bee-ooo-bee"
     },
     {
         "name": "Night",
-		"emoji": "0x1F319"
+		"emoji": "0x1F319",
+        "description": "Deep dark."
     }
 ]
