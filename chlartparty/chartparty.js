@@ -180,7 +180,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					gurgie: matcher[3]
 				};
 			}
-			matcher = outcome.match(/^(.+) is partying!$/i);
+			matcher = outcome.match(/^(.+) is partying!(?:a flock of birds are attracted to .+!)?$/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F973,
@@ -537,6 +537,24 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				}
 			}
 			matcher = outcome.match(/^(.+) (?:placed|took) the fifth base (?:in|from) (.+)\.$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F590,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/^(.+) thieves' guild stole (.+) from (.+) and give it to (.+)\.$/i);
+			if(matcher) {
+				var team1 = getTeamByName(matcher[3]), team2 = getTeamByName(matcher[4]);
+				return {
+					emoji: 0x1F978,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>").replace(matcher[3], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team1.get("secondaryColor") + "'>" + team1.get("nickname") + "</strong>").replace(matcher[4], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team1.get("secondaryColor") + "'>" + team1.get("nickname") + "</strong>"),
+					players: [{ name: matcher[2], team: null }],
+					teams: [ team1.id, team2.id ]
+				}
+			}
+			matcher = outcome.match(/^(.+) thieves' guild stole (.+) from the (.+) and gave them to the (.+)\.$/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F590,
