@@ -670,16 +670,22 @@
 							<span><%= get("raw").renoLog.light_switch_toggle ? "ON" : "OFF" %></span>
 						</div>
 					<% } %>
+					<% if(get("raw").birds) { %>
+						<div class="stadium-stat-row">
+							<strong>Birds</strong>
+							<span><%= get("raw").birds %></span>
+						</div>
+					<% } %>
 					<% if(_.has(get("raw").state, "air_balloons")) { %>
 						<div class="stadium-stat-row">
 							<strong>Balloons</strong>
 							<span><%= get("raw").state.air_balloons %></span>
 						</div>
 					<% } %>
-					<% if(get("raw").birds) { %>
+					<% if(_.has(get("raw").state, "air_balloons")) { %>
 						<div class="stadium-stat-row">
-							<strong>Birds</strong>
-							<span><%= get("raw").birds %></span>
+							<strong>Flood Balloons</strong>
+							<span><%= get("raw").state.flood_balloons %></span>
 						</div>
 					<% } %>
 					<div class="stadium-stat-row">
