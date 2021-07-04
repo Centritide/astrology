@@ -1693,5 +1693,35 @@
 		"emoji": "0x1F9BF",
         "title": "Prototype",
         "description": "This Team's Postseason Births will arrive with a random modification."
+    },
+    {
+        "id": "SKIPPING",
+		"emoji": "0x1F4BD",
+        "title": "Skipping",
+        "description": "When this Player steps up to bat, they'll start with a randomized count."
+    },
+    {
+        "id": "RELOAD",
+		"emoji": "0x1F4BE",
+        "title": "Reload",
+        "description": "When this Player hits a Grand Slam, they'll reload the bases."
+    },
+    {
+        "id": "SUN_STARING",
+		"emoji": "0x1F60E",
+        "title": "Sun Staring",
+        "description": "Whenever another Team in the League activates Sun 2, this Team will gain .1 Runs (in their current game, or saved for next game)."
+    },
+    {
+        "id": "SOFT_SHELLED",
+		"emoji": "0x1F41A",
+        "title": "Soft Shelled",
+        "description": "Shelled Players on this Team will play, 20% better."
+    },
+    {
+        "id": "WAVE_POOL",
+		"emoji": "0x1F3CA",
+        "title": "Wave Pool",
+        "description": "This Player is a Wave Pool."
     }
 ]
