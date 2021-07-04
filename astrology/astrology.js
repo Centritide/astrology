@@ -255,7 +255,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return getScaleClassForRating(rating);
 		}
 	});
-	App.Models.Tribute = Backbone.Model.extend({
+	App.Models.PlayerId = Backbone.Model.extend({
 		idAttribute: "playerId"
 	});
 	//-- END MODELS --
@@ -284,9 +284,23 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	});
 	App.Collections.Tributes = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getTribute",
-		model: App.Models.Tribute,
+		model: App.Models.PlayerId,
 		parse: function(data) {
 			return data.players;
+		}
+	});
+	App.Collections.Stars = Backbone.Collection.extend({
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getRisingStars",
+		model: App.Models.PlayerId,
+		parse: function(data) {
+			return _.map(data.stars, function(id) { return { playerId: id } });
+		}
+	});
+	App.Collections.Vault = Backbone.Collection.extend({
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/vault",
+		model: App.Models.PlayerId,
+		parse: function(data) {
+			return _.map(data.legendaryPlayers, function(id) { return { playerId: id } });
 		}
 	});
 	//-- END COLLECTIONS --
@@ -393,16 +407,26 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		template: _.template($("#template-team").html()),
 		el: "main",
 		initialize: function() {
-			var thisView = this;
-			if(this.model.id == "tributes") {
-				var tributes = new App.Collections.Tributes();
-				tributes.fetch({
+			var thisView = this, thisCollection;
+			switch(this.model.id) {
+				case "tributes":
+					thisCollection = new App.Collections.Tributes();
+					break;
+				case "stars":
+					thisCollection = new App.Collections.Stars();
+					break;
+				case "vault":
+					thisCollection = new App.Collections.Vault();
+					break;
+			}
+			if(thisCollection) {
+				thisCollection.fetch({
 					success: function() {
-						thisView.model.set("tributes", _.map(tributes.pluck("playerId")));
+						thisView.model.set(thisView.model.id, _.map(thisCollection.pluck("playerId")));
 						thisView.render();
 					},
 					error: console.log
-				})
+				});
 			} else {
 				this.render();
 			}
@@ -414,10 +438,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			}
 			switch(this.model.id) {
 				case "all":
-					groups = ["all"];
-					break;
+				case "stars":
 				case "tributes":
-					groups = ["tributes"];
+				case "vault":
+					groups = [this.model.id];
 					break;
 				default:
 					groups = _.union(groups, isRosterCombined() ? ["roster"] : ["lineup", "rotation"]);
@@ -722,6 +746,24 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						secondaryColor: "#5988ff",
 						shorthand: "HoF",
 						slogan: "Pay tribute."
+					}));
+					globalTeams.add(new App.Models.Team({
+						emoji: 0x1F31F,
+						fullName: "Rising Stars",
+						id: "stars",
+						mainColor: "#6097b7",
+						secondaryColor: "#6097b7",
+						shorthand: "Stars",
+						slogan: "The League's Rising Star Players."
+					}));
+					globalTeams.add(new App.Models.Team({
+						emoji: 0x1F3C6,
+						fullName: "The Vault",
+						id: "vault",
+						mainColor: "#c5ac00",
+						secondaryColor: "#c5ac00",
+						shorthand: "Vault",
+						slogan: "Preserved."
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F9EE,

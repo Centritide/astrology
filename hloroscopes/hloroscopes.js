@@ -161,7 +161,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return lightMode;
 		}
 	});
-	App.Models.Tribute = Backbone.Model.extend({});
+	App.Models.PlayerId = Backbone.Model.extend({});
 	App.Models.Name = Backbone.Model.extend({});
 	App.Models.Player = Backbone.Model.extend({
 		canonicalName: function() {
@@ -677,9 +677,27 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	});
 	App.Collections.Tributes = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getTribute",
-		model: App.Models.Tribute,
+		model: App.Models.PlayerId,
 		parse: function(data) {
 			return data.players;
+		}
+	});
+	App.Collections.Stars = Backbone.Collection.extend({
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getRisingStars",
+		model: App.Models.PlayerId,
+		parse: function(data) {
+			return _.map(data.stars, function(id) {
+				return { "playerId": id };
+			});
+		}
+	});
+	App.Collections.Vault = Backbone.Collection.extend({
+		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/vault",
+		model: App.Models.PlayerId,
+		parse: function(data) {
+			return _.map(data.legendaryPlayers, function(id) {
+				return { "playerId": id };
+			});
 		}
 	});
 	App.Collections.AllPlayers = Backbone.Collection.extend({
@@ -712,7 +730,21 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	});
 	App.Collections.Players = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/players",
-		model: App.Models.Player
+		model: App.Models.Player,
+		fetchPlayers: function(ids, success) {
+			var thisCollection = this, pageLimit = 100;
+			_.times(Math.ceil(ids.length / pageLimit), function(index) {
+				thisCollection.fetch({
+					reset: false,
+					remove: false,
+					data: {
+						ids: ids.slice(index * pageLimit, (index + 1) * pageLimit).join(",")
+					},
+					success: success,
+					error: console.log
+				})
+			});
+		}
 	});
 	App.Collections.Updates = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/versions",
@@ -1093,6 +1125,28 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						shorthand: "HoF",
 						slogan: "Pay tribute."
 					}));
+					thisView.collection.add(new App.Models.Team({
+						emoji: 0x1F31F,
+						fullName: "Rising Stars",
+						id: "stars",
+						mainColor: "#6097b7",
+						permAttr: [],
+						seasAttr: [],
+						secondaryColor: "#6097b7",
+						shorthand: "Stars",
+						slogan: "The League's Rising Star Players."
+					}));
+					thisView.collection.add(new App.Models.Team({
+						emoji: 0x1F3C6,
+						fullName: "The Vault",
+						id: "vault",
+						mainColor: "#c5ac00",
+						permAttr: [],
+						seasAttr: [],
+						secondaryColor: "#c5ac00",
+						shorthand: "Vault",
+						slogan: "Preserved."
+					}));
 					thisView.render();
 					if(activePage.team) {
 						loadTeam(activePage.team);
@@ -1139,18 +1193,44 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					success: function() {
 						thisView.model.set("tributes", HallCollection.pluck("playerId"));
 						var PlayersCollection = new App.Collections.Players();
-						PlayersCollection.fetch({
-							data: {
-								ids: thisView.model.get("tributes").join(",")
-							},
-							success: function() {
-								thisView.model.set("players", PlayersCollection);
-								thisView.render();
-								if(activePage.player) {
-									loadPlayer(activePage.player);
-								}
-							},
-							error: console.log
+						PlayersCollection.fetchPlayers(thisView.model.get("tributes"), function() {
+							thisView.model.set("players", PlayersCollection);
+							thisView.render();
+							if(activePage.player) {
+								loadPlayer(activePage.player);
+							}
+						});
+					},
+					error: console.log
+				});
+			} else if(this.model.id == "stars") {
+				var StarsCollection = new App.Collections.Stars();
+				StarsCollection.fetch({
+					success: function() {
+						thisView.model.set("stars", StarsCollection.pluck("playerId"));
+						var PlayersCollection = new App.Collections.Players();
+						PlayersCollection.fetchPlayers(thisView.model.get("stars"), function() {
+							thisView.model.set("players", PlayersCollection);
+							thisView.render();
+							if(activePage.player) {
+								loadPlayer(activePage.player);
+							}
+						});
+					},
+					error: console.log
+				});
+			} else if(this.model.id == "vault") {
+				var VaultCollection = new App.Collections.Vault();
+				VaultCollection.fetch({
+					success: function() {
+						thisView.model.set("vault", VaultCollection.pluck("playerId"));
+						var PlayersCollection = new App.Collections.Players();
+						PlayersCollection.fetchPlayers(thisView.model.get("vault"), function() {
+							thisView.model.set("players", PlayersCollection);
+							thisView.render();
+							if(activePage.player) {
+								loadPlayer(activePage.player);
+							}
 						});
 					},
 					error: console.log
