@@ -163,7 +163,7 @@
 				}
 				
 				function getRelevantUpdate(update) {
-					if((update.data.awayPitcher == "a199a681-decf-4433-b6ab-5454450bbe5e" && !update.data.topOfInning) || (update.data.homePitcher == "a199a681-decf-4433-b6ab-5454450bbe5e" && update.data.topOfInning)) {
+					if(_.last(update.data.baseRunners) == "a199a681-decf-4433-b6ab-5454450bbe5e" || (update.data.awayPitcher == "a199a681-decf-4433-b6ab-5454450bbe5e" && !update.data.topOfInning) || (update.data.homePitcher == "a199a681-decf-4433-b6ab-5454450bbe5e" && update.data.topOfInning)) {
 						return {
 							count: update.data.playCount,
 							day: update.data.day,
@@ -192,7 +192,6 @@
 							}
 							$("main p").removeClass("loading");
 							$("main p").html("<a href='https://reblase.sibr.dev/game/" + lastWalk.game + "#" + lastWalk.hash + "' target='_blank'>It has been <span class='duration'>" + duration + "</span> since Leach Ingram got her walkies.</a>");
-							//console.log(lastGame, lastWalk);
 						}
 					}
 				}
