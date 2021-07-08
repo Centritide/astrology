@@ -638,6 +638,10 @@ section.card {
 	align-items: center;
 }
 
+.card .team-stat-row {
+	grid-template-columns: 50% 50%;
+}
+
 .card .team-stat-row:nth-child(odd),
 .card .player-stat-row:nth-child(odd),
 .card .stadium-stat-row:nth-child(odd) { 

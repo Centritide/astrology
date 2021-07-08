@@ -30,7 +30,7 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/teams.json", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, teamTypes, modifiers, oldItems, weathers) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null, style: "chart" }, activeTeam, activePlayer, navView, teamView, updatesView, advancedView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null, style: "chart" }, activeTeam, activePlayer, globalPlayers, globalTeams, globalTimes, navView, teamView, updatesView, advancedView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -40,15 +40,37 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			":team/:player": "chart",
 			":team/:player/advanced": "table"
 		},
-		index: loadPage,
-		team: loadPage,
+		index: loadAssets,
+		team: loadAssets,
 		chart: loadChart,
 		table: loadTable
 	});
 	//-- END ROUTER --
-	
+
 	//-- BEGIN MODELS --
 	App.Models.Nav = Backbone.Model.extend({});
+	App.Models.Time = Backbone.Model.extend({
+		toString: function() {
+			var str = "Season " + this.get("season");
+			switch(this.get("type")) {
+				case "pre_election":
+				case "post_election":
+					return str + " Elections";
+				default:
+					return str + " Day " + this.get("day");
+			}
+		},
+		toDateLabel: function() {
+			var str = "S" + this.get("season");
+			switch(this.get("type")) {
+				case "pre_election":
+				case "post_election":
+					return str + " Elections";
+				default:
+					return str + "D" + this.get("day");
+			}
+		}
+	});
 	App.Models.Team = Backbone.Model.extend({
 		slug: function() {
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
@@ -355,8 +377,20 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		}
 	});
 	App.Models.Update = Backbone.Model.extend({
+		getInGameTime: function(isShort) {
+			if(this.get("start") < new Date("2020-08-01T07:13:21.108Z")) {
+				return "Before SIBR";
+			}
+			var thisUpdate = this, foundTime = globalTimes.find(function(time) {
+				return thisUpdate.get("start") >= time.get("start") && thisUpdate.get("start") <= time.get("end");
+			});
+			if(foundTime) {
+				return isShort ? foundTime.toDateLabel() : foundTime.toString();
+			}
+			return this.get("start").toLocaleDateString() + " " + this.get("start").toLocaleTimeString();
+		},
 		getTeamById: function(id) {
-			return navView.collection.findWhere({ id: id });
+			return globalTeams.findWhere({ id: id });
 		},
 		emoji: parseEmoji,
 		getModifier: getModifier,
@@ -477,7 +511,20 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return secretsVisible;
 		}
 	});
-	App.Models.TeamUpdate = Backbone.Model.extend({});
+	App.Models.TeamUpdate = Backbone.Model.extend({
+		getInGameTime: function(isShort) {
+			if(this.get("start") < new Date("2020-08-01T07:13:21.108Z")) {
+				return "Before SIBR";
+			}
+			var thisUpdate = this, foundTime = globalTimes.find(function(time) {
+				return thisUpdate.get("start") >= time.get("start") && thisUpdate.get("start") <= time.get("end");
+			});
+			if(foundTime) {
+				return isShort ? foundTime.toDateLabel() : foundTime.toString();
+			}
+			return this.get("start").toLocaleDateString() + " " + this.get("start").toLocaleTimeString();
+		}
+	});
 	App.Models.TeamUpdatePlayer = Backbone.Model.extend({
 		getBattingStars: function() {
 			var i, stars = "", rounded = Math.round(this.get("batting") * 10);
@@ -498,6 +545,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				stars += "<i class='half-star'>" + parseEmoji(0x2B50) + "</i>";
 			}
 			return stars;
+		},
+		getCombinedStars: function() {
+			return Math.round(50 * (this.get("batting") + this.get("pitching") + this.get("baserunning") + this.get("defense"))) / 10;
 		}
 	});
 	App.Models.StadiumUpdate = Backbone.Model.extend({
@@ -514,6 +564,18 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			}
 			progress += "%'></div>";
 			return progress;
+		},
+		getInGameTime: function(isShort) {
+			if(this.get("start") < new Date("2020-08-01T07:13:21.108Z")) {
+				return "Before SIBR";
+			}
+			var thisUpdate = this, foundTime = globalTimes.find(function(time) {
+				return thisUpdate.get("start") >= time.get("start") && thisUpdate.get("start") <= time.get("end");
+			});
+			if(foundTime) {
+				return isShort ? foundTime.toDateLabel() : foundTime.toString();
+			}
+			return this.get("start").toLocaleDateString() + " " + this.get("start").toLocaleTimeString();
 		},
 		isForbidden: function() {
 			return secretsVisible;
@@ -667,6 +729,22 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	//-- END MODELS --
 	
 	//-- BEGIN COLLECTIONS --
+	App.Collections.Times = Backbone.Collection.extend({
+		url: "https://api.sibr.dev/chronicler/v1/time/map",
+		model: App.Models.Time,
+		parse: function(data) {
+			return _.map(data.data, function(time) {
+				return {
+					type: time.type,
+					season: time.season + 1,
+					day: time.day + 1,
+					tournament: time.tournament,
+					start: new Date(time.startTime),
+					end: time.endTime ? new Date(time.endTime) : new Date()
+				};
+			});
+		}
+	});
 	App.Collections.Teams = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams",
 		model: App.Models.Team,
@@ -700,7 +778,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			});
 		}
 	});
-	App.Collections.AllPlayers = Backbone.Collection.extend({
+	App.Collections.Players = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v2/entities",
 		model: App.Models.Player,
 		fetchPage: function(count, next, success) {
@@ -724,26 +802,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				}
 				return player.data;
 			}).sortBy(function(player) {
-				return !_.isEmpty(player.state) & _.has(player.state, "unscatteredName") ? player.state.unscatteredName : player.name;
+				var name = !_.isEmpty(player.state) & _.has(player.state, "unscatteredName") ? player.state.unscatteredName : player.name, matcher = name.match(/^.+\s([MDCLXVI]+)$/);
+				if(matcher) {
+					name = name.replace(matcher[1], convertRomanNumerals(matcher[1]));
+				}
+				return name;
 			}).value();
-		}
-	});
-	App.Collections.Players = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/players",
-		model: App.Models.Player,
-		fetchPlayers: function(ids, success) {
-			var thisCollection = this, pageLimit = 100;
-			_.times(Math.ceil(ids.length / pageLimit), function(index) {
-				thisCollection.fetch({
-					reset: false,
-					remove: false,
-					data: {
-						ids: ids.slice(index * pageLimit, (index + 1) * pageLimit).join(",")
-					},
-					success: success,
-					error: console.log
-				})
-			});
 		}
 	});
 	App.Collections.Updates = Backbone.Collection.extend({
@@ -1029,6 +1093,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						_.each(model.get("data"), function(value, attribute) {
 							switch(attribute) {
 								case "id":
+								case "hype":
 									break;
 								case "improvements":
 									var prevImps = lastChange.get("data").improvements;
@@ -1095,68 +1160,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		template: _.template($("#template-nav").html()),
 		el: "nav",
 		initialize: function() {
-			thisView = this;
-			this.collection.fetch({
-				success: function() {
-					var groups = thisView.collection.groupBy(function(model) { return model.type(); });
-					_.each(groups, function(group, key) {
-						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
-					});
-					thisView.collection.reset(_.union(groups.ilb, groups.ulb, groups.coffee, groups.coffee2, groups.unknown));
-					thisView.collection.add(new App.Models.Team({
-						emoji: 0x26BE,
-						fullName: "All Players",
-						id: "all",
-						mainColor: "#424242",
-						permAttr: [],
-						seasAttr: [],
-						secondaryColor: "#aaaaaa",
-						shorthand: "All Players",
-						slogan: "We are all love Blaseball."
-					}), { at: 0 });
-					thisView.collection.add(new App.Models.Team({
-						emoji: 0x1F3DB,
-						fullName: "Hall of Flame",
-						id: "tributes",
-						mainColor: "#5988ff",
-						permAttr: [],
-						seasAttr: [],
-						secondaryColor: "#5988ff",
-						shorthand: "HoF",
-						slogan: "Pay tribute."
-					}));
-					thisView.collection.add(new App.Models.Team({
-						emoji: 0x1F31F,
-						fullName: "Rising Stars",
-						id: "stars",
-						mainColor: "#6097b7",
-						permAttr: [],
-						seasAttr: [],
-						secondaryColor: "#6097b7",
-						shorthand: "Stars",
-						slogan: "The League's Rising Star Players."
-					}));
-					thisView.collection.add(new App.Models.Team({
-						emoji: 0x1F3C6,
-						fullName: "The Vault",
-						id: "vault",
-						mainColor: "#c5ac00",
-						permAttr: [],
-						seasAttr: [],
-						secondaryColor: "#c5ac00",
-						shorthand: "Vault",
-						slogan: "Preserved."
-					}));
-					thisView.render();
-					if(activePage.team) {
-						loadTeam(activePage.team);
-					}
-				},
-				error: console.log
-			});
+			this.render();
 		},
 		render: function() {
-			this.$el.html(this.template(this.collection));
+			this.$el.html(this.template(globalTeams));
 		},
 		events: {
 			"click a": "selectTeam"
@@ -1170,68 +1177,25 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		template: _.template($("#template-team").html()),
 		el: "main",
 		initialize: function() {
-			var thisView = this;
-			if(this.model.get("players")) {
-				this.render();
-			} else if(this.model.id == "all") {
-				var thisView = this, count = 1000, PlayersCollection = new App.Collections.AllPlayers(),
-					fetchSuccess = function(collection, response) {
-						if(response.nextPage) {
-							collection.fetchPage(count, response.nextPage, fetchSuccess);
-						} else {
-							thisView.model.set("players", PlayersCollection);
-							thisView.render();
-							if(activePage.player) {
-								loadPlayer(activePage.player);
-							}
-						}
-					};
-				PlayersCollection.fetchPage(count, null, fetchSuccess);
-			} else if(this.model.id == "tributes") {
-				var HallCollection = new App.Collections.Tributes();
-				HallCollection.fetch({
+			var thisView = this, thisCollection;
+			switch(this.model.id) {
+				case "tributes":
+					thisCollection = new App.Collections.Tributes();
+					break;
+				case "stars":
+					thisCollection = new App.Collections.Stars();
+					break;
+				case "vault":
+					thisCollection = new App.Collections.Vault();
+					break;
+			}
+			if(thisCollection) {
+				thisCollection.fetch({
 					success: function() {
-						thisView.model.set("tributes", HallCollection.pluck("playerId"));
-						var PlayersCollection = new App.Collections.Players();
-						PlayersCollection.fetchPlayers(thisView.model.get("tributes"), function() {
-							thisView.model.set("players", PlayersCollection);
-							thisView.render();
-							if(activePage.player) {
-								loadPlayer(activePage.player);
-							}
-						});
-					},
-					error: console.log
-				});
-			} else if(this.model.id == "stars") {
-				var StarsCollection = new App.Collections.Stars();
-				StarsCollection.fetch({
-					success: function() {
-						thisView.model.set("stars", StarsCollection.pluck("playerId"));
-						var PlayersCollection = new App.Collections.Players();
-						PlayersCollection.fetchPlayers(thisView.model.get("stars"), function() {
-							thisView.model.set("players", PlayersCollection);
-							thisView.render();
-							if(activePage.player) {
-								loadPlayer(activePage.player);
-							}
-						});
-					},
-					error: console.log
-				});
-			} else if(this.model.id == "vault") {
-				var VaultCollection = new App.Collections.Vault();
-				VaultCollection.fetch({
-					success: function() {
-						thisView.model.set("vault", VaultCollection.pluck("playerId"));
-						var PlayersCollection = new App.Collections.Players();
-						PlayersCollection.fetchPlayers(thisView.model.get("vault"), function() {
-							thisView.model.set("players", PlayersCollection);
-							thisView.render();
-							if(activePage.player) {
-								loadPlayer(activePage.player);
-							}
-						});
+						thisView.model.set("players", new App.Collections.Players(thisCollection.chain().map(function(data) {
+							return globalPlayers.findWhere({ id: data.get("playerId") });
+						}).compact().value()));
+						thisView.render();
 					},
 					error: console.log
 				});
@@ -1257,20 +1221,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						"a11242ae-936a-46b4-9101-be2cabafeed4" // Electric Kettle*/
 					]);
 				}
-				var PlayersCollection = new App.Collections.Players();
-				PlayersCollection.fetch({
-					data: {
-						ids: _.union(this.model.get("lineup"), this.model.get("rotation"), this.model.get("shadows"), this.model.get("percolated")).join(",")
-					},
-					success: function() {
-						thisView.model.set("players", PlayersCollection);
-						thisView.render();
-						if(activePage.player) {
-							loadPlayer(activePage.player);
-						}
-					},
-					error: console.log
-				});
+				if(this.model.id == "all") {
+					this.model.set("players", globalPlayers);
+				} else {
+					this.model.set("players", new App.Collections.Players(_.chain([]).union(this.model.get("lineup"), this.model.get("rotation"), this.model.get("shadows"), this.model.get("percolated")).map(function(id) { return globalPlayers.findWhere({ id: id }); }).compact().value()));
+				}
+				this.render();
 			}
 		},
 		render: function() {
@@ -1287,7 +1243,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		searchPlayer: function(e) {
 			var searchValue = $(e.currentTarget).val();
 			if(searchValue) {
-				var PlayersCollection = new App.Collections.AllPlayers(this.model.get("players").filter(function(model) {
+				var PlayersCollection = new App.Collections.Players(this.model.get("players").filter(function(model) {
 					return model.canonicalName().toLowerCase().indexOf(searchValue.toLowerCase()) > -1;
 				}));
 				this.model.set("filtered", PlayersCollection);
@@ -1453,7 +1409,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					above: dateLabels.length % 2,
 					x: xAbsolute,
 					y: convertRelativeToAbsoluteY(0, svg),
-					date: formatDateLabel(update.get("start")),
+					date: update.getInGameTime(true),
 					emojis: [],
 					show: false
 				};
@@ -1696,7 +1652,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					above: dateLabels.length % 2,
 					x: xAbsolute,
 					y: convertRelativeToAbsoluteY(0, svg),
-					date: formatDateLabel(update.get("start")),
+					date: update.getInGameTime(true),
 					emojis: [],
 					show: false
 				};
@@ -1888,7 +1844,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					above: dateLabels.length % 2,
 					x: xAbsolute,
 					y: convertRelativeToAbsoluteY(0, svg),
-					date: formatDateLabel(update.get("start")),
+					date: update.getInGameTime(true),
 					emojis: [],
 					show: false
 				};
@@ -2035,61 +1991,158 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	}
 
 	function loadChart(team, player) {
-		loadPage(team, player, "chart");
+		loadAssets(team, player, "chart");
 	}
 	
 	function loadTable(team, player) {
-		loadPage(team, player, "table");
+		loadAssets(team, player, "table");
+	}
+
+	function loadAssets(team, player, style) {
+		if(!globalTimes) {
+			globalTimes = new App.Collections.Times();
+			globalTimes.fetch({
+				success: function() {
+					loadPage(team, player, style);
+				},
+				error: console.log
+			})
+		}
+		if(!globalTeams) {
+			globalTeams = new App.Collections.Teams();
+			globalTeams.fetch({
+				success: function() {
+					var groups = globalTeams.groupBy(function(model) { return model.type(); });
+					_.each(groups, function(group, key) {
+						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
+					});
+					globalTeams.reset(_.union(groups.ilb, groups.ulb, groups.coffee, groups.coffee2, groups.unknown));
+					globalTeams.add(new App.Models.Team({
+						emoji: 0x1F3DB,
+						fullName: "Hall of Flame",
+						id: "tributes",
+						mainColor: "#5988ff",
+						permAttr: [],
+						seasAttr: [],
+						secondaryColor: "#5988ff",
+						shorthand: "HoF",
+						slogan: "Pay tribute."
+					}));
+					globalTeams.add(new App.Models.Team({
+						emoji: 0x1F31F,
+						fullName: "Rising Stars",
+						id: "stars",
+						mainColor: "#6097b7",
+						permAttr: [],
+						seasAttr: [],
+						secondaryColor: "#6097b7",
+						shorthand: "Stars",
+						slogan: "The League's Rising Star Players."
+					}));
+					globalTeams.add(new App.Models.Team({
+						emoji: 0x1F3C6,
+						fullName: "The Vault",
+						id: "vault",
+						mainColor: "#c5ac00",
+						permAttr: [],
+						seasAttr: [],
+						secondaryColor: "#c5ac00",
+						shorthand: "Vault",
+						slogan: "Preserved."
+					}));
+					globalTeams.add(new App.Models.Team({
+						emoji: 0x1F9EE,
+						fullName: "Stat Squeezer",
+						id: "squeezer",
+						mainColor: "#885a84",
+						permAttr: [],
+						seasAttr: [],
+						secondaryColor: "#da94d4",
+						shorthand: "Squeezer",
+						slogan: "The Stat Squeezer."
+					}), { at: 0 });
+					globalTeams.add(new App.Models.Team({
+						emoji: 0x26BE,
+						fullName: "All Players",
+						id: "all",
+						mainColor: "#424242",
+						permAttr: [],
+						seasAttr: [],
+						secondaryColor: "#aaaaaa",
+						shorthand: "All Players",
+						slogan: "We are all love Blaseball."
+					}), { at: 0 });
+					if(!navView) {
+						navView = new App.Views.Nav();
+					}
+					loadPage(team, player, style);
+				},
+				error: console.log
+			});
+		}
+		if(globalPlayers) {
+			loadPage(team, player, style);
+		} else {
+			globalPlayers = new App.Collections.Players();
+			var count = 2000, fetchSuccess = function(collection, response) {
+				if(response.nextPage) {
+					collection.fetchPage(count, response.nextPage, fetchSuccess);
+				} else {
+					loadPage(team, player, style);
+				}
+			};
+			globalPlayers.fetchPage(count, null, fetchSuccess);
+		}
 	}
 
 	function loadPage(team, player, style) {
-		if(!navView) {
-			navView = new App.Views.Nav({ collection: new App.Collections.Teams });
-		}
-		if(!player) {
-			activePage.player = null;
-			activePlayer = null;
-		}
-		if(team) {
-			if(team != activePage.team) {
-				loadTeam(team);
+		if(globalTimes.length && globalPlayers.length && globalTeams.length) {
+			if(!player) {
+				activePage.player = null;
+				activePlayer = null;
 			}
-			if(player && (player != activePage.player || style != activePage.style)) {
-				if(style != activePage.style) {
-					activePage.style = style;
+			if(team) {
+				if(team != activePage.team) {
+					loadTeam(team);
 				}
-				loadPlayer(player);
+				if(player && (player != activePage.player || style != activePage.style)) {
+					if(style != activePage.style) {
+						activePage.style = style;
+					}
+					loadPlayer(player);
+				}
+			} else {
+				$("main").html(_.template($("#template-index").html())({ isLightMode: function() { return lightMode; }, emoji: parseEmoji }));
+				$("section.index a:last-child").click(function(e) {
+					e.preventDefault();
+					lightMode = !lightMode;
+					$("#root").addClass("transition");
+					$("#root").toggleClass("dark", !lightMode);
+					$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
+					if(navView) {
+						navView.render();
+					}
+					if(localStorageExists()) {
+						localStorage.setItem("lightModeState", lightMode);
+					}
+					gtag('event', 'toggle_lights');
+				});
 			}
-		} else {
-			$("main").html(_.template($("#template-index").html())({ isLightMode: function() { return lightMode; }, emoji: parseEmoji }));
-			$("section.index a:last-child").click(function(e) {
-				e.preventDefault();
-				lightMode = !lightMode;
-				$("#root").addClass("transition");
-				$("#root").toggleClass("dark", !lightMode);
-				$(e.currentTarget).html(lightMode ? parseEmoji(0x1F506) : parseEmoji(0x1F311));
-				if(navView) {
-					navView.render();
-				}
-				if(localStorageExists()) {
-					localStorage.setItem("lightModeState", lightMode);
-				}
-				gtag('event', 'toggle_lights');
-			});
 		}
 	}
 	
 	function loadTeam(id) {
 		activePage.team = id;
-		if(navView.collection.length) {
-			activeTeam = navView.collection.find(function(model) {
+		if(globalTeams) {
+			activeTeam = globalTeams.find(function(model) {
 				return model.id == id || model.slug() == id;
 			});
 			if(teamView) {
 				teamView.undelegateEvents();
 			}
 			teamView = new App.Views.Team({
-				model: activeTeam
+				model: activeTeam,
+				collection: globalPlayers
 			});
 			loadPageView();
 		}
@@ -2237,13 +2290,78 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		return (svg.innerHeight - svg.padding - svg.margin) * (1 - y) + svg.padding + svg.titleOffset;
 	}
 	
-	function convertRelativeToAbsolutePoint(point, height, width, padding, offset) {
-		return {
-			id: point.id,
-			x: (width - padding) * point.x + padding,
-			xE: (width - padding) * point.xE + padding,
-			y: (height - padding) * (1 - point.y) + offset
-		};
+	function convertRomanNumerals(number) {
+		var val = 0;
+		while(number.indexOf("M") > -1) {
+			var index = number.indexOf("M");
+			if(index > 0 && number[index - 1] == "C") {
+				val += 900;
+				number = number.slice(0, index - 1) + number.slice(index + 1);
+			} else {
+				val += 1000;
+				number = number.slice(0, index) + number.slice(index + 1);
+			}
+		}
+		while(number.indexOf("D") > -1) {
+			var index = number.indexOf("D");
+			if(index > 0 && number[index - 1] == "C") {
+				val += 400;
+				number = number.slice(0, index - 1) + number.slice(index + 1);
+			} else {
+				val += 500;
+				number = number.slice(0, index) + number.slice(index + 1);
+			}
+		}
+		while(number.indexOf("C") > -1) {
+			var index = number.indexOf("C");
+			if(index > 0 && number[index - 1] == "X") {
+				val += 90;
+				number = number.slice(0, index - 1) + number.slice(index + 1);
+			} else {
+				val += 100;
+				number = number.slice(0, index) + number.slice(index + 1);
+			}
+		}
+		while(number.indexOf("L") > -1) {
+			var index = number.indexOf("L");
+			if(index > 0 && number[index - 1] == "X") {
+				val += 40;
+				number = number.slice(0, index - 1) + number.slice(index + 1);
+			} else {
+				val += 50;
+				number = number.slice(0, index) + number.slice(index + 1);
+			}
+		}
+		while(number.indexOf("X") > -1) {
+			var index = number.indexOf("X");
+			if(index > 0 && number[index - 1] == "I") {
+				val += 9;
+				number = number.slice(0, index - 1) + number.slice(index + 1);
+			} else {
+				val += 10;
+				number = number.slice(0, index) + number.slice(index + 1);
+			}
+		}
+		while(number.indexOf("V") > -1) {
+			var index = number.indexOf("V");
+			if(index > 0 && number[index - 1] == "I") {
+				val += 4;
+				number = number.slice(0, index - 1) + number.slice(index + 1);
+			} else {
+				val += 5;
+				number = number.slice(0, index) + number.slice(index + 1);
+			}
+		}
+		while(number.indexOf("I") > -1) {
+			var index = number.indexOf("I");
+			val += 1;
+			number = number.slice(0, index) + number.slice(index + 1);
+		}
+		val += "";
+		while(val.length < 4) {
+			val = "0" + val;
+		}
+		return val;
 	}
 	
 	function formatPlayerData(data) {
@@ -2287,7 +2405,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			rotation: model.get("rotation"),
 			shadows: _.union(model.get("shadows"), model.get("bench"), model.get("bullpen")),
 			slogan: model.get("slogan"),
-			stadium: model.get("stadium")
+			stadium: model.get("stadium"),
+			underchampionships: model.get("underchampionships") || 0
 		}
 	}
 
