@@ -30,7 +30,7 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/teams.json", "json!../blaseball/modifiers.json", "json!../blaseball/items.json", "json!../blaseball/weather.json"], function($, _, Backbone, twemoji, teamTypes, modifiers, oldItems, weathers) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null, style: "chart" }, activeTeam, activePlayer, globalPlayers, globalTeams, globalTimes, navView, teamView, updatesView, advancedView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage = { team: null, player: null, style: "chart" }, activeTeam, activePlayer, globalLoaded = { players: false, teams: false, times: false }, globalPlayers, globalTeams, globalTimes, navView, teamView, updatesView, advancedView, historyView, stadiumView, updates = {}, secretsVisible = false, evenlySpaced = false, lightMode = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -52,23 +52,51 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	App.Models.Time = Backbone.Model.extend({
 		toString: function() {
 			var str = "Season " + this.get("season");
-			switch(this.get("type")) {
-				case "pre_election":
-				case "post_election":
-					return str + " Elections";
-				default:
-					return str + " Day " + this.get("day");
+			if(this.get("season") == 11 && this.get("day") == 0) {
+				return "Expansion Era Begins";
 			}
+			if(this.get("season") < 12) {
+				switch(this.get("type")) {
+					case "pre_election":
+					case "post_election":
+						return str + " Elections";
+					case "bossfight":
+						return str + " Day X";
+					case "tournament":
+						return "Coffee Cup";
+				}
+			} else {
+				switch(this.get("type")) {
+					case "tournament": // actually phase 13 election
+					case "post_election":
+						return str + " Elections";
+				}
+			}
+			return str + " Day " + this.get("day");
 		},
 		toDateLabel: function() {
 			var str = "S" + this.get("season");
-			switch(this.get("type")) {
-				case "pre_election":
-				case "post_election":
-					return str + " Elections";
-				default:
-					return str + "D" + this.get("day");
+			if(this.get("season") == 11 && this.get("day") == 0) {
+				return "S12D1";
 			}
+			if(this.get("season") < 12) {
+				switch(this.get("type")) {
+					case "pre_election":
+					case "post_election":
+						return str + " Elections";
+					case "bossfight":
+						return str + "DX";
+					case "tournament":
+						return "Coffee Cup";
+				}
+			} else {
+				switch(this.get("type")) {
+					case "tournament": // actually phase 13 election
+					case "post_election":
+						return str + " Elections";
+				}
+			}
+			return str + "D" + this.get("day");
 		}
 	});
 	App.Models.Team = Backbone.Model.extend({
@@ -729,6 +757,40 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	//-- END MODELS --
 	
 	//-- BEGIN COLLECTIONS --
+	App.Collections.TimeMap = Backbone.Collection.extend({
+		url: "https://api.sibr.dev/chronicler/v2/versions",
+		model: App.Models.Time,
+		fetchPage: function(count, next, success) {
+			this.fetch({
+				reset: !next,
+				remove: !next,
+				data: {
+					type: "sim",
+					order: "asc",
+					count: count,
+					page: next
+				},
+				success: success,
+				error: console.log
+			});
+		},
+		parse: function(data) {
+			return _.map(data.items, function(item) {
+				return {
+					id: item.hash,
+					season: item.data.season + 1,
+					day: item.data.day + 1,
+					phase: item.data.phase,
+					tournament: item.data.tournament,
+					tournamentRound: item.data.playoffRound || item.data.tournamentRound || -1,
+					title: item.data.eraTitle,
+					subtitle: item.data.subEraTitle,
+					start: new Date(item.validFrom),
+					end: item.validTo ? new Date(item.validTo) : new Date()
+				}
+			});
+		}
+	})
 	App.Collections.Times = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v1/time/map",
 		model: App.Models.Time,
@@ -988,6 +1050,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						_.each(model.get("data"), function(value, attribute) {
 							switch(attribute) {
 								case "id":
+								case "level":
 									break;
 								case "modifiers":
 									var prevMods = lastChange.get("data").modifiers;
@@ -1393,7 +1456,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					xEven = changes.length < 2 ? 0.5 : index / (changes.length - 1),
 					xAbsolute = convertRelativeToAbsoluteX(evenlySpaced ? xEven : xPos, svg),
 					yRange = yMax - yMin,
-					dateLabel;
+					dateText = update.getInGameTime(true),
+					dateTextLength = calculateSvgTextWidth(dateText, "axis-date-label") / 2 + 2,
+					dateLabel,
+					prevLabels = _.last(dateLabels, 2);
 				
 				_.each(attributes, function(attribute) {
 					if(!svg.plots.hasOwnProperty(attribute)) {
@@ -1409,12 +1475,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					above: dateLabels.length % 2,
 					x: xAbsolute,
 					y: convertRelativeToAbsoluteY(0, svg),
-					date: update.getInGameTime(true),
+					start: xAbsolute - dateTextLength,
+					end: xAbsolute + dateTextLength,
+					date: dateText,
 					emojis: [],
 					show: false
 				};
-				if(dateLabels.indexOf(dateLabel.date) < 0) {
-					dateLabels.push(dateLabel.date);
+				if(prevLabels.length < 2 ||(!_.chain(prevLabels).pluck("date").contains(dateText).value() && dateLabel.start > prevLabels[0].end)) {
+					dateLabels.push(dateLabel);
 					dateLabel.show = true;
 				}
 				if(_.contains(update.get("changes"), "deceased")) {
@@ -1636,7 +1704,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					xEven = collectionSize < 2 ? 0.5 : index / (collectionSize - 1),
 					xAbsolute = convertRelativeToAbsoluteX(evenlySpaced ? xEven : xPos, svg),
 					yRange = yMax - yMin,
-					dateLabel;
+					dateText = update.getInGameTime(true),
+					dateTextLength = calculateSvgTextWidth(dateText, "axis-date-label") / 2 + 2,
+					dateLabel,
+					prevLabels = _.last(dateLabels, 2);
 				
 				_.each(attributes, function(attribute) {
 					if(!svg.plots.hasOwnProperty(attribute)) {
@@ -1652,12 +1723,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					above: dateLabels.length % 2,
 					x: xAbsolute,
 					y: convertRelativeToAbsoluteY(0, svg),
+					start: xAbsolute - dateTextLength,
+					end: xAbsolute + dateTextLength,
 					date: update.getInGameTime(true),
 					emojis: [],
 					show: false
 				};
-				if(dateLabels.indexOf(dateLabel.date) < 0) {
-					dateLabels.push(dateLabel.date);
+				if(prevLabels.length < 2 ||(!_.chain(prevLabels).pluck("date").contains(dateText).value() && dateLabel.start > prevLabels[0].end)) {
+					dateLabels.push(dateLabel);
 					dateLabel.show = true;
 				}
 				svg.labels.dates.push(dateLabel);
@@ -1828,7 +1901,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					xEven = collectionSize < 2 ? 0.5 : index / (collectionSize - 1),
 					xAbsolute = convertRelativeToAbsoluteX(evenlySpaced ? xEven : xPos, svg),
 					yRange = yMax - yMin,
-					dateLabel;
+					dateText = update.getInGameTime(true),
+					dateTextLength = calculateSvgTextWidth(dateText, "axis-date-label") / 2 + 2,
+					dateLabel,
+					prevLabels = _.last(dateLabels, 2);
 				
 				_.each(attributes, function(attribute) {
 					if(!svg.plots.hasOwnProperty(attribute)) {
@@ -1839,17 +1915,19 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						x: xAbsolute, 
 						y: convertRelativeToAbsoluteY((update.get("data")[attribute] - yMin) / yRange, svg)
 					});
-				})
+				});
 				dateLabel = {
 					above: dateLabels.length % 2,
 					x: xAbsolute,
 					y: convertRelativeToAbsoluteY(0, svg),
+					start: xAbsolute - dateTextLength,
+					end: xAbsolute + dateTextLength,
 					date: update.getInGameTime(true),
 					emojis: [],
 					show: false
 				};
-				if(dateLabels.indexOf(dateLabel.date) < 0) {
-					dateLabels.push(dateLabel.date);
+				if(prevLabels.length < 2 ||(!_.chain(prevLabels).pluck("date").contains(dateText).value() && dateLabel.start > prevLabels[0].end)) {
+					dateLabels.push(dateLabel);
 					dateLabel.show = true;
 				}
 				svg.labels.dates.push(dateLabel);
@@ -2000,13 +2078,24 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 
 	function loadAssets(team, player, style) {
 		if(!globalTimes) {
+			/*globalTimes = new App.Collections.TimeMap();
+			var timeCount = 1000, timeSuccess = function(collection, response) {
+				if(response.nextPage) {
+					collection.fetchPage(timeCount, response.nextPage, timeSuccess);
+				} else {
+					globalLoaded.times = true;
+					loadPage(team, player, style);
+				}
+			};
+			globalTimes.fetchPage(timeCount, null, timeSuccess);*/
 			globalTimes = new App.Collections.Times();
 			globalTimes.fetch({
 				success: function() {
+					globalLoaded.times = true;
 					loadPage(team, player, style);
 				},
 				error: console.log
-			})
+			});
 		}
 		if(!globalTeams) {
 			globalTeams = new App.Collections.Teams();
@@ -2075,6 +2164,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					if(!navView) {
 						navView = new App.Views.Nav();
 					}
+					globalLoaded.teams = true;
 					loadPage(team, player, style);
 				},
 				error: console.log
@@ -2084,19 +2174,20 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			loadPage(team, player, style);
 		} else {
 			globalPlayers = new App.Collections.Players();
-			var count = 2000, fetchSuccess = function(collection, response) {
+			var playerCount = 2000, playerSuccess = function(collection, response) {
 				if(response.nextPage) {
-					collection.fetchPage(count, response.nextPage, fetchSuccess);
+					collection.fetchPage(playerCount, response.nextPage, playerSuccess);
 				} else {
+					globalLoaded.players = true;
 					loadPage(team, player, style);
 				}
 			};
-			globalPlayers.fetchPage(count, null, fetchSuccess);
+			globalPlayers.fetchPage(playerCount, null, playerSuccess);
 		}
 	}
 
 	function loadPage(team, player, style) {
-		if(globalTimes.length && globalPlayers.length && globalTeams.length) {
+		if(_.all(globalLoaded)) {
 			if(!player) {
 				activePage.player = null;
 				activePlayer = null;
@@ -2289,6 +2380,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	function convertRelativeToAbsoluteY(y, svg) {
 		return (svg.innerHeight - svg.padding - svg.margin) * (1 - y) + svg.padding + svg.titleOffset;
 	}
+
+	function calculateSvgTextWidth(text, textClass) {
+		var textWidth = -1;
+		$("body").append("<svg id='cstw' class='chart'><text" + (textClass ? (" class='" + textClass + "'") : "")+ ">" + text + "</text></svg>");
+		textWidth = $("#cstw text")[0].getComputedTextLength();
+		$("#cstw").remove();
+		return textWidth;
+	}
 	
 	function convertRomanNumerals(number) {
 		var val = 0;
@@ -2398,7 +2497,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			championships: model.get("championships"),
 			emoji: model.get("emoji"),
 			id: model.get("id"),
-			//level: model.level(),
+			level: model.level(),
 			lineup: model.get("lineup"),
 			modifiers: model.modifiers(),
 			name: model.get("fullName"),
