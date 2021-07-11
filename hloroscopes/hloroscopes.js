@@ -2474,7 +2474,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			coffee: model.coffee(),
 			deceased: model.get("deceased"),
 			defense: model.calculateDefense(),
-			edensity: model.get("eDensity"),
+			edensity: model.get("eDensity") || null,
 			evolution: model.get("evolution") || 0,
 			fate: model.get("fate") || 0,
 			fingers: model.get("totalFingers"),

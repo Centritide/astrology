@@ -226,7 +226,7 @@
 													<% } else if(category.id == "misc") { %>
 														<td class="player-stat" title="<%= attribute.name %>: <%= players.get(id).get(attribute.id) %>"><%= players.get(id).get(attribute.id) %></td>
 													<% } else { %>
-														<td class="player-stat <%= players.get(id).getScaleClass(attribute.id) %> <%= players.get(id).getAdjustment(attribute.id) ? "stat-adjusted" : "" %>" title="<%= attribute.name %>: <%= players.get(id).getTooltip(attribute.id) %>"><%= Math.round(players.get(id).getAdjusted(attribute.id) * 1000) / 1000 %></td>
+														<td class="player-stat <%= players.get(id).getScaleClass(attribute.id) %> <%= players.get(id).isAdjusted(attribute.id) ? "stat-adjusted" : "" %>" title="<%= attribute.name %>: <%= players.get(id).getTooltip(attribute.id) %>"><%= Math.round(players.get(id).getAdjusted(attribute.id) * 1000) / 1000 %></td>
 													<% }
 												})
 											}

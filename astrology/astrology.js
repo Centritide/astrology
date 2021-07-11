@@ -211,9 +211,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				if(_.contains(descAttributes, attribute)) {
 					attrVal = Math.min(attrVal, 0.999);
 				}
-				attrVal = Math.max(attrVal, 0.001);
+				if(!_.contains(["eDensity"], attribute)) {
+					attrVal = Math.max(attrVal, 0.001);
+				}
 			}
 			return attrVal;
+		},
+		isAdjusted: function(attribute) {
+			return isItemsApplied && _.get(this.getItemAdjustments(), attribute, 0);
 		},
 		getAdjustment: function(attribute) {
 			return _.get(this.getItemAdjustments(), attribute, 0);
@@ -276,8 +281,22 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		}
 	});
 	App.Collections.Players = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/chronicler/v2/entities?type=player",
+		url: "https://api.sibr.dev/chronicler/v2/entities",
 		model: App.Models.Player,
+		fetchPage: function(count, next, success) {
+			this.fetch({
+				reset: !next,
+				remove: !next,
+				data: {
+					type: "player",
+					order: "asc",
+					count: count,
+					page: next
+				},
+				success: success,
+				error: console.log
+			});
+		},
 		parse: function(data) {
 			return data.items
 		}
@@ -795,12 +814,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			loadPage(id);
 		} else {
 			globalPlayers = new App.Collections.Players();
-			globalPlayers.fetch({
-				success: function() {
-					loadPage(id);
-				},
-				error: console.log
-			});
+			var count = 1000, fetchSuccess = function(collection, response) {
+				if(response.nextPage) {
+					collection.fetchPage(count, response.nextPage, fetchSuccess);
+				} else {
+					loadPage(team, player, style);
+				}
+			};
+			globalPlayers.fetchPage(count, null, fetchSuccess);
 		}
 	}
 
