@@ -306,7 +306,7 @@
 							<span class="soulsong"><%= get("data").soulscream %></span>
 						<% } else { %>
 							<strong>Soulscream</strong>
-							<span class="soulscream"><%= get("data").soulscream %></span>
+							<span class="soulscream <% if(_.contains(playerMods, "NEGATIVE")) { print("negative") } %>"><%= get("data").soulscream %></span>
 						<% } %>
 					</div>
 				</div>

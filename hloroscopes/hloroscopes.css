@@ -718,7 +718,11 @@ section.card {
 }
 
 .soulsong { 
-	color:#5988ff
+	color:#5988ff;
+}
+
+.soulscream.negative {
+	transform: rotate(180deg);
 }
 
 i.half-star { 
