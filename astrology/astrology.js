@@ -30,8 +30,7 @@ requirejs.config({
 });
 //Start the main app logic.
 requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/teams.json", "json!../blaseball/astrology.json", "json!../blaseball/modifiers.json"], function($, _, Backbone, twemoji, teamTypes, attributes, modifiers) {
-	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, globalTeams, globalPlayers, 
-	descAttributes = _.chain(attributes.categories).reduce(function(c, d) { return _.union(c, d.attributes); }, []).where({ "direction": "desc" }).pluck("id").union(["name", "team", "position", "peanutAllergy", "rank"]).value(), summaryAttributes = _.chain(attributes.categories).union(attributes.sibrmetrics).pluck("id").union(["name", "team", "position", "modifications", "items", "combined", "rank"]).value(), columnGroups = _.chain(attributes.categories).union(attributes.sibrmetrics).reduce(function(c, d) { return c.concat(_.reduce(d.attributes, function(a, b) { return a.concat(b.id, d.group); }, [d.id, d.group])); }, []).chunk(2).object().value(), teamView, footerView, sortColumn = null, sortDirection = null, lightMode = false;
+	var App = {Models: {}, Collections: {}, Views: {}, Router: {}}, activeRouter, activePage, activeTeam, navView, globalLoaded = { players: false, teams: false }, globalTeams, globalPlayers, descAttributes = _.chain(attributes.categories).reduce(function(c, d) { return _.union(c, d.attributes); }, []).where({ "direction": "desc" }).pluck("id").union(["name", "team", "position", "peanutAllergy", "rank"]).value(), summaryAttributes = _.chain(attributes.categories).union(attributes.sibrmetrics).pluck("id").union(["name", "team", "position", "modifications", "items", "combined", "rank"]).value(), columnGroups = _.chain(attributes.categories).union(attributes.sibrmetrics).reduce(function(c, d) { return c.concat(_.reduce(d.attributes, function(a, b) { return a.concat(b.id, d.group); }, [d.id, d.group])); }, []).chunk(2).object().value(), teamView, footerView, sortColumn = null, sortDirection = null, lightMode = false;
 	
 	//-- BEGIN ROUTER --
 	App.Router = Backbone.Router.extend({
@@ -218,7 +217,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return attrVal;
 		},
 		isAdjusted: function(attribute) {
-			return isItemsApplied && _.get(this.getItemAdjustments(), attribute, 0);
+			return isItemsApplied() && _.get(this.getItemAdjustments(), attribute, 0);
 		},
 		getAdjustment: function(attribute) {
 			return _.get(this.getItemAdjustments(), attribute, 0);
@@ -247,7 +246,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		},
 		getTooltip: function(attribute) {
 			var adjustment = this.getAdjustment(attribute);
-			return (Math.round(this.get(attribute) * 1000) / 1000) + (adjustment ? ((adjustment < 0 ? " - " : " + ") + Math.abs(Math.round(adjustment * 1000) / 1000)) : "");
+			return (Math.round(this.get(attribute) * 1000) / 1000) + (isItemsApplied() && adjustment ? ((adjustment < 0 ? " - " : " + ") + Math.abs(Math.round(adjustment * 1000) / 1000)) : "");
 		},
 		getScaleClass: function(attribute) {
 			var rating = _.contains(summaryAttributes, attribute) ? this.getSummary(attribute) : this.getAdjusted(attribute);
@@ -805,6 +804,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					if(!navView) {
 						navView = new App.Views.Nav();
 					}
+					globalLoaded.teams = true;
 					loadPage(id);
 				},
 				error: console.log
@@ -818,7 +818,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				if(response.nextPage) {
 					collection.fetchPage(count, response.nextPage, fetchSuccess);
 				} else {
-					loadPage(team, player, style);
+					globalLoaded.players = true;
+					loadPage(id);
 				}
 			};
 			globalPlayers.fetchPage(count, null, fetchSuccess);
@@ -826,7 +827,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	}
 
 	function loadPage(id) {
-		if(globalPlayers.length && globalTeams.length) {
+		if(_.all(globalLoaded)) {
 			if(!id) {
 				$("main").html(_.template($("#template-index").html())({ 
 					isLightMode: function() { 
