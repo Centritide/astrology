@@ -78,7 +78,7 @@
 					<path class="outline" fill="<%= outline.postseason && outline.above ? "#48c3a5" : outline.postseason ? "#b1264a" : outline.above ? "#4ab94a" : "#e23636" %>" d="<%= outline.path.join(" ") %>"/>
 				<% }) %>
 				<% _.each(svg.bars, function(bar) { %>
-					<% emojis = _.uniq(_.pluck(bar.outcomes, "emoji")) %>
+					<% emojis = _.chain(bar.outcomes).pluck("emoji").uniq().compact().value() %>
 					<% if(emojis.length) { %>
 						<% _.each(emojis, function(emoji, index) { %>
 							<% yPos = bar.y - bar.height - (bar.above ? 2 : -1) * bar.radius * (((bar.above ? 1 : 2) * index) + 1) %>
@@ -143,10 +143,10 @@
 					<div class="details-duration">Game ended after <strong><%= game.formatDuration() %></strong></div>
 				<% } %>
 				<div class="details-outcomes">
-					<% if(game.relevantOutcomes().length) { %>
+					<% if(game.outcomes.length) { %>
 						<ul>
 							<% _.each(game.relevantOutcomes(), function(outcome) { %>
-								<li><%= emoji(outcome.emoji) %> <%= (outcome.special && _.contains([game.get("team").id, game.get("opponent").id], "adc5b394-8f76-416d-9ce9-813706877b84")) ? outcome.special : (outcome.special2 && outcome.players[0].name == "Pitching Machine") ? outcome.special2 : outcome.formatted %></li>
+								<li><% if(outcome.emoji) { print(emoji(outcome.emoji)) } %> <%= (outcome.special && _.contains([game.get("team").id, game.get("opponent").id], "adc5b394-8f76-416d-9ce9-813706877b84")) ? outcome.special : (outcome.special2 && outcome.players[0].name == "Pitching Machine") ? outcome.special2 : outcome.formatted %></li>
 							<% }) %>
 						</ul>
 					<% } %>

@@ -592,48 +592,11 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					formatted: outcome
 				};
 			}
-			matcher = outcome.match(/(.+) gained (.+)(?: and (?:dropped|ditched) (.+))?\.?/i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/(.+) dropped (.+)\./i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/(.+) stole (.+)!/i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/(.+)'s? (.+) (?:broke!|was damaged|were damaged\.)/i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)(?:!|\.)/i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/(.+)'s? (.+) was repaired by smithy\./i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/^(?:trader|traitor) .+ traded their .+ for .+'s? .+\.$/i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/salmon cannons fire\sconsumer expelled/i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/consumers attack\s(?:scattered\s)?(.+) defends\s+(.+) (?:damaged|breaks?)/i);
-			if(matcher) {
-				return null;
-			}
-			matcher = outcome.match(/.+!\s.+ a consumer!/i);
-			if(matcher) {
-				return null;
-			}
-			console.log(outcome);
-			return null;
+			//console.log(outcome);
+			return {
+				emoji: null,
+				formatted: outcome
+			};
 		}
 	});
 	App.Models.Detail = Backbone.Model.extend({});
