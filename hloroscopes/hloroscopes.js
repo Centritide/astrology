@@ -1269,7 +1269,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		},
 		closeSelector: function(e) {
 			e.preventDefault();
-			if(!$(e.relatedTarget).parents(".team-selector").length) {
+			if(!isMobile() && !$(e.relatedTarget).parents(".team-selector").length) {
 				this.$el.find(".team-selector").removeClass("active");
 			}
 		}
