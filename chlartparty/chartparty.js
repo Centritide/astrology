@@ -363,12 +363,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					teams: [ team.id ]
 				}
 			}
-			matcher = outcome.match(/^your season \d+ champions are the (.+)!$/i);
+			matcher = outcome.match(/^your ((overbracket|underbracket|season) \d+) champions are the (.+)!$/i);
 			if(matcher) {
-				var team = getTeamByName(matcher[1]);
+				var team = getTeamByName(matcher[3]);
 				return {
 					emoji: 0x1F48D,
-					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("fullName") + "</strong>"),
+					formatted: outcome.replace(matcher[1], "<strong class='" + matcher[2].toLowerCase() +"'>" + matcher[1] + "</strong>").replace(matcher[3], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("fullName") + "</strong>"),
 					teams: [ team.id ]
 				}
 			}
@@ -685,8 +685,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			}
 			console.log(outcome);
 			return {
-				emoji: null,
-				formatted: outcome
+				emoji: 0x2753,
+				formatted: outcome,
+				unimportant: true
 			};
 		}
 	});
@@ -706,14 +707,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		url: "https://api.sibr.dev/chronicler/v2/versions?type=season",
 		model: App.Models.Season,
 		parse: function(data) {
-			return [{ seasonNumber: 0 }].concat(_.pluck(data.items, "data"));
+			return [{ seasonNumber: 0 }].concat(_.pluck(_.uniq(data.items, function(item) { return item.entityId; }), "data"));
 		}
 	});
 	App.Collections.Games = Backbone.Collection.extend({
 		url: "https://api.sibr.dev/chronicler/v1/games",
 		model: App.Models.Game,
 		parse: function(data) {
-			var parsedData = data.data, teamWins = {}, teamLosses = {}, seriesWins = {}, seriesLosses = {};
+			var parsedData = data.data, teamWins = {}, teamLosses = {}, seriesWins = {}, seriesLosses = {}, playoffSeriesStarted = 0;
 			
 			parsedData = _.chain(parsedData)
 				.filter(function(data) {
@@ -754,15 +755,29 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 							},
 							id: data.gameId,
 							innings: data.data.inning,
+							isPrizeMatch: data.data.state && data.data.state.prizeMatch,
 							isPostseason: data.data.isPostseason,
 							isShame: data.data.shame,
+							isTitleMatch: data.data.isTitleMatch,
+							isOverbracket: data.data.state && data.data.state.postseason && data.data.state.postseason.bracket === 0,
+							isUnderbracket: data.data.state && data.data.state.postseason && data.data.state.postseason.bracket === 1,
 							outcomes: data.data.outcomes,
 							season: data.data.season,
 							seriesIndex: data.data.seriesIndex,
 							seriesLength: data.data.seriesLength,
 							tournament: data.data.tournament,
-							weather: weather ? weather[weatherIndex] : { "name": "Pony", "emoji": "0x1F434" }
+							weather: weather && weatherIndex ? weather[weatherIndex] : { "name": "Pony", "emoji": "0x1F434" }
 						};
+
+						// have to manually fix a bug that occurred live lol
+						switch(game.id) {
+							case "9be97d2b-55bc-4559-83f1-b35e14c735d8":
+							case "8bef2e9a-5e33-4163-b040-27ecdff71e2b":
+							case "910e769d-46c8-44f8-a162-8d7f214640fe":
+							case "83e408d3-03a2-449b-83df-4b0648ddd083":
+								game.seriesIndex = 2;
+								break;
+						}
 						
 						if(!teamWins.hasOwnProperty(game.away.id)) {
 							teamWins[game.away.id] = 0;
@@ -773,11 +788,25 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 							teamLosses[game.home.id] = 0;
 						}
 						
-						if(data.data.seriesIndex === 1) {
+						if(game.seriesIndex === 1) {
 							seriesWins[game.away.id] = 0;
 							seriesWins[game.home.id] = 0;
 							seriesLosses[game.away.id] = 0;
 							seriesLosses[game.home.id] = 0;
+							if(game.isPostseason) {
+								playoffSeriesStarted++;
+							}
+						}
+						
+						// wild cards were implemented season 9 and over/under brackets were implemented season 20
+						if(playoffSeriesStarted > 16 || (game.season < 19 && playoffSeriesStarted > 8) || (game.season < 8 && playoffSeriesStarted > 6)) {
+							game.playoffRound = "Internet Series";
+						} else if(playoffSeriesStarted > 12 || (game.season < 19 && playoffSeriesStarted > 6) || (game.season < 8 && playoffSeriesStarted > 4)) {
+							game.playoffRound = "Championship Series";
+						} else if(playoffSeriesStarted > 4 || (game.season < 19 && playoffSeriesStarted > 2) || game.season < 8) {
+							game.playoffRound = "Division Series";
+						} else {
+							game.playoffRound = "Wild Cards";
 						}
 						
 						_.each(game.outcomes, function(outcome) {
@@ -824,6 +853,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						});
 						
 						game.away.isWinner = game.away.score > game.home.score;
+						if(game.isUnderbracket) {
+							game.away.isWinner = !game.away.isWinner;
+						}
 						game.home.isWinner = !game.away.isWinner;
 						if(game.away.isWinner) {
 							game.away.wins = ++teamWins[game.away.id];
@@ -843,6 +875,24 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 							game.home.losses = teamLosses[game.home.id];
 							game.home.seriesWins = ++seriesWins[game.home.id];
 							game.home.seriesLosses = seriesLosses[game.home.id];
+						}
+
+						if(game.playoffRound == "Internet Series" && game.home.seriesWins != game.away.seriesWins) {
+							var champion;
+							if(game.season < 10) {
+								if(game.home.seriesWins >= game.seriesLength / 2) {
+									champion = game.home;
+								} else if(game.away.seriesWins >= game.seriesLength / 2) {
+									champion = game.away;
+								}
+							} else if(game.home.seriesWins >= game.seriesLength) {
+								champion = game.home;
+							} else if(game.away.seriesWins >= game.seriesLength) {
+								champion = game.away;
+							}
+							if(champion) {
+								game.outcomes.push("Your " + (game.isOverbracket ? "Overbracket" : (game.isUnderbracket ? "Underbracket" : "Season")) + " " + (game.season + 1) + " Champions are the " + champion.nickname + "!");
+							}
 						}
 						
 						game.away.diff = game.away.wins - game.away.losses;

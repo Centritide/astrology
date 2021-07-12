@@ -430,6 +430,22 @@ a[data-toggle-lights]:hover {
 	background: #f5d641 !important;
 }
 
+.is-overbracket .team-score.is-winner {
+	border-color: #ffbe00 !important;
+}
+
+.is-underbracket .team-score.is-winner {
+	border-color: #a16dc3 !important;
+}
+
+.details-outcomes .overbracket {
+	color: #ffbe00;
+}
+
+.details-outcomes .underbracket {
+	color: #a16dc3;
+}
+
 @media screen and (max-width: 700px) {	
 	nav ul {
 		flex-wrap: nowrap;

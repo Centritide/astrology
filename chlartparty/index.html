@@ -93,15 +93,16 @@
 		</script>
 		
 		<script type="text/template" id="template-details">
-			<section class="details">
+			<section class="details <%= game.get("isOverbracket") ? "is-overbracket" : "" %> <%= game.get("isUnderbracket") ? "is-underbracket" : "" %>">
 				<div class="details-header">
-					<div class="details-day">Season <span class="number-box"><%= game.get("season") + 1 %></span><%= game.get("isPostseason") ? " Postseason" : "" %> Day <span class="number-box"><%= game.get("day") + 1 %></span></div>
+					<div class="details-day">Season <span class="number-box"><%= game.get("season") + 1 %></span> Day <span class="number-box"><%= game.get("day") + 1 %></span> <%= game.get("isOverbracket") ? "Overbracket" : "" %> <%= game.get("isUnderbracket") ? "Underbracket" : "" %> <%= game.get("isPostseason") ? game.get("playoffRound") : "" %></div>
 					<div class="details-game">
 						<div class="details-location">
 							<div class="details-weather"><span title="<%= game.get("weather").name %>"><%= emoji(game.get("weather").emoji) %></span></div>
 							<div class="details-city" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("home").secondaryColor %>"><%= game.get("home").location %></div>
 						</div>
 						<div class="details-series">
+							<a href="https://reblase.sibr.dev/game/<%= game.id %>" target="_blank"><%= emoji(0x1F517) %></a>
 							<% if(game.get("isPostseason") && game.get("season") > 9) { %>
 								Game <%= game.get("seriesIndex") %> (First to <%= game.get("seriesLength") %> Wins)
 							<% } else { %>
@@ -113,7 +114,7 @@
 				<div class="details-score">
 					<div class="team-icon" style="background:<%= game.get("team").mainColor %>"><%= emoji(game.get("team").emoji) %></div>
 					<div class="team-info">
-						<div class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("team").secondaryColor %>"><%= game.get("team").fullName %></div>
+						<div class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("team").secondaryColor %>"><%= game.get("team").fullName %> <% if(game.get("isPrizeMatch") && game.get("team").isWinner) { print(emoji(0x1F381)) } %></div>
 						<div class="team-details">
 							<div class="team-record" style="<%= isLightMode() ? "background" : "color" %>: <%= game.get("team").secondaryColor %>">
 								<<%= game.get("team").isWinner ? "strong" : "span" %>><%= game.get("isPostseason") ? game.get("team").seriesWins : game.get("team").wins %></<%= game.get("team").isWinner ? "strong" : "span" %>> - <<%= game.get("team").isWinner ? "span" : "strong" %>><%= game.get("isPostseason") ? game.get("team").seriesLosses : game.get("team").losses %></<%= game.get("team").isWinner ? "span" : "strong" %>>
@@ -127,7 +128,7 @@
 				<div class="details-score">
 					<div class="team-icon" style="background:<%= game.get("opponent").mainColor %>"><%= emoji(game.get("opponent").emoji) %></div>
 					<div class="team-info">
-						<div class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("opponent").secondaryColor %>"><%= game.get("opponent").fullName %></div>
+						<div class="team-name" style="<%= isLightMode() ? "background" : "color" %>:<%= game.get("opponent").secondaryColor %>"><%= game.get("opponent").fullName %> <% if(game.get("isPrizeMatch") && game.get("opponent").isWinner) { print(emoji(0x1F381)) } %></div>
 						<div class="team-details">
 							<div class="team-record" style="<%= isLightMode() ? "background" : "color" %>: <%= game.get("opponent").secondaryColor %>">
 								<<%= game.get("opponent").isWinner ? "strong" : "span" %>><%= game.get("isPostseason") ? game.get("opponent").seriesWins : game.get("opponent").wins %></<%= game.get("opponent").isWinner ? "strong" : "span" %>> - <<%= game.get("opponent").isWinner ? "span" : "strong" %>><%= game.get("isPostseason") ? game.get("opponent").seriesLosses : game.get("opponent").losses %></<%= game.get("opponent").isWinner ? "span" : "strong" %>>
