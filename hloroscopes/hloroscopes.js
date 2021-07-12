@@ -1249,7 +1249,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			var searchValue = $(e.currentTarget).val();
 			if(searchValue) {
 				this.collection.set(globalTeams.filter(function(team) {
-					return team.type() == "special" || team.get("fullName").toLowerCase().indexOf(searchValue.toLowerCase()) > -1 || team.get("shorthand").toLowerCase().indexOf(searchValue.toLowerCase()) > -1 || team.get("location").toLowerCase().indexOf(searchValue.toLowerCase()) > -1;
+					return team.type() == "special" || _.any([team.get("fullName"), team.get("shorthand"), team.get("location")], function(searchable) { return removeDiacritics(searchable.toLowerCase()).indexOf(removeDiacritics(searchValue.toLowerCase())) > -1; });
 				}));
 			} else {
 				this.collection.set(globalTeams.toJSON());
@@ -1345,7 +1345,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			var searchValue = $(e.currentTarget).val();
 			if(searchValue) {
 				var PlayersCollection = new App.Collections.Players(this.model.get("players").filter(function(model) {
-					return model.canonicalName().toLowerCase().indexOf(searchValue.toLowerCase()) > -1;
+					return removeDiacritics(model.canonicalName().toLowerCase()).indexOf(removeDiacritics(searchValue.toLowerCase())) > -1;
 				}));
 				this.model.set("filtered", PlayersCollection);
 			} else {
@@ -2259,7 +2259,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		activePage.team = id;
 		if(globalTeams) {
 			activeTeam = globalTeams.find(function(model) {
-				return model.id == id || model.slug() == id;
+				return model.id == id || removeDiacritics(model.slug()) == removeDiacritics(id);
 			});
 			if(teamView) {
 				teamView.undelegateEvents();
@@ -2307,7 +2307,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				loadPageView();
 			} else if(activeTeam.get("players") && activeTeam.get("players").length) {
 				activePlayer = activeTeam.get("players").find(function(model) {
-					return model.id == id || model.slug() == activeTeam.slug() + "/" + id;
+					return model.id == id || removeDiacritics(model.slug()) == activeTeam.slug() + "/" + removeDiacritics(id);
 				});
 				if(activePage.style == "table") {
 					advancedView = new App.Views.AdvancedUpdates({
@@ -2565,6 +2565,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			viscosity: model.get("viscosity"),
 			weather: model.weather()
 		};
+	}
+
+	function removeDiacritics(str) {
+		return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 	
 	function localStorageExists() {
