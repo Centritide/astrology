@@ -108,7 +108,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		},
 		type: function() {
 			var thisId = this.id;
-			return _.findKey(teamTypes, function(ids) { return _.contains(ids, thisId); }) || "unknown";
+			return this.get("type") || _.findKey(teamTypes, function(ids) { return _.contains(ids, thisId); }) || "unknown";
 		},
 		players: function(position) {
 			var teamPlayers = this.get("filtered") ? this.get("filtered") : this.get("players");
@@ -1226,14 +1226,52 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			this.render();
 		},
 		render: function() {
-			this.$el.html(this.template(globalTeams));
+			var groups = this.collection.groupBy(function(team) { return team.type(); });
+			this.$el.html(this.template({
+				isLightMode: function() { return lightMode; },
+				emoji: parseEmoji,
+				special: groups.special,
+				groups: {
+					"ILB": groups.ilb,
+					"Library": groups.ulb,
+					"Coffee Cup": _.union(groups.coffee, groups.coffee2),
+					"Other": groups.unknown
+				}
+			}));
 		},
 		events: {
-			"click a": "selectTeam"
+			"input .team-selector input[type=search]": "searchTeams",
+			"click a": "selectTeam",
+			"focus .team-selector input[type=search]": "openSelector",
+			"blur .team-selector input[type=search]": "closeSelector"
+		},
+		searchTeams: function(e) {
+			var searchValue = $(e.currentTarget).val();
+			if(searchValue) {
+				this.collection.set(globalTeams.filter(function(team) {
+					return team.type() == "special" || team.get("fullName").toLowerCase().indexOf(searchValue.toLowerCase()) > -1 || team.get("shorthand").toLowerCase().indexOf(searchValue.toLowerCase()) > -1 || team.get("location").toLowerCase().indexOf(searchValue.toLowerCase()) > -1;
+				}));
+			} else {
+				this.collection.set(globalTeams.toJSON());
+			}
+			this.render();
+			this.$el.find(".team-selector input[type=search]").val(searchValue);
+			this.$el.find(".team-selector input[type=search]").focus();
 		},
 		selectTeam: function(e) {
 			e.preventDefault();
 			activeRouter.navigate(e.currentTarget.href.split("#")[1], { trigger: true });
+			this.$el.find(".team-selector").removeClass("active");
+		},
+		openSelector: function(e) {
+			e.preventDefault();
+			this.$el.find(".team-selector").addClass("active");
+		},
+		closeSelector: function(e) {
+			e.preventDefault();
+			if(!$(e.relatedTarget).parents(".team-selector").length) {
+				this.$el.find(".team-selector").removeClass("active");
+			}
 		}
 	});
 	App.Views.Team = Backbone.View.extend({
@@ -2115,7 +2153,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						seasAttr: [],
 						secondaryColor: "#5988ff",
 						shorthand: "HoF",
-						slogan: "Pay tribute."
+						slogan: "Pay tribute.",
+						type: "special"
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F31F,
@@ -2126,7 +2165,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						seasAttr: [],
 						secondaryColor: "#6097b7",
 						shorthand: "Stars",
-						slogan: "The League's Rising Star Players."
+						slogan: "The League's Rising Star Players.",
+						type: "special"
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F3C6,
@@ -2137,19 +2177,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						seasAttr: [],
 						secondaryColor: "#c5ac00",
 						shorthand: "Vault",
-						slogan: "Preserved."
+						slogan: "Preserved.",
+						type: "special"
 					}));
-					globalTeams.add(new App.Models.Team({
-						emoji: 0x1F9EE,
-						fullName: "Stat Squeezer",
-						id: "squeezer",
-						mainColor: "#885a84",
-						permAttr: [],
-						seasAttr: [],
-						secondaryColor: "#da94d4",
-						shorthand: "Squeezer",
-						slogan: "The Stat Squeezer."
-					}), { at: 0 });
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x26BE,
 						fullName: "All Players",
@@ -2159,10 +2189,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						seasAttr: [],
 						secondaryColor: "#aaaaaa",
 						shorthand: "All Players",
-						slogan: "We are all love Blaseball."
+						slogan: "We are all love Blaseball.",
+						type: "special"
 					}), { at: 0 });
 					if(!navView) {
-						navView = new App.Views.Nav();
+						navView = new App.Views.Nav({
+							collection: globalTeams.clone()
+						});
 					}
 					globalLoaded.teams = true;
 					loadPage(team, player, style);

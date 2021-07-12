@@ -41,9 +41,22 @@
 		
 		<script type="text/template" id="template-nav">
 			<ul>
-				<% _.each(models, function(model) { %>
-					<li><a href="#<%= model.slug() %>"><i class="team-icon" style="background:<%= model.get("mainColor") %>"><%= emoji(model.get("emoji")) %></i><span style="<%= (isLightMode() ? "background:" : "color:") + model.get("secondaryColor") %>"><%= model.get("shorthand") %></span></a></li>
-				<% }); %>
+				<% _.each(special, function(model) { %> 
+					<li title="<%= model.get("fullName") %>"><a href="#<%= model.slug() %>"><i class="team-icon" style="background:<%= model.get("mainColor") %>"><%= emoji(model.get("emoji")) %></i><span style="<%= (isLightMode() ? "background:" : "color:") + model.get("secondaryColor") %>"><%= model.get("shorthand") %></span></a></li>
+				<% }) %>
+				<li>
+					<div class="team-selector">
+						<input type="search" placeholder="Select a team..." />
+						<ul>
+							<% _.each(groups, function(group, key) { %>
+								<li class="header"><%= key %></li>
+								<% _.each(group, function(model) { %> 
+									<li><a href="#<%= model.slug() %>"><i class="team-icon" style="background:<%= model.get("mainColor") %>"><%= emoji(model.get("emoji")) %></i><span style="<%= (isLightMode() ? "background:" : "color:") + model.get("secondaryColor") %>"><%= model.get("shorthand") %></span></a></li>
+								<% }) %>
+							<% }) %>
+						</ul>
+					</div>
+				</li>
 			</ul>
 		</script>
 		
