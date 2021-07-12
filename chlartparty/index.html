@@ -143,7 +143,7 @@
 					<div class="details-duration">Game ended after <strong><%= game.formatDuration() %></strong></div>
 				<% } %>
 				<div class="details-outcomes">
-					<% if(game.outcomes.length) { %>
+					<% if(game.relevantOutcomes().length) { %>
 						<ul>
 							<% _.each(game.relevantOutcomes(), function(outcome) { %>
 								<li><% if(outcome.emoji) { print(emoji(outcome.emoji)) } %> <%= (outcome.special && _.contains([game.get("team").id, game.get("opponent").id], "adc5b394-8f76-416d-9ce9-813706877b84")) ? outcome.special : (outcome.special2 && outcome.players[0].name == "Pitching Machine") ? outcome.special2 : outcome.formatted %></li>
