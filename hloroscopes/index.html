@@ -264,14 +264,16 @@
 								<div>
 									<p><strong><%= item.get("name") %></strong></p>
 									<p>
-										<% if(item.get("durability") > -1) {
+										<% if(item.get("durability") > 5) { %>
+											<strong class="extra-durable"><%= item.get("health") %> / <%= item.get("durability") %> <%= emoji(item.get("health") > 0 ? 0x1F534 : 0x2B55) %></strong>
+										<% } else if(item.get("durability") > -1) {
 											_.times(item.get("durability"), function(i) { 
 												print(emoji(i < item.get("health") ? 0x1F534 : 0x2B55));
 											});
 										} else if(item.get("durability") > -2) { %>
-											Unbreakable
+											<strong class="legendary">Unbreakable</strong>
 										<% } else { %>
-											Legendary Item
+											<strong class="legendary">Legendary</strong>
 										<% } %>
 									</p>
 								</div>

@@ -763,6 +763,21 @@ section.card {
 	word-break: break-word;
 }
 
+.card .player-items .extra-durable {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #dd2e44;
+}
+
+.card .player-items .extra-durable img {
+	margin-left: 5px;
+}
+
+.card .player-items .legendary {
+	color: #ffc81e;
+}
+
 .soulscream, .soulsong { 
 	font-weight:bold;
 	font-style:italic;
