@@ -78,7 +78,7 @@
 					<path class="outline" fill="<%= outline.postseason && outline.above ? "#48c3a5" : outline.postseason ? "#b1264a" : outline.above ? "#4ab94a" : "#e23636" %>" d="<%= outline.path.join(" ") %>"/>
 				<% }) %>
 				<% _.each(svg.bars, function(bar) { %>
-					<% emojis = _.chain(bar.outcomes).pluck("emoji").uniq().compact().value() %>
+					<% emojis = _.chain(bar.outcomes).filter(function(outcome) { return !outcome.unimportant; }).pluck("emoji").uniq().compact().value() %>
 					<% if(emojis.length) { %>
 						<% _.each(emojis, function(emoji, index) { %>
 							<% yPos = bar.y - bar.height - (bar.above ? 2 : -1) * bar.radius * (((bar.above ? 1 : 2) * index) + 1) %>

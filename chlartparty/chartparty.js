@@ -468,6 +468,97 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					players: [{ name: matcher[1], team: null }]
 				}
 			}
+			matcher = outcome.match(/(.+) gained (.+)(?: and (?:dropped|ditched) (.+))?\.?/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F381,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }]
+				}
+			}
+			matcher = outcome.match(/(.+) dropped (.+)\./i);
+			if(matcher) {
+				return {
+					emoji: 0x1F5D1,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/(.+) stole (.+)!/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F978,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/(.+)'s? (.+) (?:broke!|was damaged|were damaged\.)/i);
+			if(matcher) {
+				return {
+					emoji: 0x26A0,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/^(?:trader|traitor) (.+) traded their .+ for (.+)'s? .+\.$/i);
+			if(matcher) {
+				return {
+					emoji: 0x267B,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [
+						{ name: matcher[1], team: null },
+						{ name: matcher[2], team: null }
+					],
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/(.+)'s? (.+) was repaired by smithy\./i);
+			if(matcher) {
+				return {
+					emoji: 0x1F528,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)(?:!|\.)/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F41F,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/salmon cannons fire\sconsumer expelled/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F41F,
+					formatted: outcome,
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/consumers attack\s(?:scattered\s)?(.+) defends\s+(.+) (?:damaged|breaks?)/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F988,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
+			matcher = outcome.match(/.+!\s(liquid friend(?: [IVXLCDM]+)?|uncle plasma(?: [IVXLCDM]+)?) .+ a consumer!/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F4AA,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
 			matcher = outcome.match(/(.+) flipped (.+) negative\./i);
 			if(matcher) {
 				return {
@@ -592,7 +683,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					formatted: outcome
 				};
 			}
-			//console.log(outcome);
+			console.log(outcome);
 			return {
 				emoji: null,
 				formatted: outcome
