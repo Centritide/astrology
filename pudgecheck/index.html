@@ -240,19 +240,35 @@
 						data.message = (matcher[3] ? "their Shell" : "they") + " caught a " + matcher[2] + " from " + matcher[1] + ".";
 						return data;
 					}
-					matcher = message.match(/Pudge Nakamoto hits a ([^!]+)!(\sThe ball lands in a Big Bucket\. An extra Run scores!)?(\s(.+) went up for the alley oop\.+\s\.+they slammed it down for an extra Run!)?(.*)$/i);
+					matcher = message.match(/Pudge Nakamoto hits a ([^!]+)!(\sThe ball lands in a Big Bucket\. An extra Run scores!)?(\s(.+) went up for the alley oop\.+\s\.+(they slammed it down for an extra Run!)?(but they can't connect\.)?)?(.*)$/i);
 					if(matcher) {
 						data.good = true;
 						data.message = "they hit a " + matcher[1];
+						if(update.data.scoreUpdate.match(/unruns/i)) {
+							data.good = false;
+							var unmatcher = matcher[1].match(/(\d)-run home run/i);
+							if(unmatcher) {
+								data.message = "they hit a " + unmatcher[1] + "-unrun home run";
+							}
+							unmatcher = matcher[1].match(/solo home run/i);
+							if(unmatcher) {
+								data.message = "they hit an solo home unrun";
+							}
+						}
 						if(matcher[2]) {
 							data.message += " that landed in the Big Bucket";
 						}
-						if(matcher[3]) {
+						if(matcher[3] && matcher[5]) {
 							data.message += " and " + matcher[4] + " slammed down the alley oop";
 						}
-						if(matcher[5]) {
-							var scorers = _.compact(matcher[5].trim().split("scores!"));
-							data.message += " and " + (scorers.length > 1 ? (scorers.length + " runners") : scorers[0].trim()) + " scored";
+						if(matcher[7]) {
+							var scorers = _.compact(matcher[7].trim().split("scores!"));
+							if(_.last(scorers).match(/.+ inflates \d+ balloons!/i)) {
+								scorers.pop();
+							}
+							if(scorers.length) {
+								data.message += " and " + (scorers.length > 1 ? (scorers.length + " runners") : scorers[0].trim()) + (update.data.scoreUpdate.match(/unruns/i) ? " unscored" : " scored");
+							}
 						}
 						data.message += "!";
 						return data;
