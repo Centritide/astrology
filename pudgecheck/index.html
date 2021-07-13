@@ -275,7 +275,6 @@
 					}
 					matcher = message.match(/(.+) hits a .+ home run!\sPudge Nakamoto went up for the alley oop\.+\s\.+(?:(but they can't connect\.)|(they slammed it down for an extra Run!))/i);
 					if(matcher) {
-						console.log(matcher);
 						data.good = !matcher[2] & !!matcher[3];
 						data.message = " they " + (data.good ? "slammed down " : "failed to connect on ") + matcher[1] + "'" + (matcher[1].endsWith("s") ? "" : "s") + " alley oop" + (data.good ? " for an extra Run!" : ".");
 						return data;
@@ -284,6 +283,36 @@
 					if(matcher) {
 						data.good = true;
 						data.message = "they stole " + matcher[1] + "!";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto is Beaned by a (.+)\. Pudge Nakamoto is (Tired|Wired)!/);
+					if(matcher) {
+						data.good = matcher[2] == "Wired";
+						data.message = "they were beaned by a " + matcher[1] + " and became " + matcher[2] + "!";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto is Poured Over with a (.+)! Pudge Nakamoto got a Free Refill\./);
+					if(matcher) {
+						data.good = true;
+						data.message = "they were poured over with a " + matcher[1] + " and got a Free Refill!";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto used their Free Refill\./);
+					if(matcher) {
+						data.good = true;
+						data.message = "they used their Free Refill!";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto(?: and .+)? chug a Third Wave of Coffee! They are now Triple Threats!/);
+					if(matcher) {
+						data.good = true;
+						data.message = "they became a Triple Threat!";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto is no longer a Triple Threat\./);
+					if(matcher) {
+						data.good = false;
+						data.message = "they are no longer a Triple Threat!";
 						return data;
 					}
 					matcher = message.match(/Pudge Nakamoto hops on the Grind Rail toward third base. They do a (.+) \((\d+)\)! ... but lose their balance and bail! Out!$/);
@@ -304,12 +333,37 @@
 						data.message = "they landed a " + matcher[1] + " + " + matcher[3] + " combo for " + (parseInt(matcher[2]) + parseInt(matcher[4])) + " points!";
 						return data;
 					}
+					matcher = message.match(/Pudge Nakamoto was swept Elsewhere!/);
+					if(matcher) {
+						data.good = true;
+						data.message = "they were swept Elsewhere!";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto returned from Elsewhere after (\d+) days!/);
+					if(matcher) {
+						data.good = false;
+						data.message = "they returned from Elsewhere after " + matcher[1] + " days.";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto was pulled back from Elsewhere after (\d+) days!/);
+					if(matcher) {
+						data.good = false;
+						data.message = "they were pulled back from Elsewhere after " + matcher[1] + " days.";
+						return data;
+					}
+					matcher = message.match(/Pudge Nakamoto has been cured of their peanut allergy!/);
+					if(matcher) {
+						data.good = true;
+						data.message = "they were cured of their peanut allergy!";
+						return data;
+					}
 					matcher = message.match(/Rogue Umpire incinerated Pudge Nakamoto!/);
 					if(matcher) {
 						data.good = true;
 						data.message = "they were incinerated by a Rogue Umpire. Rest in Violence, our wonderful friend.";
 						return data;
 					}
+					//console.log(update.data.lastUpdate);
 					return null;
 				}
 			});
