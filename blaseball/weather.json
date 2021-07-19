@@ -124,10 +124,18 @@
 		"emoji": "0x1F506",
         "description": "Each successive scoring play in a half inning is worth an extra Run."
     },
+	{
+        "name": "????",
+		"emoji": "0x2753"
+    },
+    {
+        "name": "????",
+		"emoji": "0x2753"
+    },
     {
         "name": "Jazz",
 		"emoji": "0x1F3B7",
-        "description": "louie-ooie-la-la-la or shoo-doo-shoo-bee-ooo-bee"
+        "description": "louie-ooie-la-la-la; shoo-doo-shoo-bee-ooo-bee"
     },
     {
         "name": "Night",
