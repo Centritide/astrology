@@ -139,6 +139,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				case "Cape":
 					emoji = "0x1F9E3";
 					break;
+				case "Chair":
+					emoji = "0x1FA91";
+					break;
+				case "Egg":
+					emoji = "0x1F95A";
+					break;
 				case "Field":
 					emoji = "0x1F535";
 					break;

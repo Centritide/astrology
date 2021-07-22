@@ -723,6 +723,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					return "0x1F9E2";
 				case "Cape":
 					return "0x1F9E3";
+				case "Chair":
+					return "0x1FA91";
+				case "Egg":
+					return "0x1F95A";
 				case "Field":
 					return "0x1F535";
 				case "Glove":
