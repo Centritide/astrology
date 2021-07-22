@@ -1732,7 +1732,7 @@
     },
     {
         "id": "FORGERY",
-		"emoji": "0x2712",
+		"emoji": "0x1F5BC",
         "title": "Forgery",
         "description": "When Players join this Team, they will be Artificially Forged."
     },

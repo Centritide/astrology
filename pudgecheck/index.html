@@ -72,7 +72,7 @@
 		<a id="top"></a>
 		<header>
 			<h1>Pudge Check Site</h1>
-			<small>How are the fickle <span class="sticker-ilb">Breath Mints</span> fans feeling about Pudge Nakamoto? (RIV Pudge Nakamoto)</small>
+			<small>How are the fickle <span class="sticker-ilb">Breath Mints</span> fans feeling about Pudge Nakamoto? (RIV Pudge Nakamoto... again)</small>
 		</header>
 		<main>
 			<section id="latest"><span class="huge loading">Performing Pudge Sentimint Analysis</span></section>
@@ -142,7 +142,7 @@
 				
 				function getRelevantUpdate(update) {
 					var data = { gameId: update.gameId, hash: update.hash, message: update.data.lastUpdate, ghost: false }, message = data.message.replace(/[\r\n]+/g, " "), matcher = message.match(/Pudge Nakamoto hit a flyout to (.+)\. (.+) tags up and scores!/i);
-					if(update.data.season > 16 && update.data.season < 19 || (update.data.season == 16 && update.data.day > 11)) {
+					if(update.data.season > 16 && update.data.season < 19 || (update.data.season == 16 && update.data.day > 11) || update.data.season > 22 || (update.data.season == 22 && update.data.day > 64)) {
 						data.ghost = true;
 					}
 					if(matcher) {
