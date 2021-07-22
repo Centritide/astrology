@@ -503,7 +503,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					unimportant: true
 				}
 			}
-			matcher = outcome.match(/^(?:trader|traitor) (.+) traded their .+ for (.+)'s? .+\.$/i);
+			matcher = outcome.match(/^(?:trader |traitor )?(.+) traded their .+ for (.+)'s? .+\.$/i);
 			if(matcher) {
 				return {
 					emoji: 0x267B,

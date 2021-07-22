@@ -1747,5 +1747,29 @@
 		"emoji": "0x26C5",
         "title": "Weather Reports",
         "description": "When the Weather changes in this Ballpark, it will pick based on \"History\"."
+    },
+    {
+        "id": "ROAMLESS",
+		"emoji": "0x26D4",
+        "title": "Roamless",
+        "description": "Players cannot Roam to this Team."
+    },
+    {
+        "id": "AVOIDANCE",
+		"emoji": "0x1F6D1",
+        "title": "Avoidance",
+        "description": "This Team will not swing with 9+ Runs."
+    },
+    {
+        "id": "STEELED",
+		"emoji": "0x2694",
+        "title": "Steeled",
+        "description": "This Player has Steeled themselves against incoming attacks."
+    },
+    {
+        "id": "STABLES",
+		"emoji": "0x1F40E",
+        "title": "Stables",
+        "description": "When any Team scores 25+ in this Ballpark, any Instability in the Ballpark will be stabled."
     }
 ]
