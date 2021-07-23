@@ -33,16 +33,17 @@
         <script type="text/template" id="template-stadium">
             <section data-id="<%= teamId %>">
                 <h2><%= nickname %></h2>
+                <div class="fax">
+                    <h3>Fax Machine</h3>
+                </div>
+                <div class="voicemail">
+                    <h3>Voicemail</h3>
+                </div>
                 <% if(_.contains(_.keys(renoLog), "peanut_mister_mod")) { %>
                     <div class="mister">
                         <h3><% if(!_.contains(mods, "PEANUT_MISTER")) { %>Illegal <% } %>Peanut Mister</h3>
                     </div>
-                <% } 
-                if(_.contains(mods, "FAX_MACHINE")) { %>
-                    <div class="fax">
-                        <h3>Fax Machine</h3>
-                    </div>
-                <% } 
+                <% }
                 if(_.contains(mods, "SMITHY")) { %>
                     <div class="smithy">
                         <h3>Smithy</h3>
@@ -67,9 +68,6 @@
                         success: function(data) {
                             _.chain(data.items)
                                 .map(function(stadium) { return stadium.data; })
-                                .filter(function(stadium) {
-                                    return _.contains(_.keys(stadium.renoLog), "peanut_mister_mod") || _.intersection(stadium.mods, ["FAX_MACHINE", "SMITHY"]).length;
-                                })
                                 .sortBy(function(stadium) {
                                     return stadium.nickname.startsWith("The") ? stadium.nickname.substring(4) : stadium.nickname;
                                 })
@@ -79,6 +77,7 @@
                                 loadCures();
                                 loadRepairs();
                                 loadFaxes();
+                                loadVoicemails();
                         },
                         error: function() {
                             $("main").append("<h2>Failed to load stadium data.</h2>")
@@ -119,6 +118,15 @@
                     });
                 }
 
+                function loadVoicemails() {
+                    loadUpdates("Voicemail", null, function() {
+                        _.each($(".voicemail"), function(fax) {
+                            var numFaxes = $(fax).find(".event").length;
+                            $(fax).find("h3").append(" (" + numFaxes + " batter" + (numFaxes != 1 ? "s" : "") + " voicemailed)");
+                        });
+                    });
+                }
+
                 function loadUpdates(query, page, callback) {
                     $.ajax("https://api.sibr.dev/chronicler/v1/games/updates", {
                         method: "GET",
@@ -138,6 +146,10 @@
                                 matcher = update.data.lastUpdate.match(/incoming shadow fax\.+\s(.+) is replaced by (.+)\./i);
                                 if(matcher) {
                                     logFax(update.data, matcher[1], matcher[2]);
+                                }
+                                matcher = update.data.lastUpdate.match(/incoming voicemail\.+\s(.+) is replaced by (.+)\./i);
+                                if(matcher) {
+                                    logVoicemail(update.data, matcher[1], matcher[2]);
                                 }
                                 matcher = update.data.lastUpdate.match(/the peanut mister activates!\s(.+) has been cured of their peanut allergy!/i);
                                 if(matcher) {
@@ -175,6 +187,10 @@
 
                 function logFax(update, player1, player2) {
                     $("[data-id=" + update.homeTeam + "] .fax").append("<div class='event'><h4>Season " + (update.season + 1)  + " Day " + (update.day + 1) + "</h4><span><strong>" + player1 + "</strong> was replaced by <strong>" + player2 + "</strong></span></div>");
+                }
+
+                function logVoicemail(update, player1, player2) {
+                    $("[data-id=" + update.homeTeam + "] .voicemail").append("<div class='event'><h4>Season " + (update.season + 1)  + " Day " + (update.day + 1) + "</h4><span><strong>" + player1 + "</strong> was replaced by <strong>" + player2 + "</strong></span></div>");
                 }
 
                 function logMister(update, player, isSuperallergy) {

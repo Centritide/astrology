@@ -559,6 +559,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					unimportant: true
 				}
 			}
+			matcher = outcome.match(/steeled (.+) countered a consumer attack!/i);
+			if(matcher) {
+				return {
+					emoji: 0x1FA91,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					players: [{ name: matcher[1], team: null }],
+					unimportant: true
+				}
+			}
 			matcher = outcome.match(/(.+) flipped (.+) negative\./i);
 			if(matcher) {
 				return {
