@@ -619,6 +619,17 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					players: [{ name: matcher[1], team: null }]
 				}
 			}
+			matcher = outcome.match(/^(.+) replaced (.+) in a night shift\.$/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F319,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
+					players: [
+						{ name: matcher[1], team: null },
+						{ name: matcher[2], team: null }
+					]
+				}
+			}
 			matcher = outcome.match(/^the (.+) won the prize match!$/i);
 			if(matcher) {
 				var team = getTeamByName(matcher[1]);
@@ -727,7 +738,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			
 			parsedData = _.chain(parsedData)
 				.filter(function(data) {
-					return data.startTime && data.endTime;
+					return data.startTime && data.endTime && !(data.state && data.state.game_cancelled);
 				})
 				.map(function(data) {
 					var awayTeam = navView.model.get("teams").get(data.data.awayTeam), 

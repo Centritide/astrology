@@ -1569,7 +1569,7 @@
         "description": "Grandiosity is 5x more eDense than usual in this Ballpark."
     },
     {
-        "id": "ANTI_GRAPHENE",
+        "id": "ANTIGRAPHENE",
 		"emoji": "0x26F0",
         "title": "Antigraphene",
         "description": "Fortifications are 5x more eDense than usual in this Ballpark."
@@ -1686,7 +1686,11 @@
         "id": "HEIST_EXPERT",
 		"emoji": "0x1F978",
         "title": "Heist Expert",
-        "description": "This Player is adept at using a Ballpark's Tunnels."
+        "description": "This Player is adept at using a Ballpark's Tunnels.",
+        "descriptions": {
+            "team": "This Team is adept at using a Ballpark's Tunnels.",
+            "player": "This Player is adept at using a Ballpark's Tunnels."
+        }
     },
     {
         "id": "PROTOTYPE",

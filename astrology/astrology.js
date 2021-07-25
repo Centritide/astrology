@@ -558,9 +558,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			stadiums.fetch({
 				success: function(collection) {
 					collection.each(function(model) {
-						_.find(thisView.collection, function(team) {
+						var teamStadium = _.find(thisView.collection, function(team) {
 							return team.id == model.get("teamId");
-						}).set("stadiumAttr", model.get("mods"));
+						});
+						if(teamStadium) {
+							teamStadium.set("stadiumAttr", model.get("mods"));
+						}
 					});
 					thisView.render();
 				},
@@ -767,7 +770,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F31F,
-						fullName: "Rising Stars",
+						fullName: "ILB Rising Stars",
 						id: "stars",
 						mainColor: "#6097b7",
 						secondaryColor: "#6097b7",

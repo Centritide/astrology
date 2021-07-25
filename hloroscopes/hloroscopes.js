@@ -2162,7 +2162,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F31F,
-						fullName: "Rising Stars",
+						fullName: "ILB Rising Stars",
 						id: "stars",
 						mainColor: "#6097b7",
 						permAttr: [],
