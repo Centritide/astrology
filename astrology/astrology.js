@@ -130,9 +130,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			if(this.get("deceased")) {
 				return parseEmoji(0x1F3DB) + " The Hall";
 			}
-			if(_.contains(this.modifications(), "LEGENDARY") && !_.contains(this.modifications(), "REPLICA") || _.contains(this.modifications(), "DUST")) {
+			/*if(_.contains(this.modifications(), "LEGENDARY") && !_.contains(this.modifications(), "REPLICA") || _.contains(this.modifications(), "DUST")) {
 				return parseEmoji(0x1F3C6) + " The Vault";
-			}
+			}*/
 			var team = globalTeams.get(this.get("leagueTeamId"));
 			if(!team) {
 				team = globalTeams.get(this.get("tournamentTeamId"));
@@ -940,6 +940,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return "0x1F9E4";
 			case "Helmet":
 				return "0x1FA96";
+			case "Jacket":
+				return "0x1F9E5";
 			case "Jersey":
 				return "0x1F455";
 			case "Necklace":

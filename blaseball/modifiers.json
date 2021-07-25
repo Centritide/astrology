@@ -124,7 +124,7 @@
         "description": "Unstable players have a much higher chance of being incinerated in a Solar Eclipse.",
         "descriptions": {
             "player": "Unstable Players have a much higher chance of being incinerated in a Solar Eclipse.",
-            "team": "Unstable Teams have a chance of being incinerated in a Solar Eclipse."
+            "team": "Unstable Teams have a much higher chance of being incinerated in a Solar Eclipse."
         }
 	},
 	{
@@ -1775,5 +1775,17 @@
 		"emoji": "0x1F40E",
         "title": "Stables",
         "description": "When any Team scores 25+ in this Ballpark, any Instability in the Ballpark will be stabled."
+    },
+    {
+        "id": "MINIMIZED",
+		"emoji": "0x1F6BC",
+        "title": "Minimized",
+        "description": "This Player has been Minimized."
+    },
+    {
+        "id": "UNDER_REVIEW",
+		"emoji": "0x1F4CB",
+        "title": "Under Review",
+        "description": "This Team is Under Review..."
     }
 ]

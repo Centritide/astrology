@@ -733,6 +733,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					return "0x1F9E4";
 				case "Helmet":
 					return "0x1FA96";
+				case "Jacket":
+					return "0x1F9E5";
 				case "Jersey":
 					return "0x1F455";
 				case "Necklace":

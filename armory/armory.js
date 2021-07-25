@@ -154,6 +154,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				case "Helmet":
 					emoji = "0x1FA96";
 					break;
+				case "Jacket":
+					emoji = "0x1F9E5";
+					break;
 				case "Jersey":
 					emoji = "0x1F455";
 					break;
