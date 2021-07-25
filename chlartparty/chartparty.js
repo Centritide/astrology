@@ -738,7 +738,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			
 			parsedData = _.chain(parsedData)
 				.filter(function(data) {
-					return data.startTime && data.endTime && !(data.state && data.state.game_cancelled);
+					return data.startTime && data.endTime && !(data.data.state && data.data.state.game_cancelled);
 				})
 				.map(function(data) {
 					var awayTeam = navView.model.get("teams").get(data.data.awayTeam), 
