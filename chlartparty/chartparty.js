@@ -413,7 +413,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					teams: [ swallower.id, swallowee.id ]
 				}
 			}
-			matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
+			matcher = outcome.match(/the black hole (?:swallowed a win from|burped an unwin at) the (.+)!/i);
 			if(matcher) {
 				var team = getTeamByName(matcher[1]);
 				return {
@@ -699,7 +699,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					teams: [ team1.id, team2.id ]
 				}
 			}
-			matcher = outcome.match(/black hole \(black hole\) nullified (.+))!/i);
+			matcher = outcome.match(/black hole \(black hole\) nullified (.+)!/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F533,
@@ -890,7 +890,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 									seriesWins[game.home.id]++;
 								}
 							}
-							matcher = outcome.match(/the black hole swallowed a win from the (.+)!/i);
+							matcher = outcome.match(/the black hole (?:swallowed a win from|burped an unwin at) the (.+)!/i);
 							if(matcher) {
 								if(matcher[1] == game.away.nickname) {
 									teamWins[game.away.id]--;
