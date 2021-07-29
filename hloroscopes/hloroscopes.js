@@ -2534,6 +2534,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		return {
 			arcana: model.arcana(),
 			championships: model.get("championships"),
+			deceased: model.get("deceased") || false,
 			emoji: model.get("emoji"),
 			id: model.get("id"),
 			level: model.level(),

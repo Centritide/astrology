@@ -142,7 +142,7 @@
 				
 				function getRelevantUpdate(update) {
 					var data = { gameId: update.gameId, hash: update.hash, message: update.data.lastUpdate, ghost: false }, message = data.message.replace(/[\r\n]+/g, " "), matcher = message.match(/Pudge Nakamoto hit a flyout to (.+)\. (.+) tags up and scores!/i);
-					if(update.data.season > 16 && update.data.season < 19 || (update.data.season == 16 && update.data.day > 11) || update.data.season > 22 || (update.data.season == 22 && update.data.day > 64)) {
+					if(update.data.season > 16 && update.data.season < 19 || (update.data.season == 16 && update.data.day > 11) || (update.data.season == 22 && update.data.day > 64)) {
 						data.ghost = true;
 					}
 					if(matcher) {

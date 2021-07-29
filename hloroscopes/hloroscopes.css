@@ -361,6 +361,7 @@ a.team-history {
     margin-top: 5px;
 }
 
+.team-deceased,
 .team-modifiers {
 	display: flex;
 	flex-direction: row;

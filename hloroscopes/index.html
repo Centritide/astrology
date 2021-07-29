@@ -86,6 +86,12 @@
 						<input type="search" placeholder="Search for a player..." />
 					</div>
 				<% }
+				if(get("deceased")) { %>
+					<div class="team-deceased">
+						<span class="deceased-icon"><%= emoji(0x1F480) %></span>
+						<span>Deceased</span>
+					</div>
+				<% }
 				if(get("permAttr").length || get("seasAttr").length) { %>
 					<div class="team-modifiers">
 						<% _.each(_.union(get("permAttr"), get("seasAttr")), function(modifier) { %>
@@ -540,7 +546,13 @@
 					</div>
 				</div>
 				<div class="team-detail">
-					<% if(model.get("data").modifiers.length) { %>
+					<% if(model.get("data").deceased) { %>
+						<div class="team-deceased">
+							<span class="deceased-icon"><%= emoji(0x1F480) %></span>
+							<span>Deceased</span>
+						</div>
+					<% }
+					if(model.get("data").modifiers.length) { %>
 						<div class="team-modifiers">
 							<% _.each(model.get("data").modifiers, function(modifier) { %>
 								<% modifier = getModifier(modifier) %>

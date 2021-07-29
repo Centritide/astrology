@@ -315,7 +315,11 @@
 		"id": "SQUIDDISH",
 		"emoji": "0x1F991",
 		"title": "Squiddish",
-        "description": "When a Squiddish player is incinerated, they'll be replaced by a random Hall of Flame player."
+        "description": "When a Squiddish player is incinerated, they'll be replaced by a random Hall of Flame player.",
+        "descriptions": {
+            "player": "When a Squiddish player is incinerated, they'll be replaced by a random Hall of Flame player.",
+            "team": "When this Team is incinerated, it'll be replaced by a random Hall of Flame team."
+        }
 	},
 	{
 		"id": "CRUNCHY",
@@ -1067,7 +1071,11 @@
         "id": "SCATTERED",
 		"emoji": "0x1F32B",
         "title": "Scattered",
-        "description": "This Player returned from Elsewhere a bit Scattered."
+        "description": "This Player returned from Elsewhere a bit Scattered.",
+        "descriptions": {
+            "player": "This Player returned from Elsewhere a bit Scattered.",
+            "team": "This Team is Scattered across the Desert."
+        }
     },
     {
         "id": "PATIENT",
@@ -1608,25 +1616,41 @@
         "id": "MAGNIFY_2X",
 		"emoji": "0x274E",
         "title": "2x",
-        "description": "Every Run that this Player bats in or allows will be multiplied by 2."
+        "description": "Every Run that this Player bats in or allows will be multiplied by 2.",
+        "descriptions": {
+            "player": "Every Run that this Player bats in or allows will be multiplied by 2.",
+            "team": "Every Run that this Team bats in or allows will be multiplied by 2."
+        }
     },
     {
         "id": "MAGNIFY_3X",
 		"emoji": "0x274E",
         "title": "3x",
-        "description": "Every Run that this Player bats in or allows will be multiplied by 3."
+        "description": "Every Run that this Player bats in or allows will be multiplied by 3.",
+        "descriptions": {
+            "player": "Every Run that this Player bats in or allows will be multiplied by 3.",
+            "team": "Every Run that this Team bats in or allows will be multiplied by 3."
+        }
     },
     {
         "id": "MAGNIFY_4X",
 		"emoji": "0x274E",
         "title": "4x",
-        "description": "Every Run that this Player bats in or allows will be multiplied by 4."
+        "description": "Every Run that this Player bats in or allows will be multiplied by 4.",
+        "descriptions": {
+            "player": "Every Run that this Player bats in or allows will be multiplied by 4.",
+            "team": "Every Run that this Team bats in or allows will be multiplied by 4."
+        }
     },
     {
         "id": "MAGNIFY_5X",
 		"emoji": "0x274E",
         "title": "5x",
-        "description": "Every Run that this Player bats in or allows will be multiplied by 5."
+        "description": "Every Run that this Player bats in or allows will be multiplied by 5.",
+        "descriptions": {
+            "player": "Every Run that this Player bats in or allows will be multiplied by 5.",
+            "team": "Every Run that this Team bats in or allows will be multiplied by 5."
+        }
     },
     {
         "id": "PROFIT",
@@ -1787,5 +1811,29 @@
 		"emoji": "0x1F4CB",
         "title": "Under Review",
         "description": "This Team is Under Review..."
+    },
+    {
+        "id": "SUPERNOVA",
+		"emoji": "0x1F31F",
+        "title": "Sun(Sun) Supernova",
+        "description": ""
+    },
+    {
+        "id": "SMBH",
+		"emoji": "0x1F533",
+        "title": "Black Hole (Black Hole)",
+        "description": ""
+    },
+    {
+        "id": "PULSAR",
+		"emoji": "0x23FA",
+        "title": "Pulsar (Pulsar)",
+        "description": ""
+    },
+    {
+        "id": "ROGUE",
+		"emoji": "🏴‍☠️",
+        "title": "Rogue",
+        "description": "This Team is Out for a Surprise Attack."
     }
 ]

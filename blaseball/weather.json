@@ -125,12 +125,12 @@
         "description": "Each successive scoring play in a half inning is worth an extra Run."
     },
 	{
-        "name": "Supernova",
+        "name": "Supernova Eclipse",
 		"emoji": "0x1F31F"
     },
     {
-        "name": "????",
-		"emoji": "0x2753"
+        "name": "Black Hole (Black Hole)",
+		"emoji": "0x1F533"
     },
     {
         "name": "Jazz",
