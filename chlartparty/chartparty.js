@@ -1439,7 +1439,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	}
 	
 	function getTeamByName(name) {
-		return navView.model.get("teams").findWhere({ nickname: name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") });
+		return navView.model.get("teams").find(function(team) { 
+			return team.canonicalNickname() == name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+		});
 	}
 	
 	function localStorageExists() {
