@@ -64,11 +64,23 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		stadium: function() {
 			return this.get("stadiumAttr") || [];
 		},
+		canonicalName: function() {
+			if(!_.isEmpty(this.get("state")) && _.has(this.get("state"), "scattered")) {
+				return this.get("state").scattered.fullName;
+			}
+			return this.get("fullName");
+		},
+		canonicalNickname: function() {
+			if(!_.isEmpty(this.get("state")) && _.has(this.get("state"), "scattered")) {
+				return this.get("state").scattered.nickname;
+			}
+			return this.get("nickname");
+		},
 		slug: function() {
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
-			return this.get("fullName").toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
+			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		type: function() {
 			var thisId = this.id;
@@ -138,7 +150,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				team = globalTeams.get(this.get("tournamentTeamId"));
 			}
 			if(team) {
-				return team.emoji() + " " + team.get("nickname");
+				return team.emoji() + " " + team.canonicalNickname();
 			}
 			return "-";
 		},
@@ -583,7 +595,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						case "combined":
 							return team.getAverage("roster", sortColumn);
 						case "name":
-							return team.get("nickname");
+							return team.canonicalNickname();
 						case "modifications":
 							return team.modifications().length;
 						case "stadium":
@@ -650,7 +662,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					return {
 						id: team.id,
 						color: team.get("mainColor"),
-						name: team.get("nickname"),
+						name: team.canonicalNickname(),
 						src: $(parseEmoji(team.get("emoji"), { "folder": "svg", "ext": ".svg" })).attr("src"),
 						wobabr: team.getAverage("lineup", "wobabr"),
 						bsrr: team.getAverage("lineup", "bsrr"),
@@ -701,9 +713,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			var id = $(e.currentTarget).data("id");
 			if(id) {
 				var team = _.findWhere(this.collection, { id : id }),
-					wobabrBsrrEl = $("<div class='chart-hover'><p><strong>" + team.get("nickname") + "</strong></p><p>" + (Math.round(team.getAverage("lineup", "wobabr") * 5000) / 1000) + " wOBABR</p><p>" + (Math.round(team.getAverage("lineup", "bsrr") * 5000) / 1000) + " BsRR</p></div>"),
+					wobabrBsrrEl = $("<div class='chart-hover'><p><strong>" + team.canonicalNickname() + "</strong></p><p>" + (Math.round(team.getAverage("lineup", "wobabr") * 5000) / 1000) + " wOBABR</p><p>" + (Math.round(team.getAverage("lineup", "bsrr") * 5000) / 1000) + " BsRR</p></div>"),
 					wobabrBsrrCircEl = $("#chart-wobabr-bsrr circle[data-id=" + id + "]"),
-					erprDefenseEl = $("<div class='chart-hover'><p><strong>" + team.get("nickname") + "</strong></p><p>" + (Math.round(team.getAverage("rotation", "erpr") * 5000) / 1000) + " ERPR</p><p>" + (Math.round(team.getAverage("roster", "defense") * 5000) / 1000) + " Defense Stars</p></div>"),
+					erprDefenseEl = $("<div class='chart-hover'><p><strong>" + team.canonicalNickname() + "</strong></p><p>" + (Math.round(team.getAverage("rotation", "erpr") * 5000) / 1000) + " ERPR</p><p>" + (Math.round(team.getAverage("roster", "defense") * 5000) / 1000) + " Defense Stars</p></div>"),
 					erprDefenseCircEl = $("#chart-erpr-defense circle[data-id=" + id + "]");
 				$("[data-id=" + id + "]").addClass("active");
 				$(".chart-hover").remove();
@@ -891,7 +903,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	function loadPageView() {
 		var title = "Astrology", path = "/";
 		if(activeTeam) {
-			title += " - " + activeTeam.get("fullName");
+			title += " - " + activeTeam.canonicalName();
 			path += activeTeam.slug();
 		}
 		document.title = title;

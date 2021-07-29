@@ -74,7 +74,7 @@
 						<% } %>
 					</div>
 					<div class="team-info">
-						<div class="team-name"><a href="https://blaseball.com/team/<%= get("id") %>"><%= get("fullName") %></a></div>
+						<div class="team-name"><a href="https://blaseball.com/team/<%= get("id") %>"><%= canonicalName() %></a></div>
 						<div class="team-slogan"><%= get("slogan") %></div>
 						<% if(arcana()) { %>
 							<div class="team-card"><%= arcana() %></div>
@@ -192,13 +192,13 @@
 						<div class="player-team">
 							<% var leagueTeam = getTeamById(get("data").teams.league) %>
 							<span class="team-icon" style="background:<%= leagueTeam ? leagueTeam.get("mainColor") : "#bbbbbb" %>"><%= emoji(leagueTeam ? leagueTeam.get("emoji") : 0x2753) %></span>
-							<span class="team-name"><%= leagueTeam ? leagueTeam.get("fullName") : "Null Team" %></span>
+							<span class="team-name"><%= leagueTeam ? leagueTeam.canonicalName() : "Null Team" %></span>
 						</div>
 						<% if(get("data").teams.tournament) { %>
 							<div class="player-team">
 								<% var tournamentTeam = getTeamById(get("data").teams.tournament) %>
 								<span class="team-icon" style="background:<%= tournamentTeam.get("mainColor") %>"><%= emoji(tournamentTeam.get("emoji")) %></span>
-								<span class="team-name"><%= tournamentTeam.get("fullName") %></span>
+								<span class="team-name"><%= tournamentTeam.canonicalName() %></span>
 							</div>
 						<% } %>
 					<% } %>

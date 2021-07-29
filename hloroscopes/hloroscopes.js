@@ -100,11 +100,17 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		}
 	});
 	App.Models.Team = Backbone.Model.extend({
+		canonicalName: function() {
+			if(!_.isEmpty(this.get("state")) && _.has(this.get("state"), "scattered")) {
+				return this.get("state").scattered.fullName;
+			}
+			return this.get("fullName");
+		},
 		slug: function() {
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
-			return this.get("fullName").toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
+			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		type: function() {
 			var thisId = this.id;
@@ -1255,7 +1261,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			var searchValue = $(e.currentTarget).val();
 			if(searchValue) {
 				this.collection.set(globalTeams.filter(function(team) {
-					return team.type() == "special" || _.any([team.get("fullName"), team.get("shorthand"), team.get("location")], function(searchable) { return removeDiacritics(searchable.toLowerCase()).indexOf(removeDiacritics(searchValue.toLowerCase())) > -1; });
+					return team.type() == "special" || _.any([team.canonicalName(), team.get("shorthand"), team.get("location")], function(searchable) { return removeDiacritics(searchable.toLowerCase()).indexOf(removeDiacritics(searchValue.toLowerCase())) > -1; });
 				}));
 			} else {
 				this.collection.set(globalTeams.toJSON());
@@ -1719,7 +1725,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					width: width,
 					innerHeight: height - margin - titleOffset,
 					innerWidth: width - 2 * margin,
-					title: activeTeam.get("fullName"),
+					title: activeTeam.canonicalName(),
 					titleOffset: titleOffset,
 					padding: padding,
 					margin: margin,
@@ -2341,7 +2347,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			title += " - " + activePlayer.canonicalName();
 			path += activePlayer.slug();
 		} else if(activeTeam) {
-			title += " - " + activeTeam.get("fullName");
+			title += " - " + activeTeam.canonicalName();
 			path += activeTeam.slug();
 		} 
 		document.title = title;
@@ -2533,6 +2539,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		var model = new App.Models.Team(data);
 		return {
 			arcana: model.arcana(),
+			canonical: model.canonicalName(),
 			championships: model.get("championships"),
 			deceased: model.get("deceased") || false,
 			emoji: model.get("emoji"),
