@@ -50,11 +50,23 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	//-- BEGIN MODELS --
 	App.Models.Nav = Backbone.Model.extend({});
 	App.Models.Team = Backbone.Model.extend({
+		canonicalName: function() {
+			if(!_.isEmpty(this.get("state")) && _.has(this.get("state"), "scattered")) {
+				return this.get("state").scattered.fullName;
+			}
+			return this.get("fullName");
+		},
+		canonicalNickname: function() {
+			if(!_.isEmpty(this.get("state")) && _.has(this.get("state"), "scattered")) {
+				return this.get("state").scattered.nickname;
+			}
+			return this.get("nickname");
+		},
 		slug: function() {
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
-			return this.get("fullName").toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
+			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
 		},
 		type: function() {
 			var thisId = this.id;
@@ -78,6 +90,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 				case "8d87c468-699a-47a8-b40d-cfb73a5660ad": // baltimore crabs
 					return [10, 11];
+				case "b47df036-3aa4-4b98-8e9e-fe1d3ff1894b": // oxford paws
+				case "2e22beba-8e36-42ba-a8bf-975683c52b5f": // carolina queens
+				return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
 				default:
 					return [];
 			}
@@ -212,11 +227,20 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			}
 			matcher = outcome.match(/^rogue umpire incinerated (.+)!$/i);
 			if(matcher) {
-				return {
-					emoji: 0x1F525,
-					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
-					players: [{ name: matcher[1], team: null }]
-				};
+				var team = getTeamByName(matcher[1]);
+				if(team) {
+					return {
+						emoji: 0x1F525,
+						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.get("nickname") + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
+						teams: [ team.id ]
+					};
+				} else {
+					return {
+						emoji: 0x1F525,
+						formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+						players: [{ name: matcher[1], team: null }]
+					};
+				}
 			}
 			matcher = outcome.match(/^rogue umpire tried to incinerate (.+) (hitter|pitcher) (.+), but they're fireproof! the umpire was incinerated instead!$/i);
 			if(matcher) {
@@ -368,7 +392,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				var team = getTeamByName(matcher[3]);
 				return {
 					emoji: 0x1F48D,
-					formatted: outcome.replace(matcher[1], "<strong class='" + matcher[2].toLowerCase() +"'>" + matcher[1] + "</strong>").replace(matcher[3], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.get("fullName") + "</strong>"),
+					formatted: outcome.replace(matcher[1], "<strong class='" + matcher[2].toLowerCase() +"'>" + matcher[1] + "</strong>").replace(matcher[3], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalName() + "</strong>"),
 					teams: [ team.id ]
 				}
 			}
@@ -675,6 +699,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					teams: [ team1.id, team2.id ]
 				}
 			}
+			matcher = outcome.match(/black hole \(black hole\) nullified (.+))!/i);
+			if(matcher) {
+				return {
+					emoji: 0x1F533,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>")
+				}
+			}
 			matcher = outcome.match(/BRIDGE WEAKENED/i);
 			if(matcher) {
 				return {
@@ -747,12 +778,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						game = {
 							away: {
 								emoji: awayTeam.get("emoji"),
-								fullName: awayTeam.get("fullName"),
+								fullName: awayTeam.canonicalName(),
 								id: awayTeam.id,
 								isAway: true,
 								location: awayTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : awayTeam.get("location"),
 								mainColor: awayTeam.get("mainColor"),
-								nickname: awayTeam.get("nickname"),
+								nickname: awayTeam.canonicalNickname(),
 								odds: data.data.awayOdds,
 								pitcher: data.data.awayPitcherName,
 								score: data.data.awayScore,
@@ -762,12 +793,12 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 							duration: new Date(data.endTime) - new Date(data.startTime),
 							home: {
 								emoji: homeTeam.get("emoji"),
-								fullName: homeTeam.get("fullName"),
+								fullName: homeTeam.canonicalName(),
 								id: homeTeam.id,
 								isAway: false,
 								location: homeTeam.get("location") == "Unlimited" ? "Infinite Los Angeli" : homeTeam.get("location"),
 								mainColor: homeTeam.get("mainColor"),
-								nickname: homeTeam.get("nickname"),
+								nickname: awayTeam.canonicalNickname(),
 								odds: data.data.homeOdds,
 								pitcher: data.data.homePitcherName,
 								score: data.data.homeScore,
@@ -1396,7 +1427,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	function loadPageView() {
 		var title = "Chart Party", path = "/";
 		if(activeTeam) {
-			title += " - " + activeTeam.get("fullName");
+			title += " - " + activeTeam.canonicalName();
 			path += activeTeam.slug();
 		} 
 		document.title = title;
