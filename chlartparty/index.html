@@ -51,7 +51,7 @@
 			<header>
 				<div class="team-icon" style="background:<%= team.get("mainColor") %>"><%= team.emoji(team.get("emoji")) %></div>
 				<div class="team-info">
-					<div class="team-name"><%= team.get("fullName") %></div>
+					<div class="team-name"><%= team.canonicalName() %></div>
 					<div class="team-slogan"><%= team.get("slogan") %></div>
 				</div>
 			</header>
