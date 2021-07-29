@@ -237,7 +237,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				if(team) {
 					return {
 						emoji: 0x1F31F,
-						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.fullName() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
+						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.canonicalName() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
 						teams: [ team ? team.id : null ]
 					};
 				} else {
@@ -542,7 +542,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					unimportant: true
 				}
 			}
-			matcher = outcome.match(/(?:trader|traitor)?\s?(.+) traded their .+ for (.+)'s? .+(?:!\.)$/i);
+			matcher = outcome.match(/(?:trader|traitor)?\s?(.+) traded their .+ for (.+)'s? .+[\.!]$/i);
 			if(matcher) {
 				return {
 					emoji: 0x267B,
@@ -563,7 +563,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					unimportant: true
 				}
 			}
-			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)(?:!|\.)/i);
+			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)[\.!])/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F41F,
