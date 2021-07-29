@@ -98,7 +98,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					return [10, 11];
 				case "b47df036-3aa4-4b98-8e9e-fe1d3ff1894b": // oxford paws
 				case "2e22beba-8e36-42ba-a8bf-975683c52b5f": // carolina queens
-				return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+				return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 				default:
 					return [];
 			}
@@ -231,13 +231,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					position: matcher[3]
 				};
 			}
-			matcher = outcome.match(/^rogue umpire incinerated (.+)!$/i);
+			matcher = outcome.match(/^(?:a )?rogue umpire incinerated (?:the )?(.+)!$/i);
 			if(matcher) {
 				var team = getTeamByName(matcher[1]);
 				if(team) {
 					return {
-						emoji: 0x1F525,
-						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.canonicalNickname() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
+						emoji: 0x1F31F,
+						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.fullName() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
 						teams: [ team ? team.id : null ]
 					};
 				} else {
@@ -247,6 +247,15 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						players: [{ name: matcher[1], team: null }]
 					};
 				}
+			}
+			matcher = outcome.match(/^.+ joined the (.+)!$/i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1]);
+				return {
+					emoji: 0x1F31F,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalName() + "</strong>").replace(matcher[1], "<strong>" + matcher[1] + "</strong>"),
+					teams: [ team ? team.id : null ]
+				};
 			}
 			matcher = outcome.match(/^rogue umpire tried to incinerate (.+) (hitter|pitcher) (.+), but they're fireproof! the umpire was incinerated instead!$/i);
 			if(matcher) {
@@ -533,7 +542,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					unimportant: true
 				}
 			}
-			matcher = outcome.match(/(?:trader|traitor)?\s?(.+) traded their .+ for (.+)'s? .+\.$/i);
+			matcher = outcome.match(/(?:trader|traitor)?\s?(.+) traded their .+ for (.+)'s? .+(?:!\.)$/i);
 			if(matcher) {
 				return {
 					emoji: 0x267B,
@@ -1455,7 +1464,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	
 	function getTeamByName(name) {
 		return navView.model.get("teams").find(function(team) { 
-			return team.canonicalNickname() == name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+			return _.contains([team.canonicalNickname(), team.canonicalName()], name.normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
 		});
 	}
 	
