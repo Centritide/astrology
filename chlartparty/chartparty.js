@@ -224,10 +224,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					emoji: matcher[1] ? 0x1F47F : 0x1F525,
 					formatted: outcome.replace(matcher[1], "<span style='color:red'>" + matcher[1] + "</span>").replace(matcher[2], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>").replace(matcher[4], "<strong>" + matcher[4] + "</strong>").replace(matcher[5], "<strong>" + matcher[5] + "</strong>"),
 					players: [
-						{ name: matcher[4], team: team.id },
-						{ name: matcher[5], team: team.id }
+						{ name: matcher[4], team: team ? team.id : null },
+						{ name: matcher[5], team: team ? team.id : null }
 					],
-					teams: [ team.id ],
+					teams: [ team ? team.id : null ],
 					position: matcher[3]
 				};
 			}
@@ -238,7 +238,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					return {
 						emoji: 0x1F525,
 						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.canonicalNickname() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
-						teams: [ team.id ]
+						teams: [ team ? team.id : null ]
 					};
 				} else {
 					return {
@@ -254,8 +254,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F9E5,
 					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.canonicalNickname() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
-					players: [{ name: matcher[3], team: team.id }],
-					teams: [ team.id ],
+					players: [{ name: matcher[3], team: team ? team.id : null }],
+					teams: [ team ? team.id : null ],
 					position: matcher[2]
 				};
 			}
@@ -272,8 +272,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: emoji,
 					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>").replace(matcher[4], "<em>" + matcher[4] + "</em>"),
-					players: [{ name: matcher[3], team: team.id }],
-					teams: [ team.id ],
+					players: [{ name: matcher[3], team: team ? team.id : null }],
+					teams: [ team ? team.id : null ],
 					position: matcher[2],
 					reaction: matcher[4]
 				}
@@ -317,7 +317,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F30A,
 					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>"),
-					teams: [ team.id ],
+					teams: [ team ? team.id : null ],
 					position: matcher[3] ? matcher[3] : matcher[2]
 				}
 			}
@@ -327,7 +327,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F30A,
 					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>"),
-					teams: [ team.id ],
+					teams: [ team ? team.id : null ],
 					position: "all"
 				}
 			}
@@ -389,8 +389,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F517,
 					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>"),
-					players: [{ name: matcher[2], team: team.id }],
-					teams: [ team.id ]
+					players: [{ name: matcher[2], team: team ? team.id : null }],
+					teams: [ team ? team.id : null ]
 				}
 			}
 			matcher = outcome.match(/^your ((overbracket|underbracket|season) \d+) champions are the (.+)!$/i);
@@ -399,7 +399,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F48D,
 					formatted: outcome.replace(matcher[1], "<strong class='" + matcher[2].toLowerCase() +"'>" + matcher[1] + "</strong>").replace(matcher[3], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalName() + "</strong>"),
-					teams: [ team.id ]
+					teams: [ team ? team.id : null ]
 				}
 			}
 			matcher = outcome.match(/^a big peanut crashes into the field, encasing (.+)!$/i);
@@ -425,7 +425,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x26AB,
 					formatted: outcome.replace(matcher[1], team ? ("<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>") : ("<strong>" + matcher[1] + "</strong>")),
-					teams: [ team.id ]
+					teams: [ team ? team.id : null ]
 				}
 			}
 			matcher = outcome.match(/^sun 2 (?:smiled at|set a win upon) the ([^\.]+)\.?$/i);
@@ -434,7 +434,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x2600,
 					formatted: outcome.replace(matcher[1], team ? ("<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>") : ("<strong>" + matcher[1] + "</strong>")),
-					teams: [ team.id ]
+					teams: [ team ? team.id : null ]
 				}
 			}
 			matcher = outcome.match(/the black hole burped at the (.+)!/i);
@@ -443,7 +443,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x26AB,
 					formatted: outcome.replace(matcher[1], team ? ("<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>") : ("<strong>" + matcher[1] + "</strong>")),
-					teams: [ team.id ]
+					teams: [ team ? team.id : null ]
 				}
 			}
 			matcher = outcome.match(/sun 30 smiled upon the (.+) and (.+)\.$/i);
@@ -452,7 +452,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x2600,
 					formatted: outcome.replace(matcher[1], team1 ? ("<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team1.get("secondaryColor") + "'>" + team1.canonicalNickname() + "</strong>") : ("<strong>" + matcher[1] + "</strong>")).replace(matcher[2], team2 ? ("<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team2.get("secondaryColor") + "'>" + team2.canonicalNickname() + "</strong>") : ("<strong>" + matcher[1] + "</strong>")),
-					teams: [ team1.id, team2.id ]
+					teams: [ team1 ? team1.id : null, team2 ? team2.id : null ]
 				}
 			}
 			matcher = outcome.match(/^(.+) was percolated by the tractor bean!(?: (.+) was fired into outer space!)?$/i);
@@ -675,7 +675,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F381,
 					formatted: outcome.replace(matcher[1], team ? ("<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team.canonicalNickname() + "</strong>") : ("<strong>" + matcher[1] + "</strong>")),
-					teams: [ team.id ]
+					teams: [ team ? team.id : null ]
 				}
 			}
 			matcher = outcome.match(/^(.+) was replaced by incoming (?:fax|voicemail) ([^\.]+)\.$/i);
@@ -711,7 +711,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F978,
 					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>").replace(matcher[3], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team1.get("secondaryColor") + "'>" + team1.canonicalNickname() + "</strong>").replace(matcher[4], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team2.get("secondaryColor") + "'>" + team2.canonicalNickname() + "</strong>"),
-					teams: [ team1.id, team2.id ]
+					teams: [ team1 ? team1.id : null, team2 ? team2.id : null ]
 				}
 			}
 			matcher = outcome.match(/black hole \(black hole\) nullified (.+)!/i);
