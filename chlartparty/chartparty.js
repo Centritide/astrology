@@ -563,7 +563,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					unimportant: true
 				}
 			}
-			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)[\.!])/i);
+			matcher = outcome.match(/the salmon swam upstream!\s(.+)'s? (.+) (?:was|were) (?:restored|repaired)[\.!]/i);
 			if(matcher) {
 				return {
 					emoji: 0x1F41F,
