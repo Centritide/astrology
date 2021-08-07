@@ -107,6 +107,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return this.get("fullName");
 		},
 		slug: function() {
+			if(this.get("fullName") == "nullteam") {
+				return this.id;
+			}
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}

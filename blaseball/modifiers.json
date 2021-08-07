@@ -1167,7 +1167,11 @@
         "id": "FORCE",
 		"emoji": "0x2693",
         "title": "Force",
-        "description": "This Player is Forced into position. They cannot leave their current Location."
+        "description": "This Player is Forced into position. They cannot leave their current Location.",
+        "descriptions": {
+            "player": "This Player is Forced into position. They cannot leave their current Location.",
+            "team": "This Team is Forced into position. They cannot leave their current Location."
+        }
     },
     {
         "id": "PSYCHOACOUSTICS",
@@ -1333,7 +1337,11 @@
         "id": "ENTANGLED",
 		"emoji": "0x1F9F6",
         "title": "Entangled",
-        "description": "Whenever this Player would return from Elsewhere, their Alternate will return instead."
+        "description": "Whenever this Player would return from Elsewhere, their Alternate will return instead.",
+        "descriptions": {
+            "team": "Whenever this Team would return from Elsewhere, their Alternate will return instead.",
+            "player": "Whenever this Player would return from Elsewhere, their Alternate will return instead."
+        }
     },
     {
         "id": "OFFWORLD",

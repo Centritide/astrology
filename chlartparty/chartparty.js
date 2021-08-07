@@ -69,6 +69,9 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return this.get("location");
 		},
 		slug: function() {
+			if(this.get("fullName") == "nullteam") {
+				return this.id;
+			}
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
@@ -237,8 +240,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				if(team) {
 					return {
 						emoji: 0x1F31F,
-						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.canonicalName() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>"),
-						teams: [ team ? team.id : null ]
+						formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor")+ "'>" + team.canonicalName() + "</strong>").replace(matcher[3], "<strong>" + matcher[3] + "</strong>")
 					};
 				} else {
 					return {
@@ -728,6 +730,22 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				return {
 					emoji: 0x1F533,
 					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>").replace(matcher[2], "<strong>" + matcher[2] + "</strong>")
+				}
+			}
+			matcher = outcome.match(/the (.+) non-lost due to nullification\./i);
+			if(matcher) {
+				var team = getTeamByName(matcher[1])
+				return {
+					emoji: 0x1F533,
+					formatted: outcome.replace(matcher[1], "<strong class='team-name' style='" + (lightMode ? "background" : "color") + ":" + team.get("secondaryColor") + "'>" + team1.canonicalNickname() + "</strong>"),
+					teams: [ team ? team.id : null ]
+				}
+			}
+			matcher = outcome.match(/game canceled\. neither team non-lost\./i);
+			if(matcher) {
+				return {
+					emoji: 0x1F533,
+					formatted: outcome.replace(matcher[1], "<strong>" + matcher[1] + "</strong>")
 				}
 			}
 			matcher = outcome.match(/BRIDGE WEAKENED/i);
