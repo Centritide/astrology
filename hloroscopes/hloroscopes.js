@@ -823,7 +823,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		}
 	});
 	App.Collections.Teams = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams",
+		url: "https://api.sibr.dev/corsmechanics/api.blaseball.com/database/allTeams",
 		model: App.Models.Team,
 		emoji: parseEmoji,
 		isLightMode: function() {
@@ -831,14 +831,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		}
 	});
 	App.Collections.Tributes = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getTribute",
+		url: "https://api.sibr.dev/corsmechanics/api.blaseball.com/api/getTribute",
 		model: App.Models.PlayerId,
 		parse: function(data) {
 			return data.players;
 		}
 	});
 	App.Collections.Stars = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/api/getRisingStars",
+		url: "https://api.sibr.dev/corsmechanics/api.blaseball.com/api/getRisingStars",
 		model: App.Models.PlayerId,
 		parse: function(data) {
 			return _.map(data.stars, function(id) {
@@ -847,7 +847,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		}
 	});
 	App.Collections.Vault = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/vault",
+		url: "https://api.sibr.dev/corsmechanics/api.blaseball.com/database/vault",
 		model: App.Models.PlayerId,
 		parse: function(data) {
 			return _.map(data.legendaryPlayers, function(id) {

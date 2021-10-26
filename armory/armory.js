@@ -241,7 +241,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	
 	//-- BEGIN COLLECTIONS --
 	App.Collections.Teams = Backbone.Collection.extend({
-		url: "https://api.sibr.dev/corsmechanics/www.blaseball.com/database/allTeams",
+		url: "https://api.sibr.dev/corsmechanics/api.blaseball.com/database/allTeams",
 		model: App.Models.Team
 	});
 	App.Collections.Players = Backbone.Collection.extend({
