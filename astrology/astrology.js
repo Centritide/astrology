@@ -346,7 +346,53 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			this.render();
 		},
 		render: function() {
-			this.$el.html(this.template(globalTeams));
+			var groups = this.collection.groupBy(function(team) { return team.type(); });
+			this.$el.html(this.template({
+				isLightMode: function() { return lightMode; },
+				emoji: parseEmoji,
+				special: groups.special,
+				groups: {
+					"Short Circuits": groups.sc,
+					"ILB": groups.ilb,
+					"Library": groups.ulb,
+					"Coffee Cup": _.union(groups.coffee, groups.coffee2),
+					"Other": groups.unknown
+				}
+			}));
+		},
+		events: {
+			"input .team-selector input[type=search]": "searchTeams",
+			"click a": "selectTeam",
+			"focus .team-selector input[type=search]": "openSelector",
+			"blur .team-selector input[type=search]": "closeSelector"
+		},
+		searchTeams: function(e) {
+			var searchValue = $(e.currentTarget).val();
+			if(searchValue) {
+				this.collection.set(globalTeams.filter(function(team) {
+					return team.type() == "special" || _.any([team.canonicalName(), team.get("shorthand"), team.get("location")], function(searchable) { return removeDiacritics(searchable.toLowerCase()).indexOf(removeDiacritics(searchValue.toLowerCase())) > -1; });
+				}));
+			} else {
+				this.collection.set(globalTeams.toJSON());
+			}
+			this.render();
+			this.$el.find(".team-selector input[type=search]").val(searchValue);
+			this.$el.find(".team-selector input[type=search]").focus();
+		},
+		selectTeam: function(e) {
+			e.preventDefault();
+			activeRouter.navigate(e.currentTarget.href.split("#")[1], { trigger: true });
+			this.$el.find(".team-selector").removeClass("active");
+		},
+		openSelector: function(e) {
+			e.preventDefault();
+			this.$el.find(".team-selector").addClass("active");
+		},
+		closeSelector: function(e) {
+			e.preventDefault();
+			if(!isMobile() && !$(e.relatedTarget).parents(".team-selector").length) {
+				this.$el.find(".team-selector").removeClass("active");
+			}
 		}
 	});
 	App.Views.Footer = Backbone.View.extend({

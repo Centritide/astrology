@@ -105,7 +105,7 @@ nav {
 	padding: 5px;
 }
 
-nav ul {
+nav > ul {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -118,10 +118,9 @@ nav ul li a {
 	position: relative;
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	padding: .3em .6em;
-	font-weight: bold;
 	border-radius: 5px;
+	font-weight: bold;
 }
 
 nav ul li a:hover {
@@ -136,6 +135,58 @@ nav ul li a span {
 	color: var(--body-text);
 	padding: .3em .6em;
 	border-radius: 5px;
+}
+
+nav .team-selector {
+	position: relative;
+}
+
+nav .team-selector.active ul {
+	display: flex;
+}
+
+.team-selector input[type=search] {
+    color: var(--input-text);
+    background: var(--input-bg);
+	padding: .3em .6em;
+    border: 0;
+    border-radius: 5px;
+	font-family: Roboto, "sans-serif";
+	font-size: 1em;
+}
+
+.team-selector input[type=search]:focus {
+	outline: 0;
+	box-shadow: 0px 0px 5px var(--input-bg);
+}
+
+nav .team-selector ul {
+	display: none;
+    position: absolute;
+	flex-direction: column;
+    max-height: calc(100vh - 4em);
+	width: calc(100% - 1.2em);
+    background: var(--body-bg);
+    margin: .3em 0;
+    border: 1px solid var(--body-border);
+    border-radius: 5px;
+    padding: .3em .6em;
+    overflow-y: auto;
+	z-index: 40;
+}
+
+nav .team-selector ul li.header {
+	margin-top: .3em;
+    border-top: 1px solid var(--header-text);
+	padding-top: .3em;
+    color: var(--header-text);
+    font-size: 0.9em;
+	font-weight: bold;
+}
+
+nav .team-selector ul li.header:first-child {
+	margin-top: .3em;
+    border-top: 0;
 }
 
 img.emoji {
@@ -594,10 +645,8 @@ a[data-toggle-lights]:hover {
 }
 
 @media screen and (max-width: 700px) {	
-	nav ul {
-		flex-wrap: nowrap;
-		justify-content: normal;
-		overflow: auto;
+	nav .team-selector ul {
+		max-height: 50vh;
 	}
 	
 	main {
