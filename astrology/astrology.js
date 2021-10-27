@@ -83,7 +83,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
-			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
+			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-") + (this.type() == "sc" ? "-gamma" : "");
 		},
 		type: function() {
 			var thisId = this.id;
@@ -649,7 +649,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		calculateRanks: function() {
 			_.chain(this.collection)
 				.filter(function(team) {
-					return team.type() == "ilb";
+					return team.type() == "sc";
 				})
 				.each(function(team) { team.set("rank", team.getAverage("lineup", "wobabr") + team.getAverage("rotation", "erpr")); })
 				.sortBy(function(team) { return team.get("rank"); })
@@ -773,7 +773,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					_.each(groups, function(group, key) {
 						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
 					});
-					globalTeams.reset(_.union(groups.ilb, groups.ulb, groups.coffee, groups.coffee2, groups.unknown));
+					globalTeams.reset(_.union(groups.sc, groups.ilb, groups.ulb, groups.coffee, groups.coffee2, groups.unknown));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F3DB,
 						fullName: "Hall of Flame",
@@ -889,7 +889,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					teamView = new App.Views.Squeezer({
 						model: activeTeam,
 						collection: globalTeams.filter(function(team) {
-							return team.type() == "ilb";
+							return team.type() == "sc";
 						})
 					});
 				} else {

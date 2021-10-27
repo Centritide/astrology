@@ -75,7 +75,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
-			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-");
+			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-") + (this.type() == "sc" ? "-gamma" : "");
 		},
 		type: function() {
 			var thisId = this.id;
