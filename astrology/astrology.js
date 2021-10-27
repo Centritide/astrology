@@ -827,7 +827,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						mainColor: "#5988ff",
 						secondaryColor: "#5988ff",
 						shorthand: "HoF",
-						slogan: "Pay tribute."
+						slogan: "Pay tribute.",
+						type: "special"
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F31F,
@@ -836,7 +837,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						mainColor: "#6097b7",
 						secondaryColor: "#6097b7",
 						shorthand: "Stars",
-						slogan: "The League's Rising Star Players."
+						slogan: "The League's Rising Star Players.",
+						type: "special"
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F3C6,
@@ -845,7 +847,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						mainColor: "#c5ac00",
 						secondaryColor: "#c5ac00",
 						shorthand: "Vault",
-						slogan: "Preserved."
+						slogan: "Preserved.",
+						type: "special"
 					}));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F9EE,
@@ -854,7 +857,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						mainColor: "#885a84",
 						secondaryColor: "#da94d4",
 						shorthand: "Squeezer",
-						slogan: "The Stat Squeezer."
+						slogan: "The Stat Squeezer.",
+						type: "special"
 					}), { at: 0 });
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x26BE,
@@ -863,10 +867,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						mainColor: "#424242",
 						secondaryColor: "#aaaaaa",
 						shorthand: "All Players",
-						slogan: "We are all love Blaseball."
+						slogan: "We are all love Blaseball.",
+						type: "special"
 					}), { at: 0 });
 					if(!navView) {
-						navView = new App.Views.Nav();
+						navView = new App.Views.Nav({
+							collection: globalTeams.clone()
+						});
 					}
 					globalLoaded.teams = true;
 					loadPage(id);
