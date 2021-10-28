@@ -830,7 +830,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						slogan: "Pay tribute.",
 						type: "special"
 					}));
-					globalTeams.add(new App.Models.Team({
+					/*globalTeams.add(new App.Models.Team({
 						emoji: 0x1F31F,
 						fullName: "ILB Rising Stars",
 						id: "stars",
@@ -849,7 +849,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 						shorthand: "Vault",
 						slogan: "Preserved.",
 						type: "special"
-					}));
+					}));*/
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F9EE,
 						fullName: "Stat Squeezer",
