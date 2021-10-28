@@ -417,6 +417,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		getInGameTime: function(isShort) {
 			if(this.get("start") < new Date("2020-08-01T07:13:21.108Z")) {
 				return "Before SIBR";
+			} else if(this.get("start") > new Date("2021-10-26T00:00:00.000Z")) {
+				return "Gamma"
 			}
 			var thisUpdate = this, foundTime = globalTimes.find(function(time) {
 				return thisUpdate.get("start") >= time.get("start") && thisUpdate.get("start") <= time.get("end");
@@ -552,6 +554,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		getInGameTime: function(isShort) {
 			if(this.get("start") < new Date("2020-08-01T07:13:21.108Z")) {
 				return "Before SIBR";
+			} else if(this.get("start") > new Date("2021-10-26T00:00:00.000Z")) {
+				return "Gamma"
 			}
 			var thisUpdate = this, foundTime = globalTimes.find(function(time) {
 				return thisUpdate.get("start") >= time.get("start") && thisUpdate.get("start") <= time.get("end");
@@ -605,6 +609,8 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		getInGameTime: function(isShort) {
 			if(this.get("start") < new Date("2020-08-01T07:13:21.108Z")) {
 				return "Before SIBR";
+			} else if(this.get("start") > new Date("2021-10-26T00:00:00.000Z")) {
+				return "Gamma"
 			}
 			var thisUpdate = this, foundTime = globalTimes.find(function(time) {
 				return thisUpdate.get("start") >= time.get("start") && thisUpdate.get("start") <= time.get("end");
