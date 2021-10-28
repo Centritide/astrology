@@ -87,7 +87,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		},
 		type: function() {
 			var thisId = this.id;
-			return _.findKey(teamTypes, function(ids) { return _.contains(ids, thisId); }) || "unknown";
+			return this.get("type") || _.findKey(teamTypes, function(ids) { return _.contains(ids, thisId); }) || "unknown";
 		},
 		getAverage: function(group, attribute) {
 			var reduceFn;

@@ -4,6 +4,9 @@
 	--body-border: #000;
 	--scroll-hover: #585858;
 	--nav-hover: #ddd;
+	--input-text: #000;
+	--input-bg: #ddd;
+	--input-hover-bg: #ccc;
 	--table-hover-bg: #ddd;
 	--toggle-bg: #999;
 	--toggle-hover: #fff;
@@ -25,6 +28,9 @@
 	--body-border: #fff;
 	--scroll-hover: #ddd;
 	--nav-hover: #333;
+	--input-text: #000;
+	--input-bg: #fff;
+	--input-hover-bg: #ddd;
 	--table-hover-bg: #444;
 	--toggle-bg: #333;
 	--toggle-hover: #fff;
