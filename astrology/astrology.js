@@ -225,9 +225,6 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				if(_.contains(descAttributes, attribute)) {
 					attrVal = Math.min(attrVal, 0.999);
 				}
-				if(!_.contains(["eDensity"], attribute)) {
-					attrVal = Math.max(attrVal, 0.001);
-				}
 			}
 			return attrVal;
 		},

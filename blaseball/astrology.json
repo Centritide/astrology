@@ -329,13 +329,6 @@
                     "id": "peanutAllergy",
                     "name": "Peanut Allergy",
                     "shorthand": "allergy"
-                },
-                {
-                    "description": "A player's eDensity is a numerical representation of a player's weight and can be calculated by: <code>combined stars × 7 + soul × 2 + #ego × 6.5 + #perk × 26</code>",
-                    "direction": "asc",
-                    "id": "eDensity",
-                    "name": "eDensity",
-                    "shorthand": "density"
                 }
             ],
             "group": "roster",

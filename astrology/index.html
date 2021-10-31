@@ -234,8 +234,6 @@
 												_.each(category.attributes, function(attribute) { 
 													if(attribute.id == "peanutAllergy") { %>
 														<td class="player-stat <%= players.get(id).get(attribute.id) ? "stat-terrible" : "stat-exceptional" %>" title="<%= players.get(id).get(attribute.id) ? "" : "Not " %>Allergic"><%= players.get(id).allergy() %></td>
-													<% } else if(attribute.id == "eDensity") { %>
-														<td class="player-stat" title="<%= attribute.name %>: <%= players.get(id).get(attribute.id) %>"><%= Math.round(players.get(id).get(attribute.id) * 1000) / 1000 %></td>
 													<% } else if(category.id == "misc") { %>
 														<td class="player-stat" title="<%= attribute.name %>: <%= players.get(id).get(attribute.id) %>"><%= players.get(id).get(attribute.id) %></td>
 													<% } else { %>
