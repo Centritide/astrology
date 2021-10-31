@@ -441,6 +441,15 @@ section.faq p {
     border-right-width: 0px;
 }
 
+.team tr.average {
+	border-width: 1px 0;
+	border-color: var(--body-border);
+}
+
+.team tr:last-child {
+	border-bottom-width: 0;
+}
+
 .team th:hover,
 .team tr:hover,
 .team tr:hover td.player-name,

@@ -247,7 +247,7 @@
 									</tr>
 								<% }) %>
 								<% if(!_.contains(["all", "tributes", "stars", "vault"], group)) { %>
-									<tr>
+									<tr class="average">
 										<td class="player-name"><strong><%= ucFirst(group) %> Average</strong></td>
 										<td colspan="4"></td>
 										<% _.each(columns.sibrmetrics, function(sibrmetric) { %>
@@ -383,7 +383,7 @@
 					</thead>
 					<tbody>
 						<% _.each(model.get("sorted") ? model.get("sorted") : collection, function(team) { %>
-							<tr>
+							<tr <% if(team.id == "all") { print("class=\"average\"") } %>>
 								<% if(team.id == "all") { %>
 									<td class="team-name">
 										<strong><%= team.emoji() %> <%= team.get("nickname") %></strong>
