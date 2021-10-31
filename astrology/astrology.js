@@ -810,6 +810,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		}
 	};
 	
+	function isMobile() {
+		return /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent) || $(window).width() < 700;
+	}
+	
 	function loadAssets(id) {
 		if(!globalTeams) {
 			globalTeams = new App.Collections.Teams();
