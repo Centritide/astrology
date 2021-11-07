@@ -401,7 +401,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		},
 		getStatAdjustments: function() {
 			return _.reduce(this.items(), function(i, j) {
-				if(j.get("health") > 0) {
+				if(j.get("durability") < 0 || j.get("health") > 0) {
 					_.each(j.getAggregateAdjustments(), function(value, stat) {
 						if(!i.hasOwnProperty(stat)) {
 							i[stat] = 0;
@@ -462,7 +462,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		},
 		getStatAdjustments: function() {
 			return _.reduce(this.get("data").items, function(i, j) {
-				if(j.get("health") > 0) {
+				if(j.get("durability") < 0 || j.get("health") > 0) {
 					_.each(j.getAggregateAdjustments(), function(value, stat) {
 						if(!i.hasOwnProperty(stat)) {
 							i[stat] = 0;
@@ -720,7 +720,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			if(this.get("durability") < -1) {
 				return "0x1F3CF";
 			}
-			if(this.get("health") < 1) {
+			if(this.get("durability") > 0 && this.get("health") < 1) {
 				return "0x274C";
 			}
 			switch(this.get("root").name) {

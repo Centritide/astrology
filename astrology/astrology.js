@@ -77,7 +77,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return this.get("nickname");
 		},
 		slug: function() {
-			if(this.get("fullName") == "nullteam") {
+			if(this.get("fullName") == "nullteam" || this.type() == "unknown") {
 				return this.id;
 			}
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
@@ -180,7 +180,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		},
 		items: function() {
 			return _.map(this.get("items"), function(item) {
-				return "<span title=\"" + item.name + " (" + (item.durability > 0 ? (item.health > 0 ? (item.health + "/" + item.durability) : "broken") : "unbreakable") + ")\">" + parseEmoji(item.health > 0 ? getEmojiForItemRoot(item.root.name) : "0x274C") + "</span>";
+				return "<span title=\"" + item.name + " (" + (item.durability > 0 ? (item.health > 0 ? (item.health + "/" + item.durability) : "broken") : "unbreakable") + ")\">" + parseEmoji(item.durability < 0 || item.health > 0 ? getEmojiForItemRoot(item.root.name) : "0x274C") + "</span>";
 			});
 		},
 		getSummary: function(id) {
@@ -197,7 +197,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					return this.modifications().length;
 				case "items":
 					return _.reduce(this.get("items"), function(i, j) {
-						return i + (j.health > 0 ? 1 : 0.4);
+						return i + (j.durability < 0 || j.health > 0 ? 1 : 0.4);
 					}, 0);
 			}
 			var thisModel = this, category = _.findWhere(attributes.sibrmetrics, { id: id });
@@ -237,7 +237,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		getItemAdjustments: function() {
 			var stats = ["tragicness", "buoyancy", "thwackability", "moxie", "divinity", "musclitude", "patheticism", "martyrdom", "cinnamon", "baseThirst", "laserlikeness", "continuation", "indulgence", "groundFriction", "shakespearianism", "suppression", "unthwackability", "coldness", "overpowerment", "ruthlessness", "pressurization", "omniscience", "tenaciousness", "watchfulness", "anticapitalism", "chasiness"], adjustments = {};
 			_.each(this.get("items"), function(item) {
-				if(item.health > 0) {
+				if(item.durability < 0 || item.health > 0) {
 					_.chain([item.prePrefix, item.postPrefix, item.root, item.suffix])
 						.union(item.prefixes)
 						.compact()
