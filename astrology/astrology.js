@@ -824,7 +824,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					_.each(groups, function(group, key) {
 						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
 					});
-					globalTeams.reset(_.union(groups.sc, groups.ilb, groups.ulb, groups.coffee, groups.coffee2, groups.unknown));
+					globalTeams.reset(_.union(groups.gamma9, groups.beta, groups.historical, groups.coffee, groups.coffee2, groups.gamma8, groups.gamma4, groups.gamma2, groups.gamma3, groups.unknown));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F3DB,
 						fullName: "Hall of Flame",
