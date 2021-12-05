@@ -83,7 +83,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
-			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-") + (this.type() == "sc" ? "-gamma" : "");
+			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-") + (this.type().startsWith("gamma") ? ("-" + this.type()) : "");
 		},
 		type: function() {
 			var thisId = this.id;
@@ -349,10 +349,14 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				emoji: parseEmoji,
 				special: groups.special,
 				groups: {
-					"Short Circuits": groups.sc,
-					"ILB": groups.ilb,
-					"Library": groups.ulb,
+					"Short Circuits": groups.gamma9,
+					"ILB": groups.beta,
+					"Library": groups.historical,
 					"Coffee Cup": _.union(groups.coffee, groups.coffee2),
+					"Gamma8": groups.gamma8,
+					"Gamma4": groups.gamma4,
+					"Doomed Universe": groups.gamma2,
+					"Lost Reality": groups.gamma3,
 					"Other": groups.unknown
 				}
 			}));
@@ -692,7 +696,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 		calculateRanks: function() {
 			_.chain(this.collection)
 				.filter(function(team) {
-					return team.type() == "sc";
+					return team.type() == "gamma9";
 				})
 				.each(function(team) { team.set("rank", team.getAverage("lineup", "wobabr") + team.getAverage("rotation", "erpr")); })
 				.sortBy(function(team) { return team.get("rank"); })
@@ -943,7 +947,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					teamView = new App.Views.Squeezer({
 						model: activeTeam,
 						collection: globalTeams.filter(function(team) {
-							return team.type() == "sc";
+							return team.type() == "gamma9";
 						})
 					});
 				} else {
@@ -1072,6 +1076,10 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 	
 	function isKnowledgeVisible() {
 		return footerView ? footerView.model.get("forbidden_knowledge") : $("[data-toggle=forbidden_knowledge]").prop("checked");
+	}
+
+	function removeDiacritics(str) {
+		return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 	}
 	
 	function localStorageExists() {
