@@ -107,13 +107,13 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 			return this.get("fullName");
 		},
 		slug: function() {
-			if(this.get("fullName") == "nullteam") {
+			if(this.get("fullName") == "nullteam" || this.type() == "unknown") {
 				return this.id;
 			}
 			if(this.id == "9494152b-99f6-4adb-9573-f9e084bc813f") {
 				return "baltimore-clabs";
 			}
-			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-") + (this.type() == "sc" ? "-gamma" : "");
+			return this.canonicalName().toLowerCase().replace(/\&/g, "-and-").replace(/[\,\.\']+/g, "").replace(/[\-\s]+/g, "-") + (this.type().startsWith("gamma") ? ("-" + this.type()) : "");
 		},
 		type: function() {
 			var thisId = this.id;
@@ -1253,10 +1253,17 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 				emoji: parseEmoji,
 				special: groups.special,
 				groups: {
-					"Short Circuits": groups.sc,
-					"ILB": groups.ilb,
-					"Library": groups.ulb,
+					"Short Circuits": groups.gamma9,
+					"ILB": groups.beta,
+					"Library": groups.historical,
 					"Coffee Cup": _.union(groups.coffee, groups.coffee2),
+					"Gamma8": groups.gamma8,
+					"Gamma4": groups.gamma4,
+					"Doomed Universe": groups.gamma2,
+					"Lost Reality": groups.gamma3,
+					"Abandoned Gamma5": groups.gamma5,
+					"Abandoned Gamma6": groups.gamma6,
+					"Abandoned Gamma7": groups.gamma7,
 					"Other": groups.unknown
 				}
 			}));
@@ -2165,7 +2172,7 @@ requirejs(["jquery", "underscore", "backbone", "twemoji", "json!../blaseball/tea
 					_.each(groups, function(group, key) {
 						groups[key] = _.sortBy(group, function(model) { return model.get("shorthand"); });
 					});
-					globalTeams.reset(_.union(groups.sc, groups.ilb, groups.ulb, groups.coffee, groups.coffee2, groups.unknown));
+					globalTeams.reset(_.union(groups.gamma9, groups.beta, groups.historical, groups.coffee, groups.coffee2, groups.gamma8, groups.gamma4, groups.gamma2, groups.gamma3, groups.gamma4, groups.gamma5, groups.unknown));
 					globalTeams.add(new App.Models.Team({
 						emoji: 0x1F3DB,
 						fullName: "Hall of Flame",
