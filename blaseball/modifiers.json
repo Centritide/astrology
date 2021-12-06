@@ -1843,5 +1843,11 @@
 		"emoji": "🏴‍☠️",
         "title": "Rogue",
         "description": "This Team is Out for a Surprise Attack."
+    },
+    {
+        "id": "FROZEN",
+		"emoji": "0x1F9CA",
+        "title": "Frozen",
+        "description": "This Player is frozen, and cannot play."
     }
 ]
