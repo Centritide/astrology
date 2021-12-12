@@ -1846,8 +1846,14 @@
     },
     {
         "id": "FROZEN",
-		"emoji": "0x1F9CA",
+		"emoji": "0x1F976",
         "title": "Frozen",
         "description": "This Player is frozen, and cannot play."
+    },
+    {
+      "id": "UNFREEZABLE",
+      "emoji": "0x1F427",
+      "title": "Unfreezable",
+      "description": "This Player cannot be Frozen."
     }
 ]
