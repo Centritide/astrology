@@ -10,7 +10,7 @@ requirejs.config({
 		jquery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min",
 		backbone: "https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min",
 		underscore: "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min",
-		twemoji: "https://unpkg.com/twemoji@latest/dist/twemoji.min.js"
+		twemoji: "https://unpkg.com/twemoji@latest/dist/twemoji.min"
 	},
 	shim : {
 		jquery: {
